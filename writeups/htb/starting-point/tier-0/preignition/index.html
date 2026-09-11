@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Hack The Box Starting Point — Tier 0: Foundations | 06 — Preignition | Roger Rached
+    </title>
+
+    <meta name="description"
+        content="Roger Rached's Hack The Box Starting Point Tier 0 writeup for Preignition — Linux, web enumeration, directory discovery and default credentials.">
+
+    <meta name="theme-color" content="#08070d">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../../../../../style.css">
+
+</head>
+
+
+<body>
+
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <header class="navbar">
+
+        <a href="/" class="brand">
+
+            <span class="brand-mark">
+                &gt;_
+            </span>
+
+            <span>
+                Roger Rached
+            </span>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="/writeups/">
+                Writeups
+            </a>
+
+            <a href="/projects/">
+                Projects
+            </a>
+
+            <a href="/tools/">
+                Tools
+            </a>
+
+            <a href="/notes/">
+                Notes
+            </a>
+
+            <a href="/research/">
+                Research
+            </a>
+
+            <a href="/guides/">
+                Guides
+            </a>
+
+            <a href="/certifications/">
+                Certifications
+            </a>
+
+            <a href="/about/">
+                About
+            </a>
+
+        </nav>
+
+
+        <a
+            href="https://github.com/Ozz961"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
+            GitHub ↗
+        </a>
+
+    </header>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="page-shell">
+
+        <div class="page-container">
+
+
+        <!-- =========================
+            BACK TO TIER 0
+        ========================== -->
+
+        <a
+            href="/writeups/htb/starting-point/tier-0/"
+            class="writeup-back"
+        >
+            <span>
+                ←
+            </span>
+
+            Back to Tier 0
+        </a>
+
+
+        <!-- =========================
+            MACHINE NAVIGATION
+        ========================== -->
+
+        <div class="writeup-top-navigation">
+
+            <a href="/writeups/htb/starting-point/tier-0/explosion/">
+
+                <span>
+                    ←
+                </span>
+
+                Explosion
+
+            </a>
+
+
+            <a href="/writeups/htb/starting-point/tier-0/mongod/">
+
+                Next: Mongod
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+            <!-- =========================
+                 BREADCRUMBS
+            ========================== -->
+
+            <div class="page-breadcrumb">
+
+                <a href="/">
+                    Home
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/">
+                    Writeups
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/">
+                    Hack The Box
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/">
+                    Starting Point
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/tier-0/">
+                    Tier 0
+                </a>
+
+                <span>/</span>
+
+                <span class="current">
+                    Preignition
+                </span>
+
+            </div>
+
+
+
+            <!-- =========================
+                 WRITEUP HEADER
+            ========================== -->
+
+            <header class="page-header writeup-intro">
+
+                <span class="section-label">
+                    HACK THE BOX · STARTING POINT · TIER 0
+                </span>
+
+
+                <h1 class="page-title">
+                    06 — <span>Preignition.</span>
+                </h1>
+
+
+                <p class="page-description">
+                    Very Easy · Linux · Web
+                </p>
+
+
+                <div class="page-tag-row">
+
+                    <span class="page-tag">
+                        VERY EASY
+                    </span>
+
+                    <span class="page-tag">
+                        LINUX
+                    </span>
+
+                    <span class="page-tag">
+                        HTTP
+                    </span>
+
+                    <span class="page-tag">
+                        NGINX
+                    </span>
+
+                    <span class="page-tag">
+                        WEB ENUMERATION
+                    </span>
+
+                    <span class="page-tag">
+                        GOBUSTER
+                    </span>
+
+                    <span class="page-tag">
+                        DEFAULT CREDENTIALS
+                    </span>
+
+                </div>
+
+            </header>
+
+
+
+            <!-- =========================
+                 WRITEUP
+            ========================== -->
+
+            <article class="writeup-article">
+
+
+                <!-- =========================
+                     01 — ENUMERATION
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        01 — ENUMERATION
+                    </span>
+
+
+                    <h2>
+                        Identifying the exposed web service
+                    </h2>
+
+
+                    <p>
+                        I started with an Nmap scan using service detection,
+                        the default NSE scripts, and increased verbosity to
+                        get an initial view of the target's exposed attack
+                        surface.
+                    </p>
+
+
+                    <pre class="code-block"><code>nmap -sV -sC -vv &lt;TARGET_IP&gt;</code></pre>
+
+
+                    <p>
+                        The scan identified a single open port:
+                        <strong>TCP/80</strong>. The service was identified
+                        as <strong>HTTP</strong> running
+                        <strong>nginx 1.14.2</strong>.
+                    </p>
+
+
+                    <pre class="code-block"><code>PORT   STATE SERVICE REASON  VERSION
+80/tcp open  http    syn-ack nginx 1.14.2
+|_http-title: Welcome to nginx!
+| http-methods:
+|_  Supported Methods: GET HEAD
+|_http-server-header: nginx/1.14.2</code></pre>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING 01
+                        </span>
+
+
+                        <p>
+                            TCP port <strong>80</strong> was exposed and
+                            identified as an HTTP service running
+                            <strong>nginx 1.14.2</strong>.
+                        </p>
+
+                    </div>
+
+
+                    <p>
+                        The server was returning the default nginx welcome
+                        page, so the visible website did not immediately
+                        expose an obvious application entry point. I
+                        therefore moved to web fingerprinting and content
+                        discovery.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     02 — WEB FINGERPRINTING
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        02 — WEB FINGERPRINTING
+                    </span>
+
+
+                    <h2>
+                        Fingerprinting the web application
+                    </h2>
+
+
+                    <p>
+                        With HTTP identified as the main attack surface, I
+                        performed a quick technology fingerprinting pass with
+                        <strong>WhatWeb</strong>. The goal was to gather
+                        additional information about the technologies exposed
+                        by the target before starting content discovery.
+                    </p>
+
+
+                    <img
+                        src="images/image1.png"
+                        alt="WhatWeb fingerprinting results for the Preignition target"
+                        class="writeup-image"
+                    >
+
+
+                    <p class="image-caption">
+                        WhatWeb fingerprinting the exposed web service.
+                    </p>
+
+
+                    <p>
+                        The fingerprinting results reinforced that the target
+                        was primarily presenting a web server, so the next
+                        logical step was to enumerate files and directories
+                        that were not visible from the default page.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     03 — CONTENT DISCOVERY
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        03 — CONTENT DISCOVERY
+                    </span>
+
+
+                    <h2>
+                        Discovering hidden web resources
+                    </h2>
+
+
+                    <p>
+                        The default nginx page did not provide an obvious
+                        application entry point, so I moved to directory and
+                        file enumeration.
+                    </p>
+
+
+                    <p>
+                        I used a SecLists wordlist designed for discovering
+                        common web content:
+                    </p>
+
+
+                    <pre class="code-block"><code>/usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-lowercase-2.3-medium.txt</code></pre>
+
+
+                    <p>
+                        I then used Gobuster in directory enumeration mode,
+                        testing common file extensions such as PHP, HTML, and
+                        TXT.
+                    </p>
+
+
+                    <pre class="code-block"><code>gobuster dir -u http://&lt;TARGET_IP&gt;/ -w /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-lowercase-2.3-medium.txt -x php,html,txt</code></pre>
+
+
+                    <img
+                        src="images/image2.png"
+                        alt="Gobuster discovering the admin page"
+                        class="writeup-image"
+                    >
+
+
+                    <p class="image-caption">
+                        Gobuster discovering the administrative endpoint.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING 02
+                        </span>
+
+
+                        <p>
+                            Directory enumeration revealed an
+                            <strong>admin.php</strong> endpoint that was not
+                            exposed by the default nginx page.
+                        </p>
+
+                    </div>
+
+
+                    <p>
+                        This gave me a concrete application entry point to
+                        investigate next. Rather than continuing to enumerate
+                        blindly, I moved directly to the newly discovered
+                        administrative page.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     04 — ADMIN ACCESS
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        04 — ADMIN ACCESS
+                    </span>
+
+
+                    <h2>
+                        Accessing the administrative page
+                    </h2>
+
+
+                    <p>
+                        At this point, I could see that the website was still
+                        displaying the default nginx page. Since Gobuster had
+                        revealed an <strong>admin.php</strong> endpoint, I
+                        decided to access it directly and investigate what
+                        was behind the discovered page.
+                    </p>
+
+
+                    <pre class="code-block"><code>http://&lt;TARGET_IP&gt;/admin.php</code></pre>
+
+
+                    <img
+                        src="images/image3.png"
+                        alt="Preignition admin.php login page"
+                        class="writeup-image"
+                    >
+
+
+                    <p class="image-caption">
+                        The discovered administrative login page.
+                    </p>
+
+
+                    <p>
+                        The endpoint presented a login page that appeared to
+                        still use default credentials. Since default
+                        credentials are a common source of insecure
+                        authentication, I tested the
+                        <strong>admin:admin</strong> combination.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING 03
+                        </span>
+
+
+                        <p>
+                            The administrative interface accepted the default
+                            credentials:
+                            <strong>admin:admin</strong>.
+                        </p>
+
+                    </div>
+
+
+                    <p>
+                        The successful authentication meant that no
+                        authentication bypass or password cracking was
+                        necessary. The issue was simply that the default
+                        administrative credentials had never been changed.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     05 — FLAG
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        05 — FLAG
+                    </span>
+
+
+                    <h2>
+                        Retrieving the flag
+                    </h2>
+
+
+                    <p>
+                        After authenticating successfully, I gained access to
+                        the administrative page and was able to retrieve the
+                        flag required to complete the machine.
+                    </p>
+
+
+                    <img
+                        src="images/image4.png"
+                        alt="Successful login and flag on Preignition"
+                        class="writeup-image"
+                    >
+
+
+                    <p class="image-caption">
+                        Successful authentication leading to the flag.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            RESULT
+                        </span>
+
+
+                        <p>
+                            The machine was completed through a simple attack
+                            chain:
+                            <strong>web enumeration → hidden admin page →
+                            default credentials → authenticated access →
+                            flag retrieval</strong>.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================
+                     06 — ATTACK PATH
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        06 — ATTACK PATH
+                    </span>
+
+
+                    <h2>
+                        Breaking down the assessment
+                    </h2>
+
+
+                    <p>
+                        Preignition was a straightforward example of how
+                        enumeration can expose an otherwise hidden
+                        application entry point. The initial Nmap scan showed
+                        only a web service, so the assessment naturally moved
+                        toward web-specific discovery.
+                    </p>
+
+
+                    <p>
+                        The default nginx page itself was not the target.
+                        Instead, directory enumeration exposed
+                        <strong>admin.php</strong>, which introduced an
+                        authentication surface that could be tested.
+                    </p>
+
+
+                    <p>
+                        The final weakness was the use of unchanged default
+                        credentials. Once those credentials were accepted,
+                        access to the administrative interface was immediate
+                        and the machine could be completed without requiring
+                        a more complex exploit.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            ATTACK CHAIN
+                        </span>
+
+
+                        <p>
+                            <strong>Nmap</strong>
+                            →
+                            <strong>HTTP / nginx</strong>
+                            →
+                            <strong>WhatWeb</strong>
+                            →
+                            <strong>Gobuster</strong>
+                            →
+                            <strong>admin.php</strong>
+                            →
+                            <strong>admin:admin</strong>
+                            →
+                            <strong>Flag</strong>
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================
+                     07 — DEFENSIVE NOTES
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        07 — DEFENSIVE NOTES
+                    </span>
+
+
+                    <h2>
+                        Securing the application
+                    </h2>
+
+
+                    <p>
+                        The weaknesses demonstrated by Preignition are simple
+                        to mitigate but can have serious consequences when
+                        present on real systems.
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            Replace all default usernames and passwords before
+                            deploying an application.
+                        </li>
+
+                        <li>
+                            Remove or restrict administrative endpoints that
+                            do not need to be publicly reachable.
+                        </li>
+
+                        <li>
+                            Require strong, unique credentials for privileged
+                            accounts.
+                        </li>
+
+                        <li>
+                            Monitor exposed web directories and administrative
+                            interfaces for unexpected access.
+                        </li>
+
+                        <li>
+                            Minimize unnecessary information exposed by
+                            default server configurations.
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+
+                <!-- =========================
+                     08 — WHAT I LEARNED
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        08 — WHAT I LEARNED
+                    </span>
+
+
+                    <h2>
+                        Lessons from Preignition
+                    </h2>
+
+
+                    <p>
+                        Preignition reinforced the importance of treating a
+                        web server as an application attack surface instead of
+                        stopping at the default homepage.
+                    </p>
+
+
+                    <p>
+                        The initial scan only revealed a single HTTP service,
+                        but targeted web enumeration uncovered an
+                        administrative endpoint that was not visible from the
+                        main page.
+                    </p>
+
+
+                    <p>
+                        The machine also demonstrated how dangerous default
+                        credentials can be. Once the hidden login page was
+                        discovered, testing a common default credential pair
+                        was enough to obtain administrative access and
+                        retrieve the flag.
+                    </p>
+
+
+                    <div class="page-tag-row">
+
+                        <span class="page-tag">
+                            NMAP
+                        </span>
+
+                        <span class="page-tag">
+                            HTTP
+                        </span>
+
+                        <span class="page-tag">
+                            NGINX
+                        </span>
+
+                        <span class="page-tag">
+                            WHATWEB
+                        </span>
+
+                        <span class="page-tag">
+                            GOBUSTER
+                        </span>
+
+                        <span class="page-tag">
+                            WEB ENUMERATION
+                        </span>
+
+                        <span class="page-tag">
+                            DEFAULT CREDENTIALS
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================
+                     09 — TOOLS & TECHNIQUES
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        09 — TOOLS &amp; TECHNIQUES
+                    </span>
+
+
+                    <h2>
+                        Tools used
+                    </h2>
+
+
+                    <p>
+                        The main tools and techniques used during the exercise
+                        were:
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            <strong>Nmap</strong> — port and service
+                            enumeration.
+                        </li>
+
+                        <li>
+                            <strong>WhatWeb</strong> — web technology
+                            fingerprinting.
+                        </li>
+
+                        <li>
+                            <strong>Gobuster</strong> — directory and file
+                            discovery.
+                        </li>
+
+                        <li>
+                            <strong>Browser</strong> — manual inspection of
+                            the discovered administrative endpoint.
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+
+                <!-- =========================
+                     10 — RESOURCES
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        10 — RESOURCES
+                    </span>
+
+
+                    <h2>
+                        Related resources
+                    </h2>
+
+
+                    <p>
+                        The resources below cover the Preignition machine and
+                        the web enumeration, fingerprinting, directory
+                        discovery and authentication concepts demonstrated
+                        throughout the lab.
+                    </p>
+
+
+                    <!-- LAB REFERENCE -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                LAB REFERENCE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.hackthebox.com/machines/preignition"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Preignition
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- NMAP -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://nmap.org/docs.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap Documentation
+                                </strong>
+
+                                <small>
+                                    Official Nmap reference and usage documentation
+                                </small>
+
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="https://nmap.org/book/man.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap Reference Guide
+                                </strong>
+
+                                <small>
+                                    Command-line options and scanning techniques
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- WHATWEB -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WEB FINGERPRINTING
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/urbanadventurer/WhatWeb"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    WhatWeb
+                                </strong>
+
+                                <small>
+                                    Web technology fingerprinting tool
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- GOBUSTER -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                CONTENT DISCOVERY
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/OJ/gobuster"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Gobuster
+                                </strong>
+
+                                <small>
+                                    Web directory and file discovery tool
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- WORDLIST -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WORDLISTS
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/danielmiessler/SecLists"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    SecLists
+                                </strong>
+
+                                <small>
+                                    Security testing wordlists and discovery content
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- WEB TESTING -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WEB SECURITY
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://owasp.org/www-project-web-security-testing-guide/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    OWASP Web Security Testing Guide
+                                </strong>
+
+                                <small>
+                                    Web application security testing methodology
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- ADMIN INTERFACES -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WEB ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/05-Enumerate_Application_Platform_and_Architecture/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    OWASP — Application Enumeration
+                                </strong>
+
+                                <small>
+                                    Versioned WSTG guidance for discovering application components
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================
+                     BOTTOM NAVIGATION
+                ========================== -->
+
+                <div class="writeup-navigation">
+
+
+                    <a href="/writeups/htb/starting-point/tier-0/explosion/">
+
+                        <span>
+                            PREVIOUS
+                        </span>
+
+                        <strong>
+                            ← Explosion
+                        </strong>
+
+                    </a>
+
+
+                    <a href="/writeups/htb/starting-point/tier-0/mongod/">
+
+                        <span>
+                            NEXT MACHINE
+                        </span>
+
+                        <strong>
+                            Mongod →
+                        </strong>
+
+                    </a>
+
+
+                </div>
+
+
+            </article>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <div class="footer-brand">
+
+            <span class="brand-mark">
+                &gt;_
+            </span>
+
+            <strong>
+                Roger Rached
+            </strong>
+
+        </div>
+
+
+        <p>
+            Cybersecurity · Pentesting · AppSec · AI Security
+        </p>
+
+
+        <span>
+            © <span id="year"></span> Ozz961
+        </span>
+
+    </footer>
+
+
+
+    <script src="../../../../../script.js"></script>
+
+</body>
+
+</html>

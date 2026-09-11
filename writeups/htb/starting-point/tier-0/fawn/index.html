@@ -2,22 +2,19 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Hack The Box Starting Point — Tier 0: Foundations | 02 — Fawn | Ozz961
+        Hack The Box Starting Point — Tier 0: Foundations | 02 — Fawn | Roger Rached
     </title>
 
     <meta name="description"
-        content="Ozz961's Hack The Box Starting Point Tier 0 writeup for Fawn — Linux, FTP and anonymous authentication.">
+        content="Roger Rached's Hack The Box Starting Point Tier 0 writeup for Fawn — Linux, FTP, enumeration, anonymous authentication and file retrieval.">
 
     <meta name="theme-color" content="#08070d">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
@@ -25,98 +22,79 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="../../../../../style.css">
-
 </head>
 
-
 <body>
-
 
     <div class="ambient ambient-one"></div>
     <div class="ambient ambient-two"></div>
 
 
     <!-- NAVIGATION -->
-
     <header class="navbar">
 
         <a href="/" class="brand">
-
-            <span class="brand-mark">
-                &gt;_
-            </span>
-
-            <span>
-                Ozz961
-            </span>
-
+            <span class="brand-mark">&gt;_</span>
+            <span>Roger Rached</span>
         </a>
 
-
         <nav class="nav-links">
-
-            <a href="/writeups/">
-                Writeups
-            </a>
-
-            <a href="/projects/">
-                Projects
-            </a>
-
-            <a href="/tools/">
-                Tools
-            </a>
-
-            <a href="/notes/">
-                Notes
-            </a>
-
-            <a href="/research/">
-                Research
-            </a>
-
-            <a href="/guides/">
-                Guides
-            </a>
-
-            <a href="/certifications/">
-                Certifications
-            </a>
-
-            <a href="/experience/">
-                Experience
-            </a>
-
-            <a href="/education/">
-                Education
-            </a>
-
-            <a href="/about/">
-                About
-            </a>
-
+            <a href="/writeups/">Writeups</a>
+            <a href="/projects/">Projects</a>
+            <a href="/tools/">Tools</a>
+            <a href="/notes/">Notes</a>
+            <a href="/research/">Research</a>
+            <a href="/guides/">Guides</a>
+            <a href="/certifications/">Certifications</a>
+            <a href="/about/">About</a>
         </nav>
 
-
-        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer" class="github-link">
+        <a
+            href="https://github.com/Ozz961"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
             GitHub ↗
         </a>
 
     </header>
 
 
-
     <main class="page-shell">
 
         <div class="page-container">
 
+            <!-- BACK TO TIER 0 -->
+            <a
+                href="/writeups/htb/starting-point/tier-0/"
+                class="writeup-back"
+            >
+                <span>←</span>
+                Back to Tier 0
+            </a>
+
+
+            <!-- MACHINE NAVIGATION -->
+            <div class="writeup-top-navigation">
+
+                <a href="/writeups/htb/starting-point/tier-0/meow/">
+                    <span>←</span>
+                    Meow
+                </a>
+
+                <a href="/writeups/htb/starting-point/tier-0/dancing/">
+                    Next: Dancing
+                    <span>→</span>
+                </a>
+
+            </div>
 
             <!-- BREADCRUMBS -->
-
             <div class="page-breadcrumb">
 
                 <a href="/">
-                    Ozz961
+                    Home
                 </a>
 
                 <span>/</span>
@@ -152,25 +130,20 @@
             </div>
 
 
-
-            <!-- HEADER -->
-
+            <!-- WRITEUP HEADER -->
             <header class="page-header writeup-intro">
 
                 <span class="section-label">
                     HACK THE BOX · STARTING POINT · TIER 0
                 </span>
 
-
                 <h1 class="page-title">
                     02 — <span>Fawn.</span>
                 </h1>
 
-
                 <p class="page-description">
                     Very Easy · Linux · FTP
                 </p>
-
 
                 <div class="page-tag-row">
 
@@ -199,53 +172,49 @@
             </header>
 
 
-
             <!-- WRITEUP -->
-
             <article class="writeup-article">
 
 
                 <!-- ENUMERATION -->
-
                 <section class="writeup-section">
 
                     <span class="writeup-section-label">
                         01 — ENUMERATION
                     </span>
 
-
                     <h2>
                         Quick Nmap scan
                     </h2>
 
-
                     <p>
-                        I started with an Nmap scan to identify the
-                        exposed ports and services on the target.
+                        I started with an Nmap scan to identify the exposed
+                        ports and services on the target. The goal was to
+                        establish the initial attack surface and determine
+                        which service required further enumeration.
                     </p>
-
 
                     <pre class="code-block"><code>nmap -sC -sV &lt;TARGET_IP&gt;</code></pre>
 
 
                     <!-- IMAGE 1 -->
-
-                    <img src="images/image1.png" alt="Nmap scan showing FTP open on port 21" class="writeup-image">
-
+                    <img
+                        src="images/image1.png"
+                        alt="Nmap scan showing FTP open on port 21"
+                        class="writeup-image"
+                    >
 
                     <p class="image-caption">
                         Nmap scan showing the exposed FTP service.
                     </p>
 
 
-                    <!-- FINDING 1 -->
-
+                    <!-- FINDING 01 -->
                     <div class="finding-box">
 
                         <span class="finding-label">
                             FINDING 01
                         </span>
-
 
                         <p>
                             FTP was discovered running on
@@ -254,55 +223,51 @@
 
                     </div>
 
-
                 </section>
 
 
-
-                <!-- ANONYMOUS FTP -->
-
+                <!-- FTP -->
                 <section class="writeup-section">
 
                     <span class="writeup-section-label">
                         02 — FTP
                     </span>
 
-
                     <h2>
                         Anonymous FTP access
                     </h2>
 
-
                     <p>
-                        FTP was exposed on port 21, so I moved from general enumeration to service-specific testing. One
-                        of the first things I checked was whether the server permitted anonymous authentication, since
-                        misconfigured FTP services can expose files without requiring a legitimate account.
+                        FTP was exposed on port 21, so I moved from general
+                        enumeration to service-specific testing. One of the
+                        first checks I made was whether the server permitted
+                        anonymous authentication, since a misconfigured FTP
+                        service can expose files without requiring a legitimate
+                        user account.
                     </p>
-
 
                     <pre class="code-block"><code>ftp &lt;TARGET_IP&gt;</code></pre>
 
 
                     <!-- IMAGE 2 -->
-
-                    <img src="images/image2.png" alt="FTP server allowing anonymous login" class="writeup-image">
-
+                    <img
+                        src="images/image2.png"
+                        alt="FTP server allowing anonymous login"
+                        class="writeup-image"
+                    >
 
                     <p class="image-caption">
-                        The server accepted the anonymous session, confirming that authentication controls were not
-                        being enforced for this service. I then enumerated the accessible directory contents to
-                        determine whether any useful files were exposed.
+                        The server accepted the anonymous FTP session,
+                        confirming that anonymous authentication was enabled.
                     </p>
 
 
-                    <!-- FINDING 2 -->
-
+                    <!-- FINDING 02 -->
                     <div class="finding-box">
 
                         <span class="finding-label">
                             FINDING 02
                         </span>
-
 
                         <p>
                             The FTP server allowed
@@ -311,76 +276,95 @@
 
                     </div>
 
+                    <p>
+                        With anonymous access confirmed, I enumerated the
+                        accessible directory contents to determine whether
+                        files could be read from the exposed FTP share.
+                    </p>
 
                 </section>
 
 
-
-                <!-- FILE RETRIEVAL -->
-
+                <!-- FILE ACCESS -->
                 <section class="writeup-section">
 
                     <span class="writeup-section-label">
                         03 — FILE ACCESS
                     </span>
 
-
                     <h2>
                         Accessing the FTP share
                     </h2>
 
-
                     <p>
-                        After authenticating anonymously, I enumerated
-                        the available files and retrieved the accessible
-                        flag file from the FTP server.
+                        After authenticating anonymously, I enumerated the
+                        available files and found the accessible flag file.
+                        I then retrieved it directly through the FTP session.
                     </p>
-
 
                     <pre class="code-block"><code>ls
 get flag.txt</code></pre>
 
 
                     <!-- IMAGE 3 -->
-
-                    <img src="images/image3.png" alt="FTP session retrieving the flag" class="writeup-image">
-
+                    <img
+                        src="images/image3.png"
+                        alt="FTP session retrieving the flag"
+                        class="writeup-image"
+                    >
 
                     <p class="image-caption">
                         Anonymous FTP access and flag retrieval.
                     </p>
 
+
+                    <!-- FINDING 03 -->
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING 03
+                        </span>
+
+                        <p>
+                            The anonymous FTP session provided access to the
+                            target's files, including the flag.
+                        </p>
+
+                    </div>
+
                 </section>
 
 
-
                 <!-- WHAT I LEARNED -->
-
                 <section class="writeup-section">
 
                     <span class="writeup-section-label">
                         04 — WHAT I LEARNED
                     </span>
 
-
                     <h2>
                         Lessons from Fawn
                     </h2>
 
-
                     <p>
-                        Fawn reinforced the importance of identifying
-                        exposed services before attempting more
-                        complicated attacks.
+                        Fawn reinforced the importance of identifying exposed
+                        services before attempting more complicated attacks.
+                        The initial Nmap scan immediately narrowed the
+                        assessment down to FTP, allowing the enumeration to
+                        become service-specific.
                     </p>
 
+                    <p>
+                        FTP can expose files and functionality that should
+                        never be publicly accessible. Anonymous authentication
+                        is therefore an important configuration issue to test
+                        whenever FTP is discovered during enumeration.
+                    </p>
 
                     <p>
-                        FTP can expose files and functionality that
-                        should never be publicly accessible. Anonymous
-                        authentication is therefore an important
-                        configuration issue to test whenever FTP is
-                        discovered during enumeration.
+                        In this case, no sophisticated exploitation was
+                        required. A misconfigured authentication control was
+                        enough to provide access to files on the server.
                     </p>
 
 
@@ -411,35 +395,36 @@ get flag.txt</code></pre>
                 </section>
 
 
-
                 <!-- TOOLS -->
-
                 <section class="writeup-section">
 
                     <span class="writeup-section-label">
                         05 — TOOLS &amp; TECHNIQUES
                     </span>
 
-
                     <h2>
                         Tools used
                     </h2>
 
+                    <p>
+                        The main tools and techniques used during the exercise
+                        were:
+                    </p>
 
                     <ul>
 
                         <li>
-                            <strong>Nmap</strong> — service enumeration
+                            <strong>Nmap</strong> — service enumeration.
                         </li>
 
                         <li>
-                            <strong>FTP</strong> — interacting with the
-                            exposed file-transfer service
+                            <strong>FTP client</strong> — interacting with the
+                            exposed file-transfer service.
                         </li>
 
                         <li>
                             <strong>Anonymous authentication</strong> —
-                            identifying unauthenticated access
+                            identifying unauthenticated access.
                         </li>
 
                     </ul>
@@ -447,20 +432,259 @@ get flag.txt</code></pre>
                 </section>
 
 
+                <!-- RESOURCES -->
+                <section class="writeup-section">
 
-                <!-- NAVIGATION -->
+                    <span class="writeup-section-label">
+                        06 — RESOURCES
+                    </span>
 
+                    <h2>
+                        Related resources
+                    </h2>
+
+                    <p>
+                        The resources below cover the Fawn machine itself and
+                        the FTP enumeration, anonymous access, and protocol
+                        concepts demonstrated throughout the lab.
+                    </p>
+
+
+                    <!-- LAB REFERENCE -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+                            <span class="resource-label">
+                                LAB REFERENCE
+                            </span>
+                        </div>
+
+                        <a
+                            href="https://www.hackthebox.com/machines/fawn"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Fawn
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- ENUMERATION -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+                            <span class="resource-label">
+                                ENUMERATION
+                            </span>
+                        </div>
+
+                        <a
+                            href="https://nmap.org/book/vscan.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap — Service &amp; Version Detection
+                                </strong>
+
+                                <small>
+                                    Understanding service discovery with Nmap
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- FTP PROTOCOL -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+                            <span class="resource-label">
+                                PROTOCOL
+                            </span>
+                        </div>
+
+                        <a
+                            href="https://www.rfc-editor.org/info/rfc959/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    RFC 959 — File Transfer Protocol
+                                </strong>
+
+                                <small>
+                                    Official FTP protocol specification
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- ANONYMOUS FTP -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+                            <span class="resource-label">
+                                ANONYMOUS ACCESS
+                            </span>
+                        </div>
+
+                        <a
+                            href="https://www.rfc-editor.org/info/rfc1635/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    RFC 1635 — How to Use Anonymous FTP
+                                </strong>
+
+                                <small>
+                                    Background on anonymous FTP and restricted file access
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- FTP SECURITY -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+                            <span class="resource-label">
+                                SECURITY
+                            </span>
+                        </div>
+
+                        <a
+                            href="https://www.rfc-editor.org/info/rfc2577/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    RFC 2577 — FTP Security Considerations
+                                </strong>
+
+                                <small>
+                                    Security risks involving FTP and anonymous access
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- FTP SECURITY EXTENSIONS -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+                            <span class="resource-label">
+                                SECURITY EXTENSIONS
+                            </span>
+                        </div>
+
+                        <a
+                            href="https://www.rfc-editor.org/info/rfc2228/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    RFC 2228 — FTP Security Extensions
+                                </strong>
+
+                                <small>
+                                    Authentication and security extensions for FTP
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- BOTTOM NAVIGATION -->
                 <div class="writeup-navigation">
 
-
-                    <a href="/writeups/htb/starting-point/tier-0/">
+                    <a href="/writeups/htb/starting-point/tier-0/meow/">
 
                         <span>
                             PREVIOUS
                         </span>
 
                         <strong>
-                            ← Tier 0
+                            ← Meow
                         </strong>
 
                     </a>
@@ -478,23 +702,17 @@ get flag.txt</code></pre>
 
                     </a>
 
-
                 </div>
 
-
             </article>
-
 
         </div>
 
     </main>
 
 
-
     <!-- FOOTER -->
-
     <footer>
-
 
         <div class="footer-brand">
 
@@ -503,21 +721,18 @@ get flag.txt</code></pre>
             </span>
 
             <strong>
-                Ozz961
+                Roger Rached
             </strong>
 
         </div>
-
 
         <p>
             Cybersecurity · Pentesting · AppSec · AI Security
         </p>
 
-
         <span>
             © <span id="year"></span> Ozz961
         </span>
-
 
     </footer>
 

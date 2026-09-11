@@ -4,20 +4,18 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Hack The Box Starting Point — Tier 0: Foundations | 03 — Dancing | Ozz961
+        Hack The Box Starting Point — Tier 0: Foundations | 03 — Dancing | Roger Rached
     </title>
 
     <meta name="description"
-        content="Ozz961's Hack The Box Starting Point Tier 0 writeup for Dancing — Windows, SMB, anonymous access and share enumeration.">
+        content="Roger Rached's Hack The Box Starting Point Tier 0 writeup for Dancing — Windows, SMB, anonymous access and share enumeration.">
 
     <meta name="theme-color" content="#08070d">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
@@ -47,7 +45,7 @@
             </span>
 
             <span>
-                Ozz961
+                Roger Rached
             </span>
 
         </a>
@@ -83,14 +81,6 @@
                 Certifications
             </a>
 
-            <a href="/experience/">
-                Experience
-            </a>
-
-            <a href="/education/">
-                Education
-            </a>
-
             <a href="/about/">
                 About
             </a>
@@ -98,25 +88,67 @@
         </nav>
 
 
-        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer" class="github-link">
+        <a
+            href="https://github.com/Ozz961"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
             GitHub ↗
         </a>
 
     </header>
 
-
-
     <main class="page-shell">
 
         <div class="page-container">
 
+            <!-- BACK TO TIER 0 -->
+
+            <a
+                href="/writeups/htb/starting-point/tier-0/"
+                class="writeup-back"
+            >
+                <span>
+                    ←
+                </span>
+
+                Back to Tier 0
+
+            </a>
+
+            <!-- MACHINE NAVIGATION -->
+
+            <div class="writeup-top-navigation">
+
+                <a href="/writeups/htb/starting-point/tier-0/fawn/">
+
+                    <span>
+                        ←
+                    </span>
+
+                    Fawn
+
+                </a>
+
+                <a href="/writeups/htb/starting-point/tier-0/redeemer/">
+
+                    Next: Redeemer
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+
+            </div>
 
             <!-- BREADCRUMBS -->
 
             <div class="page-breadcrumb">
 
                 <a href="/">
-                    Ozz961
+                    Home
                 </a>
 
                 <span>/</span>
@@ -151,7 +183,9 @@
 
             </div>
 
-            <!-- HEADER -->
+
+
+            <!-- WRITEUP HEADER -->
 
             <header class="page-header writeup-intro">
 
@@ -196,12 +230,14 @@
 
             </header>
 
+
+
             <!-- WRITEUP -->
 
             <article class="writeup-article">
 
 
-                <!-- SCAN -->
+                <!-- ENUMERATION -->
 
                 <section class="writeup-section">
 
@@ -227,16 +263,15 @@
 
                     <!-- IMAGE 1 -->
 
-                    <img src="images/image1.png"
-                        alt="The scan exposed three Windows networking services that immediately narrowed the attack surface. Port 135 indicated the presence of the Windows RPC endpoint mapper, while ports 139 and 445 indicated SMB availability. Since SMB can expose network shares and other Windows resources, I focused the next stage of enumeration on the service running on port 445."
-                        class="writeup-image">
+                    <img
+                        src="images/image1.png"
+                        alt="Nmap scan showing ports 135, 139 and 445 open"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
-                        The SMB scan reported that signing was enabled but not required. SMB signing is intended to
-                        protect the integrity of SMB communications, but when it is not enforced, clients may establish
-                        sessions without signing being mandatory. While this is an important security observation, it
-                        was not the weakness I ultimately used to obtain access on this machine.
+                        Initial Nmap enumeration of the Windows target.
                     </p>
 
 
@@ -248,8 +283,9 @@
 
 
                         <p>
-                            Ports <strong>135</strong>, <strong>139</strong>
-                            and <strong>445</strong> were open.
+                            Ports <strong>135</strong>,
+                            <strong>139</strong> and
+                            <strong>445</strong> were open.
                         </p>
 
                     </div>
@@ -266,8 +302,8 @@
                         Port <strong>139</strong> exposes SMB through
                         NetBIOS, while port <strong>445</strong> provides
                         direct SMB communication over TCP. The presence of
-                        139 and especially 445 made SMB enumeration the
-                        logical next step.
+                        ports 139 and 445 made SMB enumeration the logical
+                        next step.
                     </p>
 
                 </section>
@@ -284,7 +320,7 @@
 
 
                     <h2>
-                        SMB2 security configuration
+                        SMB signing configuration
                     </h2>
 
 
@@ -296,12 +332,16 @@
 
                     <!-- IMAGE 2 -->
 
-                    <img src="images/image2.png" alt="SMB scan showing message signing enabled but not required"
-                        class="writeup-image">
+                    <img
+                        src="images/image2.png"
+                        alt="SMB scan showing message signing enabled but not required"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
-                        SMB security information showing signing enabled but not required.
+                        SMB security information showing signing enabled
+                        but not required.
                     </p>
 
 
@@ -321,18 +361,19 @@
 
 
                     <p>
-                        SMB signing is designed to provide integrity
-                        protection for SMB messages. When signing is not
-                        required, clients may be able to communicate with
-                        the server without establishing signed SMB sessions.
+                        SMB signing adds integrity protection to SMB
+                        communications by attaching a signature to SMB
+                        messages. When signing is not required, a client and
+                        server may establish an SMB session without signing
+                        being mandatory. :contentReference[oaicite:2]{index=2}
                     </p>
 
 
                     <p>
-                        In this machine, however, the more immediate
-                        security issue was not the signing configuration.
-                        The primary attack path came from being able to
-                        authenticate to SMB without a password and then
+                        This was an important security observation, but it
+                        was not the weakness I ultimately used to obtain
+                        access. The direct attack path came from being able
+                        to authenticate to SMB without a password and
                         enumerate accessible shares.
                     </p>
 
@@ -340,7 +381,7 @@
 
 
 
-                <!-- CRACKMAPEXEC -->
+                <!-- SMB ENUMERATION -->
 
                 <section class="writeup-section">
 
@@ -355,9 +396,12 @@
 
 
                     <p>
-                        CrackMapExec identified the host as Windows 10 / Server 2019 Build 17763 and confirmed the
-                        target hostname as DANCING. With the SMB service fingerprinted, the next question was whether
-                        the server would accept an unauthenticated or anonymous session.
+                        CrackMapExec identified the host as
+                        <strong>Windows 10 / Server 2019 Build 17763 x64</strong>
+                        and confirmed the target hostname as
+                        <strong>DANCING</strong>. With the SMB service
+                        fingerprinted, the next question was whether the
+                        server would accept an unauthenticated session.
                     </p>
 
 
@@ -366,12 +410,16 @@
 
                     <!-- IMAGE 3 -->
 
-                    <img src="images/image3.png" alt="CrackMapExec SMB enumeration showing Windows version and hostname"
-                        class="writeup-image">
+                    <img
+                        src="images/image3.png"
+                        alt="CrackMapExec SMB enumeration showing Windows version and hostname"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
-                        CrackMapExec identifying the target operating system and SMB configuration.
+                        CrackMapExec identifying the target operating system
+                        and SMB configuration.
                     </p>
 
 
@@ -392,11 +440,10 @@
 
 
                     <p>
-                        The output also confirmed that SMB signing was
-                        not enforced and that SMBv1 was disabled. This
-                        provided useful context for the next step:
-                        testing whether SMB resources could be accessed
-                        anonymously.
+                        The output also confirmed that SMB signing was not
+                        enforced and that SMBv1 was disabled. This provided
+                        useful context for the next step: testing whether SMB
+                        resources could be accessed anonymously.
                     </p>
 
                 </section>
@@ -418,21 +465,26 @@
 
 
                     <p>
-                        Testing the Anonymous account with a blank password returned the available shares and their
-                        permissions. ADMIN$ and C$ were inaccessible from this session, while IPC$ was readable. The
-                        important discovery was WorkShares, which provided both read and write access. This gave me a
-                        direct path to investigate the share's contents without needing privileged credentials.
+                        I tested the <strong>Anonymous</strong> account with
+                        a blank password and enumerated the available shares
+                        together with their permissions. ADMIN$ and C$ were
+                        inaccessible from this session, while IPC$ was
+                        readable. The important discovery was
+                        <strong>WorkShares</strong>, which provided both
+                        read and write access.
                     </p>
 
 
-                    <pre
-                        class="code-block"><code>crackmapexec smb &lt;TARGET_IP&gt; -u 'Anonymous' -p '' --shares</code></pre>
+                    <pre class="code-block"><code>crackmapexec smb &lt;TARGET_IP&gt; -u 'Anonymous' -p '' --shares</code></pre>
 
 
                     <!-- IMAGE 4 -->
 
-                    <img src="images/image4.png" alt="CrackMapExec share enumeration using anonymous SMB access"
-                        class="writeup-image">
+                    <img
+                        src="images/image4.png"
+                        alt="CrackMapExec share enumeration using anonymous SMB access"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
@@ -449,8 +501,8 @@
 
                         <p>
                             Anonymous SMB authentication was accepted,
-                            allowing the available shares and permissions
-                            to be enumerated.
+                            allowing the available shares and their
+                            permissions to be enumerated.
                         </p>
 
                     </div>
@@ -476,8 +528,9 @@
                         </li>
 
                         <li>
-                            <strong>IPC$</strong> — inter-process communication
-                            share; readable from the tested session.
+                            <strong>IPC$</strong> — inter-process
+                            communication share; readable from the tested
+                            session.
                         </li>
 
                         <li>
@@ -513,9 +566,9 @@
 
 
                     <p>
-                        With the share identified and accessible using the
-                        anonymous account, I connected directly with the
-                        SMB client to inspect its contents.
+                        With the share identified and accessible through the
+                        anonymous session, I connected directly with
+                        <strong>smbclient</strong> to inspect its contents.
                     </p>
 
 
@@ -524,8 +577,11 @@
 
                     <!-- IMAGE 5 -->
 
-                    <img src="images/image5.png" alt="SMBClient connection to the WorkShares share using Anonymous"
-                        class="writeup-image">
+                    <img
+                        src="images/image5.png"
+                        alt="SMBClient connection to the WorkShares share using Anonymous"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
@@ -584,10 +640,10 @@ get flag.txt</code></pre>
 
 
                     <p>
-                        The main weakness was the combination of anonymous
+                        The primary weakness was the combination of anonymous
                         SMB access and excessive permissions on the
-                        <strong>WorkShares</strong> share. This allowed
-                        unauthenticated users to reach files that should
+                        <strong>WorkShares</strong> share. This allowed an
+                        unauthenticated session to reach files that should
                         not have been exposed.
                     </p>
 
@@ -607,7 +663,7 @@ get flag.txt</code></pre>
                         </span>
 
                         <span class="page-tag">
-                            SMBC​LIENT
+                            SMBCLIENT
                         </span>
 
                         <span class="page-tag">
@@ -634,20 +690,27 @@ get flag.txt</code></pre>
                     </h2>
 
 
+                    <p>
+                        The main tools and techniques used during the exercise
+                        were:
+                    </p>
+
+
                     <ul>
 
                         <li>
-                            <strong>Nmap</strong> — port and service enumeration
+                            <strong>Nmap</strong> — port and service
+                            enumeration.
                         </li>
 
                         <li>
                             <strong>CrackMapExec</strong> — SMB host,
-                            authentication and share enumeration
+                            authentication and share enumeration.
                         </li>
 
                         <li>
                             <strong>smbclient</strong> — direct interaction
-                            with the SMB share
+                            with the SMB share.
                         </li>
 
                     </ul>
@@ -656,7 +719,325 @@ get flag.txt</code></pre>
 
 
 
-                <!-- NAVIGATION -->
+                <!-- RESOURCES -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        08 — RESOURCES
+                    </span>
+
+
+                    <h2>
+                        Related resources
+                    </h2>
+
+
+                    <p>
+                        The resources below cover the Dancing machine and the
+                        SMB enumeration, signing, authentication and file-share
+                        concepts demonstrated throughout the lab.
+                    </p>
+
+
+                    <!-- LAB REFERENCE -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                LAB REFERENCE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.hackthebox.com/machines/dancing"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Dancing
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- SMB -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                SMB PROTOCOL
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/file-server-smb-overview"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Microsoft Learn — SMB Overview
+                                </strong>
+
+                                <small>
+                                    SMB architecture, shares, clients and servers
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- SMB SIGNING -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                SMB SECURITY
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/smb-signing-overview"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Microsoft Learn — SMB Signing
+                                </strong>
+
+                                <small>
+                                    Signing, integrity protection and signing requirements
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- SMB AUTHENTICATION -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                AUTHENTICATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://learn.microsoft.com/en-us/windows/win32/fileio/microsoft-smb-protocol-authentication"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Microsoft Learn — SMB Authentication
+                                </strong>
+
+                                <small>
+                                    User and share authentication concepts
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- SMBCLIENT -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                SMB CLIENT
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.samba.org/samba/docs/current/man-html/smbclient.1.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Samba — smbclient
+                                </strong>
+
+                                <small>
+                                    Official SMB/CIFS client documentation
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- CRACKMAPEXEC -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                ENUMERATION TOOL
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/byt3bl33d3r/CrackMapExec"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    CrackMapExec
+                                </strong>
+
+                                <small>
+                                    Archived project repository and documentation
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- MODERN ALTERNATIVE -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                MODERN TOOLING
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/Pennyw0rth/NetExec"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    NetExec
+                                </strong>
+
+                                <small>
+                                    Modern network execution and SMB assessment tool
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- BOTTOM NAVIGATION -->
 
                 <div class="writeup-navigation">
 
@@ -703,6 +1084,7 @@ get flag.txt</code></pre>
 
     <footer>
 
+
         <div class="footer-brand">
 
             <span class="brand-mark">
@@ -710,7 +1092,7 @@ get flag.txt</code></pre>
             </span>
 
             <strong>
-                Ozz961
+                Roger Rached
             </strong>
 
         </div>
@@ -724,6 +1106,7 @@ get flag.txt</code></pre>
         <span>
             © <span id="year"></span> Ozz961
         </span>
+
 
     </footer>
 

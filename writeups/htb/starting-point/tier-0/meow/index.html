@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Hack The Box Starting Point — Tier 0: Foundations | 01 — Meow | Ozz961
+        Hack The Box Starting Point — Tier 0: Foundations | 01 — Meow | Roger Rached
     </title>
 
     <meta name="description"
-        content="Ozz961's Hack The Box Starting Point Tier 0 writeup for Meow — Linux, Telnet, enumeration and authentication.">
+        content="Roger Rached's Hack The Box Starting Point Tier 0 writeup for Meow — Linux, Telnet, enumeration and authentication.">
 
     <meta name="theme-color" content="#08070d">
 
@@ -35,7 +35,7 @@
 
         <a href="/" class="brand">
             <span class="brand-mark">&gt;_</span>
-            <span>Ozz961</span>
+            <span>Roger Rached</span>
         </a>
 
         <nav class="nav-links">
@@ -49,7 +49,12 @@
             <a href="/about/">About</a>
         </nav>
 
-        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer" class="github-link">
+        <a
+            href="https://github.com/Ozz961"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
             GitHub ↗
         </a>
 
@@ -60,465 +65,717 @@
 
         <div class="page-container">
 
+
+            <!-- BACK TO TIER 0 -->
+            <a
+                href="/writeups/htb/starting-point/tier-0/"
+                class="writeup-back"
+            >
+                <span>←</span>
+                Back to Tier 0
+            </a>
+
+
+            <!-- MACHINE NAVIGATION -->
+            <div class="writeup-top-navigation">
+
+                <span></span>
+
+                <a href="/writeups/htb/starting-point/tier-0/fawn/">
+                    Next: Fawn
+                    <span>→</span>
+                </a>
+
+            </div>
+
+
             <!-- BREADCRUMBS -->
+            <div class="page-breadcrumb">
 
-            <main class="page-shell">
+                <a href="/">
+                    Home
+                </a>
 
-                <div class="page-container">
+                <span>/</span>
 
-                    <a href="/writeups/htb/starting-point/tier-0/" class="writeup-back">
-                        <span>←</span>
-                        Back to Tier 0
-                    </a>
+                <a href="/writeups/">
+                    Writeups
+                </a>
 
-                    <div class="page-breadcrumb">
+                <span>/</span>
 
-                        <a href="/">Ozz961</a>
-                        <span>/</span>
+                <a href="/writeups/htb/">
+                    Hack The Box
+                </a>
 
-                        <a href="/writeups/">Writeups</a>
-                        <span>/</span>
+                <span>/</span>
 
-                        <a href="/writeups/htb/">Hack The Box</a>
-                        <span>/</span>
+                <a href="/writeups/htb/starting-point/">
+                    Starting Point
+                </a>
 
-                        <a href="/writeups/htb/starting-point/">
-                            Starting Point
-                        </a>
+                <span>/</span>
 
-                        <span>/</span>
+                <a href="/writeups/htb/starting-point/tier-0/">
+                    Tier 0
+                </a>
 
-                        <a href="/writeups/htb/starting-point/tier-0/">
-                            Tier 0
-                        </a>
+                <span>/</span>
 
-                        <span>/</span>
+                <span class="current">
+                    Meow
+                </span>
 
-                        <span class="current">
-                            Meow
+            </div>
+
+
+            <!-- WRITEUP HEADER -->
+            <header class="page-header writeup-intro">
+
+                <span class="section-label">
+                    HACK THE BOX · STARTING POINT · TIER 0
+                </span>
+
+                <h1 class="page-title">
+                    01 — <span>Meow.</span>
+                </h1>
+
+                <p class="page-description">
+                    Very Easy · Linux · Telnet
+                </p>
+
+                <div class="page-tag-row">
+
+                    <span class="page-tag">
+                        VERY EASY
+                    </span>
+
+                    <span class="page-tag">
+                        LINUX
+                    </span>
+
+                    <span class="page-tag">
+                        TELNET
+                    </span>
+
+                    <span class="page-tag">
+                        ENUMERATION
+                    </span>
+
+                    <span class="page-tag">
+                        AUTHENTICATION
+                    </span>
+
+                </div>
+
+            </header>
+
+
+            <!-- WRITEUP -->
+            <article class="writeup-article">
+
+
+                <!-- ENUMERATION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        01 — ENUMERATION
+                    </span>
+
+                    <h2>
+                        Quick Nmap check
+                    </h2>
+
+                    <p>
+                        I began with a basic Nmap scan to establish the
+                        target's attack surface. The goal was to identify which
+                        ports were exposed, determine the services listening
+                        on them, and decide where further enumeration would
+                        be most useful.
+                    </p>
+
+                    <pre class="code-block"><code>nmap -sC -sV &lt;TARGET_IP&gt;</code></pre>
+
+
+                    <!-- IMAGE 1 -->
+                    <img
+                        src="images/image1.png"
+                        alt="Nmap scan of the Meow target"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Initial Nmap enumeration of the target.
+                    </p>
+
+
+                    <!-- FINDING -->
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            Telnet was discovered open on
+                            <strong>port 23</strong>.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- WORDLIST -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        02 — CREDENTIAL TESTING
+                    </span>
+
+                    <h2>
+                        Unzip wordlist
+                    </h2>
+
+                    <p>
+                        I prepared the password wordlist for credential
+                        testing against the exposed Telnet service.
+                    </p>
+
+                    <pre class="code-block"><code>unzip rockyou.txt.zip</code></pre>
+
+
+                    <!-- IMAGE 2 -->
+                    <img
+                        src="images/image2.png"
+                        alt="Wordlist extraction in the terminal"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Extracting the wordlist before credential testing.
+                    </p>
+
+                </section>
+
+
+                <!-- HYDRA -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        03 — HYDRA
+                    </span>
+
+                    <h2>
+                        Brute-forcing Telnet on port 23
+                    </h2>
+
+                    <p>
+                        With Telnet exposed on port 23, I tested the
+                        authentication mechanism using Hydra.
+                    </p>
+
+
+                    <h3 class="writeup-subtitle">
+                        Telnet brute-force attack using a blank password
+                    </h3>
+
+
+                    <!-- IMAGE 3 -->
+                    <img
+                        src="images/image3.png"
+                        alt="Hydra testing Telnet authentication"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Hydra testing Telnet authentication.
+                    </p>
+
+
+                    <pre class="code-block"><code>hydra -l [username] -e n &lt;TARGET_IP&gt; telnet</code></pre>
+
+                    <p>
+                        The <strong>-e n</strong> option tells Hydra to
+                        try a <strong>null</strong> or blank password
+                        for every username being tested.
+                    </p>
+
+
+                    <h3 class="writeup-subtitle">
+                        Example
+                    </h3>
+
+                    <pre class="code-block"><code>hydra -l [username] -P /path/to/passwords.txt &lt;TARGET_IP&gt; telnet</code></pre>
+
+
+                    <h3 class="writeup-subtitle">
+                        Blank username
+                    </h3>
+
+                    <pre class="code-block"><code>hydra -l "" -P /path/to/passwords.txt &lt;TARGET_IP&gt; telnet</code></pre>
+
+
+                    <h3 class="writeup-subtitle">
+                        Alternative
+                    </h3>
+
+                    <pre class="code-block"><code>hydra -e n -P /path/to/passwords.txt &lt;TARGET_IP&gt; telnet</code></pre>
+
+
+                    <div class="page-tag-row">
+
+                        <span class="page-tag">
+                            -e n · NULL PASSWORD
+                        </span>
+
+                        <span class="page-tag">
+                            -e s · USERNAME AS PASSWORD
                         </span>
 
                     </div>
 
 
-                    <!-- WRITEUP HEADER -->
-                    <header class="page-header writeup-intro">
+                    <p>
+                        <strong>-e n</strong> tells Hydra to try a blank
+                        password.
+                        <br>
+                        <strong>-e s</strong> tells Hydra to try the
+                        username as the password.
+                    </p>
 
-                        <span class="section-label">
-                            HACK THE BOX · STARTING POINT · TIER 0
-                        </span>
+                </section>
 
-                        <h1 class="page-title">
-                            01 — <span>Meow.</span>
-                        </h1>
 
-                        <p class="page-description">
-                            Very Easy · Linux · Telnet
-                        </p>
+                <!-- ACCESS -->
+                <section class="writeup-section">
 
-                        <div class="page-tag-row">
+                    <span class="writeup-section-label">
+                        04 — ACCESS
+                    </span>
 
-                            <span class="page-tag">
-                                VERY EASY
-                            </span>
+                    <h2>
+                        Telnet access
+                    </h2>
 
-                            <span class="page-tag">
-                                LINUX
-                            </span>
+                    <p>
+                        After identifying the exposed Telnet service,
+                        I connected to the target and tested the
+                        authentication path.
+                    </p>
 
-                            <span class="page-tag">
-                                TELNET
-                            </span>
+                    <pre class="code-block"><code>telnet &lt;TARGET_IP&gt; 23</code></pre>
 
-                            <span class="page-tag">
-                                ENUMERATION
-                            </span>
+                    <p>
+                        The machine demonstrates how an exposed remote
+                        service combined with weak or default authentication
+                        can provide direct access to a system.
+                    </p>
 
-                            <span class="page-tag">
-                                AUTHENTICATION
-                            </span>
+                </section>
 
-                        </div>
 
-                    </header>
+                <!-- ROOT ACCESS -->
+                <section class="writeup-section">
 
+                    <span class="writeup-section-label">
+                        05 — ROOT ACCESS
+                    </span>
 
-                    <!-- WRITEUP -->
-                    <article class="writeup-article">
+                    <h2>
+                        Verifying access
+                    </h2>
 
+                    <p>
+                        Once access was obtained, I verified the current
+                        user and inspected the filesystem for the flag.
+                    </p>
 
-                        <!-- ENUMERATION -->
-                        <section class="writeup-section">
-
-                            <span class="writeup-section-label">
-                                01 — ENUMERATION
-                            </span>
-
-                            <h2>
-                                Quick Nmap check
-                            </h2>
-
-                            <p>
-                                I began with a basic Nmap scan to establish the target's attack surface. The goal was to
-                                identify which ports were exposed, determine the services listening on them, and decide
-                                where further enumeration would be most useful.
-                            </p>
-
-                            <pre class="code-block"><code>nmap -sC -sV &lt;TARGET_IP&gt;</code></pre>
-
-
-                            <!-- IMAGE 1 -->
-                            <img src="images/image1.png" alt="Nmap scan of the Meow target" class="writeup-image">
-
-                            <p class="image-caption">
-                                Initial Nmap enumeration of the target.
-                            </p>
-
-
-                            <!-- FINDING -->
-                            <div class="finding-box">
-
-                                <span class="finding-label">
-                                    FINDING
-                                </span>
-
-                                <p>
-                                    Telnet was discovered open on
-                                    <strong>port 23</strong>.
-                                </p>
-
-                            </div>
-
-                        </section>
-
-
-                        <!-- WORDLIST -->
-                        <section class="writeup-section">
-
-                            <span class="writeup-section-label">
-                                02 — CREDENTIAL TESTING
-                            </span>
-
-                            <h2>
-                                Unzip wordlist
-                            </h2>
-
-                            <p>
-                                I prepared the password wordlist for credential
-                                testing against the exposed Telnet service.
-                            </p>
-
-                            <pre class="code-block"><code>unzip rockyou.txt.zip</code></pre>
-
-
-                            <!-- IMAGE 2 -->
-                            <img src="images/image2.png" alt="Wordlist extraction in the terminal"
-                                class="writeup-image">
-
-                            <p class="image-caption">
-                                Extracting the wordlist before credential testing.
-                            </p>
-
-                        </section>
-
-
-                        <!-- HYDRA -->
-                        <section class="writeup-section">
-
-                            <span class="writeup-section-label">
-                                03 — HYDRA
-                            </span>
-
-                            <h2>
-                                Brute-forcing Telnet on port 23
-                            </h2>
-
-                            <p>
-                                With Telnet exposed on port 23, I tested the
-                                authentication mechanism using Hydra.
-                            </p>
-
-
-                            <h3 class="writeup-subtitle">
-                                Telnet brute-force attack using a blank password
-                            </h3>
-
-
-                            <!-- IMAGE 3 -->
-                            <img src="images/image3.png" alt="Hydra testing Telnet authentication"
-                                class="writeup-image">
-
-                            <p class="image-caption">
-                                Hydra testing Telnet authentication.
-                            </p>
-
-
-                            <pre class="code-block"><code>hydra -l [username] -e n &lt;TARGET_IP&gt; telnet</code></pre>
-
-                            <p>
-                                The <strong>-e n</strong> option tells Hydra to
-                                try a <strong>null</strong> or blank password
-                                for every username being tested.
-                            </p>
-
-
-                            <h3 class="writeup-subtitle">
-                                Example
-                            </h3>
-
-                            <pre
-                                class="code-block"><code>hydra -l [username] -P /path/to/passwords.txt &lt;TARGET_IP&gt; telnet</code></pre>
-
-
-                            <h3 class="writeup-subtitle">
-                                Blank username
-                            </h3>
-
-                            <pre
-                                class="code-block"><code>hydra -l "" -P /path/to/passwords.txt &lt;TARGET_IP&gt; telnet</code></pre>
-
-
-                            <h3 class="writeup-subtitle">
-                                Alternative
-                            </h3>
-
-                            <pre
-                                class="code-block"><code>hydra -e n -P /path/to/passwords.txt &lt;TARGET_IP&gt; telnet</code></pre>
-
-
-                            <div class="page-tag-row">
-
-                                <span class="page-tag">
-                                    -e n · NULL PASSWORD
-                                </span>
-
-                                <span class="page-tag">
-                                    -e s · USERNAME AS PASSWORD
-                                </span>
-
-                            </div>
-
-
-                            <p>
-                                <strong>-e n</strong> tells Hydra to try a blank
-                                password.
-                                <br>
-                                <strong>-e s</strong> tells Hydra to try the
-                                username as the password.
-                            </p>
-
-                        </section>
-
-
-                        <!-- ACCESS -->
-                        <section class="writeup-section">
-
-                            <span class="writeup-section-label">
-                                04 — ACCESS
-                            </span>
-
-                            <h2>
-                                Telnet access
-                            </h2>
-
-                            <p>
-                                After identifying the exposed Telnet service,
-                                I connected to the target and tested the
-                                authentication path.
-                            </p>
-
-                            <pre class="code-block"><code>telnet &lt;TARGET_IP&gt; 23</code></pre>
-
-                            <p>
-                                The machine demonstrates how an exposed remote
-                                service combined with weak or default authentication
-                                can provide direct access to a system.
-                            </p>
-
-                        </section>
-
-
-                        <!-- ROOT ACCESS -->
-                        <section class="writeup-section">
-
-                            <span class="writeup-section-label">
-                                05 — ROOT ACCESS
-                            </span>
-
-                            <h2>
-                                Verifying access
-                            </h2>
-
-                            <p>
-                                Once access was obtained, I verified the current
-                                user and inspected the filesystem for the flag.
-                            </p>
-
-                            <pre class="code-block"><code>whoami
+                    <pre class="code-block"><code>whoami
 ls
 cat flag.txt</code></pre>
 
-                            <p>
-                                No separate privilege-escalation step was required
-                                because the authentication path provided the
-                                required level of access.
-                            </p>
+                    <p>
+                        No separate privilege-escalation step was required
+                        because the authentication path provided the
+                        required level of access.
+                    </p>
 
-                        </section>
+                </section>
 
 
-                        <!-- WHAT I LEARNED -->
-                        <section class="writeup-section">
+                <!-- WHAT I LEARNED -->
+                <section class="writeup-section">
 
-                            <span class="writeup-section-label">
-                                06 — WHAT I LEARNED
+                    <span class="writeup-section-label">
+                        06 — WHAT I LEARNED
+                    </span>
+
+                    <h2>
+                        Lessons from Meow
+                    </h2>
+
+                    <p>
+                        Meow reinforced the importance of starting with
+                        enumeration instead of immediately searching for
+                        complex exploits.
+                    </p>
+
+                    <p>
+                        A single exposed service can become the primary
+                        attack surface when authentication is incorrectly
+                        configured. Understanding what is exposed and how
+                        it is configured is often more important than
+                        immediately reaching for advanced exploitation.
+                    </p>
+
+                    <div class="page-tag-row">
+
+                        <span class="page-tag">
+                            NMAP
+                        </span>
+
+                        <span class="page-tag">
+                            ENUMERATION
+                        </span>
+
+                        <span class="page-tag">
+                            TELNET
+                        </span>
+
+                        <span class="page-tag">
+                            DEFAULT CREDENTIALS
+                        </span>
+
+                        <span class="page-tag">
+                            LINUX
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <!-- TOOLS -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        07 — TOOLS &amp; TECHNIQUES
+                    </span>
+
+                    <h2>
+                        Tools used
+                    </h2>
+
+                    <p>
+                        The main tools and techniques used during the
+                        exercise were:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            <strong>Nmap</strong> — service enumeration
+                        </li>
+
+                        <li>
+                            <strong>Hydra</strong> — authentication testing
+                        </li>
+
+                        <li>
+                            <strong>Telnet</strong> — remote service access
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <!-- RESOURCES -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        08 — RESOURCES
+                    </span>
+
+                    <h2>
+                        Related resources
+                    </h2>
+
+                    <p>
+                        The resources below cover the machine itself and the
+                        networking, enumeration, and authentication techniques
+                        used throughout this lab.
+                    </p>
+
+
+                    <!-- HTB -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                LAB REFERENCE
                             </span>
-
-                            <h2>
-                                Lessons from Meow
-                            </h2>
-
-                            <p>
-                                Meow reinforced the importance of starting with
-                                enumeration instead of immediately searching for
-                                complex exploits.
-                            </p>
-
-                            <p>
-                                A single exposed service can become the primary
-                                attack surface when authentication is incorrectly
-                                configured. Understanding what is exposed and how
-                                it is configured is often more important than
-                                immediately reaching for advanced exploitation.
-                            </p>
-
-                            <div class="page-tag-row">
-
-                                <span class="page-tag">
-                                    NMAP
-                                </span>
-
-                                <span class="page-tag">
-                                    ENUMERATION
-                                </span>
-
-                                <span class="page-tag">
-                                    TELNET
-                                </span>
-
-                                <span class="page-tag">
-                                    DEFAULT CREDENTIALS
-                                </span>
-
-                                <span class="page-tag">
-                                    LINUX
-                                </span>
-
-                            </div>
-
-                        </section>
-
-
-                        <!-- TOOLS -->
-                        <section class="writeup-section">
-
-                            <span class="writeup-section-label">
-                                07 — TOOLS &amp; TECHNIQUES
-                            </span>
-
-                            <h2>
-                                Tools used
-                            </h2>
-
-                            <p>
-                                The main tools and techniques used during the
-                                exercise were:
-                            </p>
-
-                            <ul>
-
-                                <li>
-                                    <strong>Nmap</strong> — service enumeration
-                                </li>
-
-                                <li>
-                                    <strong>Hydra</strong> — authentication testing
-                                </li>
-
-                                <li>
-                                    <strong>Telnet</strong> — remote service access
-                                </li>
-
-                            </ul>
-
-                        </section>
-
-
-                        <!-- WRITEUP NAVIGATION -->
-                        <div class="writeup-navigation">
-
-                            <a href="/writeups/htb/starting-point/tier-0/">
-
-                                <span>
-                                    BACK TO TIER 0
-                                </span>
-
-                                <strong>
-                                    ← Tier 0
-                                </strong>
-
-                            </a>
-
-
-                            <a href="/writeups/htb/starting-point/tier-0/fawn/">
-
-                                <span>
-                                    NEXT MACHINE
-                                </span>
-
-                                <strong>
-                                    Fawn →
-                                </strong>
-
-                            </a>
 
                         </div>
 
 
-                    </article>
+                        <a
+                            href="https://www.hackthebox.com/machines/meow"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Meow
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- NMAP -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://nmap.org/book/man.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap Reference Guide
+                                </strong>
+
+                                <small>
+                                    Port scanning, service detection and NSE
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- TELNET -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                PROTOCOL
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.rfc-editor.org/rfc/rfc854"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    RFC 854 — Telnet Protocol Specification
+                                </strong>
+
+                                <small>
+                                    Technical specification for the Telnet protocol
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- HYDRA -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                AUTHENTICATION TESTING
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/vanhauser-thc/thc-hydra"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    THC Hydra
+                                </strong>
+
+                                <small>
+                                    Official source repository and documentation
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- WORDLIST -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WORDLIST
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/danielmiessler/SecLists"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    SecLists
+                                </strong>
+
+                                <small>
+                                    Security assessment wordlists and payload collections
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- BOTTOM NAVIGATION -->
+                <div class="writeup-navigation">
+
+                    <a href="/writeups/htb/starting-point/tier-0/">
+
+                        <span>
+                            BACK TO TIER 0
+                        </span>
+
+                        <strong>
+                            ← Tier 0
+                        </strong>
+
+                    </a>
+
+
+                    <a href="/writeups/htb/starting-point/tier-0/fawn/">
+
+                        <span>
+                            NEXT MACHINE
+                        </span>
+
+                        <strong>
+                            Fawn →
+                        </strong>
+
+                    </a>
 
                 </div>
 
-            </main>
+
+            </article>
+
+        </div>
+
+    </main>
 
 
-            <!-- FOOTER -->
-            <footer>
+    <!-- FOOTER -->
+    <footer>
 
-                <div class="footer-brand">
+        <div class="footer-brand">
 
-                    <span class="brand-mark">
-                        &gt;_
-                    </span>
+            <span class="brand-mark">
+                &gt;_
+            </span>
 
-                    <strong>
-                        Ozz961
-                    </strong>
+            <strong>
+                Roger Rached
+            </strong>
 
-                </div>
+        </div>
 
-                <p>
-                    Cybersecurity · Pentesting · AppSec · AI Security
-                </p>
+        <p>
+            Cybersecurity · Pentesting · AppSec · AI Security
+        </p>
 
-                <span>
-                    © <span id="year"></span> Ozz961
-                </span>
+        <span>
+            © <span id="year"></span> Ozz961
+        </span>
 
-            </footer>
+    </footer>
 
 
-            <script src="../../../../../script.js"></script>
+    <script src="../../../../../script.js"></script>
 
 </body>
 

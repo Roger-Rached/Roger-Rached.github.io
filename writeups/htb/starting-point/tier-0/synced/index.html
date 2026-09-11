@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Hack The Box Starting Point — Tier 0: Foundations | 08 — Synced | Anonymous Rsync Enumeration | Roger Rached
+    </title>
+
+    <meta name="description"
+        content="Roger Rached's Hack The Box Starting Point Tier 0 writeup for Synced — Linux, rsync, anonymous module enumeration, file discovery and remote file retrieval.">
+
+    <meta name="theme-color" content="#08070d">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../../../../../style.css">
+
+</head>
+
+
+<body>
+
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <header class="navbar">
+
+        <a href="/" class="brand">
+
+            <span class="brand-mark">
+                &gt;_
+            </span>
+
+            <span>
+                Roger Rached
+            </span>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="/writeups/">
+                Writeups
+            </a>
+
+            <a href="/projects/">
+                Projects
+            </a>
+
+            <a href="/tools/">
+                Tools
+            </a>
+
+            <a href="/notes/">
+                Notes
+            </a>
+
+            <a href="/research/">
+                Research
+            </a>
+
+            <a href="/guides/">
+                Guides
+            </a>
+
+            <a href="/certifications/">
+                Certifications
+            </a>
+
+            <a href="/about/">
+                About
+            </a>
+
+        </nav>
+
+
+        <a
+            href="https://github.com/Ozz961"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
+            GitHub ↗
+        </a>
+
+    </header>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="page-shell">
+
+        <div class="page-container">
+
+
+            <!-- =========================
+                 BACK TO TIER 0
+            ========================== -->
+
+            <a
+                href="/writeups/htb/starting-point/tier-0/"
+                class="writeup-back"
+            >
+
+                <span>
+                    ←
+                </span>
+
+                Back to Tier 0
+
+            </a>
+
+
+
+            <!-- =========================
+                 MACHINE NAVIGATION
+            ========================== -->
+
+            <div class="writeup-top-navigation">
+
+                <a href="/writeups/htb/starting-point/tier-0/mongod/">
+
+                    <span>
+                        ←
+                    </span>
+
+                    Mongod
+
+                </a>
+
+
+                <a href="/writeups/htb/starting-point/tier-1/">
+
+                    Next: Tier 1
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            <!-- =========================
+                 BREADCRUMBS
+            ========================== -->
+
+            <div class="page-breadcrumb">
+
+                <a href="/">
+                    Home
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/">
+                    Writeups
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/">
+                    Hack The Box
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/">
+                    Starting Point
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/tier-0/">
+                    Tier 0
+                </a>
+
+                <span>/</span>
+
+                <span class="current">
+                    Synced
+                </span>
+
+            </div>
+
+
+
+            <!-- =========================
+                 WRITEUP HEADER
+            ========================== -->
+
+            <header class="page-header writeup-intro">
+
+                <span class="section-label">
+                    HACK THE BOX · STARTING POINT · TIER 0
+                </span>
+
+
+                <h1 class="page-title">
+                    08 — <span>Synced.</span>
+                </h1>
+
+
+                <p class="page-description">
+                    Very Easy · Linux · Rsync
+                </p>
+
+
+                <div class="page-tag-row">
+
+                    <span class="page-tag">
+                        VERY EASY
+                    </span>
+
+                    <span class="page-tag">
+                        LINUX
+                    </span>
+
+                    <span class="page-tag">
+                        RSYNC
+                    </span>
+
+                    <span class="page-tag">
+                        ENUMERATION
+                    </span>
+
+                    <span class="page-tag">
+                        ANONYMOUS ACCESS
+                    </span>
+
+                    <span class="page-tag">
+                        FILE RETRIEVAL
+                    </span>
+
+                </div>
+
+            </header>
+
+
+
+            <!-- =========================
+                 WRITEUP
+            ========================== -->
+
+            <article class="writeup-article">
+
+
+                <!-- =========================
+                     01 — ENUMERATION
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        01 — ENUMERATION
+                    </span>
+
+
+                    <h2>
+                        Identifying the exposed rsync service
+                    </h2>
+
+
+                    <p>
+                        I started with a full TCP port scan combined with
+                        service and version detection. The objective was to
+                        identify the complete attack surface and determine
+                        which service required deeper enumeration.
+                    </p>
+
+
+                    <pre class="code-block"><code>nmap &lt;TARGET_IP&gt; -p- -sV -vv -Pn</code></pre>
+
+
+                    <img
+                        src="images/image1.png"
+                        alt="Nmap scan showing rsync open on port 873"
+                        class="writeup-image"
+                    >
+
+
+                    <p class="image-caption">
+                        Nmap identifying rsync on TCP port 873.
+                    </p>
+
+
+                    <pre class="code-block"><code>PORT    STATE SERVICE REASON  VERSION
+873/tcp open  rsync   syn-ack (protocol version 31)</code></pre>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING 01
+                        </span>
+
+
+                        <p>
+                            TCP port <strong>873</strong> was exposed and
+                            identified as an <strong>rsync</strong> service
+                            using protocol version <strong>31</strong>.
+                        </p>
+
+                    </div>
+
+
+                    <p>
+                        Port 873 is commonly associated with the rsync daemon.
+                        Since rsync can expose named modules that contain
+                        files and directories, the next step was to determine
+                        whether the service allowed anonymous enumeration.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     02 — MODULE ENUMERATION
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        02 — MODULE ENUMERATION
+                    </span>
+
+
+                    <h2>
+                        Discovering available rsync modules
+                    </h2>
+
+
+                    <p>
+                        I queried the rsync daemon directly to determine which
+                        modules were publicly accessible.
+                    </p>
+
+
+                    <pre class="code-block"><code>rsync --list-only &lt;TARGET_IP&gt;::</code></pre>
+
+
+                    <img
+                        src="images/image1.png"
+                        alt="Rsync module enumeration showing a public anonymous share"
+                        class="writeup-image"
+                    >
+
+
+                    <p class="image-caption">
+                        Enumerating the modules exposed by the rsync daemon.
+                    </p>
+
+
+                    <p>
+                        The service returned a publicly accessible module:
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            <strong>public</strong> — publicly accessible
+                            rsync module.
+                        </li>
+
+                        <li>
+                            The module was available without credentials,
+                            indicating anonymous access.
+                        </li>
+
+                    </ul>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING 02
+                        </span>
+
+
+                        <p>
+                            The rsync daemon exposed a
+                            <strong>public</strong> module that could be
+                            enumerated without authentication.
+                        </p>
+
+                    </div>
+
+
+                    <p>
+                        The double-colon syntax is important because it tells
+                        rsync to communicate directly with an rsync daemon
+                        rather than using an SSH-based remote-shell transport.
+                        Rsync documents the same daemon-access model through
+                        <strong>host::</strong> and <strong>rsync://</strong>
+                        URLs. :contentReference[oaicite:2]{index=2}
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     03 — SHARE ENUMERATION
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        03 — SHARE ENUMERATION
+                    </span>
+
+
+                    <h2>
+                        Listing files inside the public module
+                    </h2>
+
+
+                    <p>
+                        After identifying the <strong>public</strong> module,
+                        I queried it directly to enumerate the files available
+                        within the share.
+                    </p>
+
+
+                    <pre class="code-block"><code>rsync --list-only rsync://&lt;TARGET_IP&gt;/public</code></pre>
+
+
+                    <img
+                        src="images/image2.png"
+                        alt="Rsync public module showing flag.txt"
+                        class="writeup-image"
+                    >
+
+
+                    <p class="image-caption">
+                        Listing the contents of the publicly accessible
+                        rsync module.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING 03
+                        </span>
+
+
+                        <p>
+                            The <strong>public</strong> module contained
+                            <strong>flag.txt</strong>.
+                        </p>
+
+                    </div>
+
+
+                    <p>
+                        At this point, the attack path was straightforward:
+                        the rsync daemon was publicly accessible, the
+                        <strong>public</strong> module required no
+                        authentication, and the module directly exposed the
+                        target file.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     04 — RSYNC OPTIONS
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        04 — RSYNC OPTIONS
+                    </span>
+
+
+                    <h2>
+                        Understanding the transfer command
+                    </h2>
+
+
+                    <p>
+                        Before retrieving the file, I reviewed the rsync
+                        options relevant to the transfer command used in the
+                        lab.
+                    </p>
+
+
+                    <pre class="code-block"><code>rsync -av &lt;TARGET_IP&gt;::public/flag.txt .</code></pre>
+
+
+                    <ul>
+
+                        <li>
+                            <strong>-a</strong> — archive mode; enables
+                            recursive transfer and preserves common file
+                            attributes.
+                        </li>
+
+                        <li>
+                            <strong>-v</strong> — verbose output; displays
+                            additional information about the transfer.
+                        </li>
+
+                        <li>
+                            <strong>-z</strong> — compression; compresses file
+                            data during transfer. It was not required for the
+                            final lab command because the retrieved file was
+                            small.
+                        </li>
+
+                        <li>
+                            <strong>::</strong> — connects to the rsync daemon
+                            using the native rsync protocol.
+                        </li>
+
+                    </ul>
+
+
+                    <p>
+                        Rsync's official documentation defines
+                        <strong>-a</strong> as archive mode,
+                        <strong>-v</strong> as verbose output,
+                        <strong>-z</strong> as transfer compression, and
+                        <strong>--list-only</strong> as listing source files
+                        without transferring them. :contentReference[oaicite:3]{index=3}
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     05 — FILE RETRIEVAL
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        05 — FILE RETRIEVAL
+                    </span>
+
+
+                    <h2>
+                        Downloading the flag
+                    </h2>
+
+
+                    <p>
+                        With the file confirmed inside the public module, I
+                        retrieved it directly to the local working directory.
+                    </p>
+
+
+                    <pre class="code-block"><code>rsync -av &lt;TARGET_IP&gt;::public/flag.txt .</code></pre>
+
+
+                    <img
+                        src="images/image3.png"
+                        alt="Rsync downloading flag.txt and displaying its contents"
+                        class="writeup-image"
+                    >
+
+
+                    <p class="image-caption">
+                        Downloading flag.txt from the anonymous rsync module
+                        and reading the retrieved file.
+                    </p>
+
+
+                    <p>
+                        I then confirmed that the file had been transferred
+                        successfully and displayed its contents:
+                    </p>
+
+
+                    <pre class="code-block"><code>ls
+cat flag.txt</code></pre>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING 04
+                        </span>
+
+
+                        <p>
+                            The exposed rsync module allowed the remote
+                            <strong>flag.txt</strong> file to be downloaded
+                            without authentication.
+                        </p>
+
+                    </div>
+
+
+                    <p>
+                        The lab was completed without requiring credential
+                        attacks, exploit development or privilege escalation.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     06 — ATTACK PATH
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        06 — ATTACK PATH
+                    </span>
+
+
+                    <h2>
+                        Breaking down the assessment
+                    </h2>
+
+
+                    <p>
+                        Synced was primarily an exercise in identifying and
+                        interacting with an exposed rsync daemon. Once port
+                        873 was discovered, the assessment moved directly
+                        toward module and file enumeration.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            ATTACK CHAIN
+                        </span>
+
+
+                        <p>
+                            <strong>Nmap</strong>
+                            →
+                            <strong>873/tcp</strong>
+                            →
+                            <strong>rsync</strong>
+                            →
+                            <strong>Anonymous module enumeration</strong>
+                            →
+                            <strong>public</strong>
+                            →
+                            <strong>flag.txt</strong>
+                            →
+                            <strong>Rsync file retrieval</strong>
+                            →
+                            <strong>Flag</strong>
+                        </p>
+
+                    </div>
+
+
+                    <p>
+                        The core security issue was improper exposure of the
+                        rsync daemon and anonymous access to a module that
+                        contained sensitive data.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =========================
+                     07 — RSYNC ENUMERATION
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        07 — RSYNC ENUMERATION
+                    </span>
+
+
+                    <h2>
+                        Commands used during the assessment
+                    </h2>
+
+
+                    <p>
+                        The assessment followed a simple rsync enumeration and
+                        retrieval workflow:
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            <strong>nmap -p- -sV</strong> — identify exposed
+                            ports and fingerprint services.
+                        </li>
+
+                        <li>
+                            <strong>rsync --list-only &lt;TARGET_IP&gt;::</strong>
+                            — enumerate publicly visible rsync modules.
+                        </li>
+
+                        <li>
+                            <strong>rsync --list-only
+                            rsync://&lt;TARGET_IP&gt;/public</strong>
+                            — enumerate files exposed by the public module.
+                        </li>
+
+                        <li>
+                            <strong>rsync -av
+                            &lt;TARGET_IP&gt;::public/flag.txt .</strong>
+                            — download the discovered file.
+                        </li>
+
+                        <li>
+                            <strong>cat flag.txt</strong> — read the
+                            retrieved file and complete the lab.
+                        </li>
+
+                    </ul>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            ENUMERATION FLOW
+                        </span>
+
+
+                        <p>
+                            <strong>
+                                Port
+                            </strong>
+                            →
+                            <strong>
+                                Service
+                            </strong>
+                            →
+                            <strong>
+                                Module
+                            </strong>
+                            →
+                            <strong>
+                                File
+                            </strong>
+                            →
+                            <strong>
+                                Retrieval
+                            </strong>
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================
+                     08 — DEFENSIVE NOTES
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        08 — DEFENSIVE NOTES
+                    </span>
+
+
+                    <h2>
+                        Securing rsync
+                    </h2>
+
+
+                    <p>
+                        The weakness demonstrated by Synced was primarily a
+                        configuration and access-control problem. An rsync
+                        daemon should not expose sensitive data to anonymous
+                        clients without a deliberate security requirement.
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            Restrict rsync services to trusted hosts and
+                            networks whenever possible.
+                        </li>
+
+                        <li>
+                            Disable anonymous access when it is not explicitly
+                            required.
+                        </li>
+
+                        <li>
+                            Apply appropriate authentication and authorization
+                            controls to exposed modules.
+                        </li>
+
+                        <li>
+                            Ensure publicly accessible modules contain only
+                            data intended for anonymous users.
+                        </li>
+
+                        <li>
+                            Monitor rsync connections and unusual file access
+                            activity.
+                        </li>
+
+                        <li>
+                            Review module configuration regularly to prevent
+                            accidental exposure of sensitive files.
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+
+                <!-- =========================
+                     09 — WHAT I LEARNED
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        09 — WHAT I LEARNED
+                    </span>
+
+
+                    <h2>
+                        Lessons from Synced
+                    </h2>
+
+
+                    <p>
+                        Synced reinforced several practical lessons about
+                        network services, enumeration and access controls:
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            <strong>Identify uncommon services.</strong>
+                            Port 873 is less common than typical web or remote
+                            administration ports, but it can expose valuable
+                            data when rsync is misconfigured.
+                        </li>
+
+                        <li>
+                            <strong>Enumerate the service after finding the
+                            port.</strong>
+                            Identifying rsync was only the first step; listing
+                            its available modules revealed the actual attack
+                            surface.
+                        </li>
+
+                        <li>
+                            <strong>Anonymous access can be dangerous.</strong>
+                            The public module was accessible without
+                            authentication, allowing direct inspection of its
+                            contents.
+                        </li>
+
+                        <li>
+                            <strong>Follow the data.</strong>
+                            Once the public module was discovered, file
+                            enumeration immediately identified
+                            <strong>flag.txt</strong>.
+                        </li>
+
+                        <li>
+                            <strong>Native protocol tooling is often enough.</strong>
+                            No exploit was necessary. Understanding rsync's
+                            daemon syntax and module structure was sufficient
+                            to retrieve the file.
+                        </li>
+
+                    </ul>
+
+
+                    <div class="page-tag-row">
+
+                        <span class="page-tag">
+                            NMAP
+                        </span>
+
+                        <span class="page-tag">
+                            RSYNC
+                        </span>
+
+                        <span class="page-tag">
+                            MODULE ENUMERATION
+                        </span>
+
+                        <span class="page-tag">
+                            ANONYMOUS ACCESS
+                        </span>
+
+                        <span class="page-tag">
+                            FILE RETRIEVAL
+                        </span>
+
+                        <span class="page-tag">
+                            LINUX
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================
+                     10 — TOOLS & TECHNIQUES
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        10 — TOOLS &amp; TECHNIQUES
+                    </span>
+
+
+                    <h2>
+                        Tools used
+                    </h2>
+
+
+                    <p>
+                        The main tools and techniques used during the exercise
+                        were:
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            <strong>Nmap</strong> — full TCP port and service
+                            enumeration.
+                        </li>
+
+                        <li>
+                            <strong>Rsync</strong> — direct interaction with
+                            the exposed rsync daemon.
+                        </li>
+
+                        <li>
+                            <strong>Module enumeration</strong> — identifying
+                            publicly accessible rsync modules.
+                        </li>
+
+                        <li>
+                            <strong>File enumeration</strong> — discovering
+                            files exposed inside the public module.
+                        </li>
+
+                        <li>
+                            <strong>File retrieval</strong> — downloading the
+                            discovered file to the local system.
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+
+                <!-- =========================
+                     11 — RESOURCES
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        11 — RESOURCES
+                    </span>
+
+
+                    <h2>
+                        Related resources
+                    </h2>
+
+
+                    <p>
+                        The resources below cover the Synced machine and the
+                        rsync daemon, module enumeration and file-transfer
+                        concepts demonstrated throughout the lab.
+                    </p>
+
+
+                    <!-- LAB REFERENCE -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                LAB REFERENCE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.hackthebox.com/machines/synced"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Synced
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- RSYNC -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                RSYNC
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://rsync.samba.org/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Rsync
+                                </strong>
+
+                                <small>
+                                    Official rsync project and documentation
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- RSYNC MANUAL -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                COMMAND REFERENCE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://rsync.samba.org/ftp/rsync/rsync.1"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Rsync Manual
+                                </strong>
+
+                                <small>
+                                    Official command reference and daemon-mode syntax
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- LIST ONLY -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://rsync.samba.org/ftp/rsync/rsync.1"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Rsync — --list-only
+                                </strong>
+
+                                <small>
+                                    Official reference for listing remote files without transferring them
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================
+                     BOTTOM NAVIGATION
+                ========================== -->
+
+                <div class="writeup-navigation">
+
+
+                    <a href="/writeups/htb/starting-point/tier-0/mongod/">
+
+                        <span>
+                            PREVIOUS
+                        </span>
+
+                        <strong>
+                            ← Mongod
+                        </strong>
+
+                    </a>
+
+
+                    <a href="/writeups/htb/starting-point/tier-1/">
+
+                        <span>
+                            NEXT TIER
+                        </span>
+
+                        <strong>
+                            Tier 1 →
+                        </strong>
+
+                    </a>
+
+
+                </div>
+
+
+            </article>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <div class="footer-brand">
+
+            <span class="brand-mark">
+                &gt;_
+            </span>
+
+            <strong>
+                Roger Rached
+            </strong>
+
+        </div>
+
+
+        <p>
+            Cybersecurity · Pentesting · AppSec · AI Security
+        </p>
+
+
+        <span>
+            © <span id="year"></span> Roger Rached
+        </span>
+
+    </footer>
+
+
+
+    <script src="../../../../../script.js"></script>
+
+</body>
+
+</html>

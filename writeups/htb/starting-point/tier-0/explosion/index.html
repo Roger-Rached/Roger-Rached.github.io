@@ -8,11 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Hack The Box Starting Point — Tier 0: Foundations | 05 — Explosion | Ozz961
+        Hack The Box Starting Point — Tier 0: Foundations | 05 — Explosion | Roger Rached
     </title>
 
     <meta name="description"
-        content="Ozz961's Hack The Box Starting Point Tier 0 writeup for Explosion — Windows, RDP, service enumeration and remote desktop access.">
+        content="Roger Rached's Hack The Box Starting Point Tier 0 writeup for Explosion — Windows, RDP, service enumeration and remote desktop access.">
 
     <meta name="theme-color" content="#08070d">
 
@@ -49,7 +49,7 @@
             </span>
 
             <span>
-                Ozz961
+                Roger Rached
             </span>
 
         </a>
@@ -85,14 +85,6 @@
                 Certifications
             </a>
 
-            <a href="/experience/">
-                Experience
-            </a>
-
-            <a href="/education/">
-                Education
-            </a>
-
             <a href="/about/">
                 About
             </a>
@@ -100,29 +92,63 @@
         </nav>
 
 
-        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer" class="github-link">
+        <a
+            href="https://github.com/Ozz961"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
             GitHub ↗
         </a>
 
     </header>
 
-
-
     <main class="page-shell">
 
         <div class="page-container">
 
-
             <!-- =========================
-                 BACK TO TIER
+                BACK TO TIER 0
             ========================== -->
 
-            <a href="/writeups/htb/starting-point/tier-0/" class="writeup-back">
-                <span>←</span>
+            <a
+                href="/writeups/htb/starting-point/tier-0/"
+                class="writeup-back"
+            >
+                <span>
+                    ←
+                </span>
+
                 Back to Tier 0
             </a>
 
+            <!-- =========================
+                MACHINE NAVIGATION
+            ========================== -->
 
+            <div class="writeup-top-navigation">
+
+                <a href="/writeups/htb/starting-point/tier-0/redeemer/">
+
+                    <span>
+                        ←
+                    </span>
+
+                    Redeemer
+
+                </a>
+
+                <a href="/writeups/htb/starting-point/tier-0/preignition/">
+
+                    Next: Preignition
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+
+            </div>
 
             <!-- =========================
                  BREADCRUMBS
@@ -131,7 +157,7 @@
             <div class="page-breadcrumb">
 
                 <a href="/">
-                    Ozz961
+                    Home
                 </a>
 
                 <span>/</span>
@@ -208,7 +234,7 @@
                     </span>
 
                     <span class="page-tag">
-                        XRDP / XFREERDP
+                        XFREERDP
                     </span>
 
                 </div>
@@ -225,7 +251,7 @@
 
 
                 <!-- =========================
-                     01 — INITIAL SCAN
+                     01 — ENUMERATION
                 ========================== -->
 
                 <section class="writeup-section">
@@ -252,12 +278,16 @@
                     <pre class="code-block"><code>nmap -sC -sV &lt;TARGET_IP&gt;</code></pre>
 
 
-                    <img src="images/image1.png" alt="Nmap scan showing ports 135, 139, 445, 3389 and 5985 open"
-                        class="writeup-image">
+                    <img
+                        src="images/image1.png"
+                        alt="Nmap scan showing ports 135, 139, 445, 3389 and 5985 open"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
-                        Initial scan identifying Windows RPC, SMB, RDP and WinRM-related services.
+                        Initial scan identifying Windows RPC, SMB, RDP and
+                        WinRM-related services.
                     </p>
 
 
@@ -374,7 +404,7 @@
 
 
                 <!-- =========================
-                     02 — RDP FINGERPRINTING
+                     02 — RDP ENUMERATION
                 ========================== -->
 
                 <section class="writeup-section">
@@ -399,8 +429,11 @@
                     <pre class="code-block"><code>nmap -sV -Pn -p 3389 &lt;TARGET_IP&gt;</code></pre>
 
 
-                    <img src="images/image2.png" alt="Focused Nmap scan of the RDP service on port 3389"
-                        class="writeup-image">
+                    <img
+                        src="images/image2.png"
+                        alt="Focused Nmap scan of the RDP service on port 3389"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
@@ -451,9 +484,9 @@
 
                     <p>
                         The RDP output reported product version
-                        <strong>10.0.17763</strong>, which corresponds to
-                        the Windows Server 2019 / Windows 10 version family
-                        associated with build 17763.
+                        <strong>10.0.17763</strong>, placing the host in the
+                        Windows build family associated with Windows Server
+                        2019 / Windows 10 version 1809.
                     </p>
 
 
@@ -471,13 +504,12 @@
                         is configured.
                     </p>
 
-
                 </section>
 
 
 
                 <!-- =========================
-                     03 — SECURITY NEGOTIATION
+                     03 — RDP SECURITY
                 ========================== -->
 
                 <section class="writeup-section">
@@ -500,16 +532,19 @@
                     </p>
 
 
-                    <pre
-                        class="code-block"><code>nmap -p3389 --script rdp-enum-encryption &lt;TARGET_IP&gt;</code></pre>
+                    <pre class="code-block"><code>nmap -p3389 --script rdp-enum-encryption &lt;TARGET_IP&gt;</code></pre>
 
 
-                    <img src="images/image3.png" alt="RDP encryption and authentication enumeration"
-                        class="writeup-image">
+                    <img
+                        src="images/image3.png"
+                        alt="RDP encryption and authentication enumeration"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
-                        Enumerating the RDP security protocols supported by the target.
+                        Enumerating the RDP security protocols supported by
+                        the target.
                     </p>
 
 
@@ -527,22 +562,18 @@
 
 
                     <p>
-                        CredSSP, the Credential Security Support Provider,
-                        is used by RDP to perform authenticated communication
-                        through a TLS-protected channel. Microsoft's protocol
-                        documentation describes CredSSP as combining TLS with
-                        Kerberos or NTLM-based authentication. ([Microsoft CredSSP
-                        documentation](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/8e11581d-094f-461a-9fde-ba51af90cf8b))
+                        CredSSP uses TLS to protect the authentication
+                        exchange and can use Kerberos or NTLM through SPNEGO.
+                        RDP uses CredSSP to authenticate the user and protect
+                        subsequent communication over the established TLS
+                        channel. :contentReference[oaicite:1]{index=1}
                     </p>
 
 
                     <p>
-                        The successful NLA result indicated that the target
-                        supported authentication before the full interactive
-                        RDP session was established. Microsoft recommends
-                        keeping NLA enabled because authentication takes
-                        place before the remote session is created. ([Microsoft RDP
-                        documentation](https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/remotepc/remote-desktop-allow-access))
+                        The successful NLA result confirmed that the target
+                        supported Network Level Authentication before the
+                        full interactive RDP session was established.
                     </p>
 
 
@@ -560,13 +591,9 @@
 
 
                     <p>
-                        This corresponds to the extended CredSSP negotiation
-                        that includes the Early User Authorization result.
-                        In practical terms, it confirmed support for a more
-                        modern RDP authentication flow. Microsoft's RDP
-                        protocol defines this as the
-                        <strong>HYBRID_EX</strong> security protocol. ([Microsoft RDP negotiation
-                        documentation](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/902b090b-9cb3-4efc-92bf-ee13373371e3))
+                        This indicated support for the extended CredSSP
+                        negotiation that performs early authorization during
+                        the RDP connection process.
                     </p>
 
 
@@ -584,11 +611,8 @@
 
 
                     <p>
-                        RDSTLS is another enhanced RDP security mechanism
-                        that uses TLS to provide server authentication,
-                        encryption and integrity protection for the RDP
-                        transport. ([Microsoft RDSTLS
-                        documentation](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/83d1186d-cab6-4ad8-8c5f-203f95e192aa))
+                        This demonstrated that the service supported an
+                        RDP security layer based on TLS.
                     </p>
 
 
@@ -603,7 +627,7 @@
                             The target supported modern RDP security
                             mechanisms, including CredSSP/NLA and RDSTLS.
                             This confirmed that the service was not simply
-                            exposing an old, unauthenticated RDP stack.
+                            exposing an old unauthenticated RDP stack.
                         </p>
 
                     </div>
@@ -614,14 +638,18 @@
                         <div class="resource-header">
 
                             <span class="resource-label">
-                                RESOURCES
+                                RDP SECURITY
                             </span>
 
                         </div>
 
 
-                        <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/592a0337-dc91-4de3-a901-e1829665291d"
-                            target="_blank" rel="noopener noreferrer" class="resource-link">
+                        <a
+                            href="https://nmap.org/nsedoc/scripts/rdp-enum-encryption.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
 
                             <span class="resource-icon">
                                 ↗
@@ -631,11 +659,11 @@
                             <span class="resource-content">
 
                                 <strong>
-                                    Enhanced RDP Security
+                                    Nmap — rdp-enum-encryption
                                 </strong>
 
                                 <small>
-                                    Microsoft protocol documentation
+                                    RDP security-layer and encryption enumeration
                                 </small>
 
                             </span>
@@ -643,8 +671,12 @@
                         </a>
 
 
-                        <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/8e11581d-094f-461a-9fde-ba51af90cf8b"
-                            target="_blank" rel="noopener noreferrer" class="resource-link">
+                        <a
+                            href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cssp/78e0d50f-5a99-45e8-9f8b-d8a2bd67d4eb"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
 
                             <span class="resource-icon">
                                 ↗
@@ -654,11 +686,11 @@
                             <span class="resource-content">
 
                                 <strong>
-                                    CredSSP
+                                    Microsoft — CredSSP
                                 </strong>
 
                                 <small>
-                                    Microsoft protocol documentation
+                                    CredSSP, TLS and RDP authentication
                                 </small>
 
                             </span>
@@ -672,7 +704,7 @@
 
 
                 <!-- =========================
-                     04 — FURTHER RDP ENUMERATION
+                     04 — SERVICE VALIDATION
                 ========================== -->
 
                 <section class="writeup-section">
@@ -703,8 +735,10 @@
                         The combination of
                         <strong>rdp-enum-encryption</strong> and
                         <strong>rdp-ntlm-info</strong> provides additional
-                        visibility into the security negotiation and NTLM
-                        information exposed by the service.
+                        visibility into the RDP security negotiation and the
+                        NTLM metadata exposed by the service. Nmap documents
+                        both scripts as safe/discovery-oriented enumeration
+                        scripts. :contentReference[oaicite:2]{index=2}
                     </p>
 
 
@@ -747,9 +781,11 @@
                         This checks for the historical MS12-020 RDP
                         vulnerability. No exploitation of that vulnerability
                         was required for this machine; the purpose of the
-                        step was to validate whether an older known attack
-                        surface was present before continuing with
-                        authentication testing.
+                        step was to validate whether an older known RDP
+                        attack surface was present before continuing with
+                        authentication testing. Nmap documents
+                        <strong>rdp-vuln-ms12-020</strong> as a script for
+                        checking this historical issue. :contentReference[oaicite:3]{index=3}
                     </p>
 
 
@@ -758,14 +794,18 @@
                         <div class="resource-header">
 
                             <span class="resource-label">
-                                RESOURCE
+                                ENUMERATION
                             </span>
 
                         </div>
 
 
-                        <a href="https://nmap.org/nsedoc/" target="_blank" rel="noopener noreferrer"
-                            class="resource-link">
+                        <a
+                            href="https://nmap.org/nsedoc/scripts/rdp-ntlm-info.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
 
                             <span class="resource-icon">
                                 ↗
@@ -775,11 +815,38 @@
                             <span class="resource-content">
 
                                 <strong>
-                                    Nmap NSE documentation
+                                    Nmap — rdp-ntlm-info
                                 </strong>
 
                                 <small>
-                                    Official Nmap documentation
+                                    RDP NTLM host-information enumeration
+                                </small>
+
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="https://nmap.org/nsedoc/scripts/rdp-vuln-ms12-020.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap — rdp-vuln-ms12-020
+                                </strong>
+
+                                <small>
+                                    Historical MS12-020 vulnerability check
                                 </small>
 
                             </span>
@@ -793,7 +860,7 @@
 
 
                 <!-- =========================
-                     05 — ACCESS ATTEMPT
+                     05 — REMOTE ACCESS
                 ========================== -->
 
                 <section class="writeup-section">
@@ -828,14 +895,17 @@
                     <p>
                         The first connection attempt returned a
                         <strong>FreeRDP crypto error</strong>. This did not
-                        indicate that the RDP service itself was unavailable;
-                        it indicated a problem during the client's
-                        certificate/cryptographic handling of the connection.
+                        mean that the RDP service itself was unavailable; the
+                        client had progressed to certificate/cryptographic
+                        handling before the attempt failed.
                     </p>
 
 
-                    <img src="images/image5.png" alt="First FreeRDP connection attempt showing a crypto error"
-                        class="writeup-image">
+                    <img
+                        src="images/image5.png"
+                        alt="First FreeRDP connection attempt showing a crypto error"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
@@ -857,13 +927,12 @@
                         negotiation and presented the Windows session.
                     </p>
 
-
                 </section>
 
 
 
                 <!-- =========================
-                     06 — SUCCESS
+                     06 — ACCESS CONFIRMED
                 ========================== -->
 
                 <section class="writeup-section">
@@ -878,8 +947,11 @@
                     </h2>
 
 
-                    <img src="images/image6.png" alt="Successful RDP connection to the Explosion Windows machine"
-                        class="writeup-image">
+                    <img
+                        src="images/image6.png"
+                        alt="Successful RDP connection to the Explosion Windows machine"
+                        class="writeup-image"
+                    >
 
 
                     <p class="image-caption">
@@ -890,7 +962,7 @@
                     <div class="finding-box">
 
                         <span class="finding-label">
-                            FINDING 04
+                            FINDING 03
                         </span>
 
 
@@ -917,17 +989,16 @@
                         distinction between <em>secure protocol support</em>
                         and <em>secure account configuration</em>. The RDP
                         service can support modern security mechanisms while
-                        still being compromised by weak or improper
-                        authentication configuration.
+                        still being vulnerable to improper authentication
+                        configuration.
                     </p>
-
 
                 </section>
 
 
 
                 <!-- =========================
-                     07 — XFREERDP DETAILS
+                     07 — CLIENT REFERENCE
                 ========================== -->
 
                 <section class="writeup-section">
@@ -967,48 +1038,12 @@ xfreerdp /v:&lt;TARGET_IP&gt;:3389 /u:administrator</code></pre>
 
                     </div>
 
-
-                    <div class="resource-box">
-
-                        <div class="resource-header">
-
-                            <span class="resource-label">
-                                FURTHER READING
-                            </span>
-
-                        </div>
-
-
-                        <a href="https://www.freerdp.com/" target="_blank" rel="noopener noreferrer"
-                            class="resource-link">
-
-                            <span class="resource-icon">
-                                ↗
-                            </span>
-
-
-                            <span class="resource-content">
-
-                                <strong>
-                                    FreeRDP
-                                </strong>
-
-                                <small>
-                                    Official FreeRDP project
-                                </small>
-
-                            </span>
-
-                        </a>
-
-                    </div>
-
                 </section>
 
 
 
                 <!-- =========================
-                     08 — BRUTE FORCE CONTEXT
+                     08 — AUTHENTICATION TESTING
                 ========================== -->
 
                 <section class="writeup-section">
@@ -1030,8 +1065,7 @@ xfreerdp /v:&lt;TARGET_IP&gt;:3389 /u:administrator</code></pre>
                     </p>
 
 
-                    <pre
-                        class="code-block"><code>hydra -t 1 -V -f -l administrator -P passwords.txt rdp://&lt;TARGET&gt;</code></pre>
+                    <pre class="code-block"><code>hydra -t 1 -V -f -l administrator -P passwords.txt rdp://&lt;TARGET&gt;</code></pre>
 
 
                     <p>
@@ -1145,7 +1179,7 @@ xfreerdp /v:&lt;TARGET_IP&gt;:3389 /u:administrator</code></pre>
 
 
                 <!-- =========================
-                     10 — TOOLS
+                     10 — TOOLS & TECHNIQUES
                 ========================== -->
 
                 <section class="writeup-section">
@@ -1158,6 +1192,12 @@ xfreerdp /v:&lt;TARGET_IP&gt;:3389 /u:administrator</code></pre>
                     <h2>
                         Tools used
                     </h2>
+
+
+                    <p>
+                        The main tools and techniques used during the exercise
+                        were:
+                    </p>
 
 
                     <ul>
@@ -1189,7 +1229,354 @@ xfreerdp /v:&lt;TARGET_IP&gt;:3389 /u:administrator</code></pre>
 
 
                 <!-- =========================
-                     NAVIGATION
+                     11 — RESOURCES
+                ========================== -->
+
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        11 — RESOURCES
+                    </span>
+
+
+                    <h2>
+                        Related resources
+                    </h2>
+
+
+                    <p>
+                        The resources below cover the Explosion machine and
+                        the RDP enumeration, authentication, protocol and
+                        client concepts demonstrated throughout the lab.
+                    </p>
+
+
+                    <!-- LAB REFERENCE -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                LAB REFERENCE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.hackthebox.com/machines/explosion"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Explosion
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- NMAP RDP -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                RDP ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://nmap.org/nsedoc/scripts/rdp-enum-encryption.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap — rdp-enum-encryption
+                                </strong>
+
+                                <small>
+                                    RDP security-layer and encryption enumeration
+                                </small>
+
+                            </span>
+
+                        </a>
+
+
+                        <a
+                            href="https://nmap.org/nsedoc/scripts/rdp-ntlm-info.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap — rdp-ntlm-info
+                                </strong>
+
+                                <small>
+                                    RDP NTLM host-information enumeration
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- CREDSSP -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                AUTHENTICATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cssp/78e0d50f-5a99-45e8-9f8b-d8a2bd67d4eb"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Microsoft — CredSSP
+                                </strong>
+
+                                <small>
+                                    CredSSP, TLS and RDP authentication
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- RDP SECURITY -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                RDP SECURITY
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/592a0337-dc91-4de3-a901-e1829665291d"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Microsoft — Enhanced RDP Security
+                                </strong>
+
+                                <small>
+                                    RDP security negotiation and transport
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- NLA -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                NETWORK LEVEL AUTHENTICATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/remotepc/remote-desktop-allow-access"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Microsoft — Remote Desktop
+                                </strong>
+
+                                <small>
+                                    Remote Desktop access and NLA guidance
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- FREERDP -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                RDP CLIENT
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.freerdp.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    FreeRDP
+                                </strong>
+
+                                <small>
+                                    Official FreeRDP project
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- HYDRA -->
+
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                AUTHENTICATION TESTING
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/vanhauser-thc/thc-hydra"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    THC Hydra
+                                </strong>
+
+                                <small>
+                                    Authentication testing tool
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =========================
+                     BOTTOM NAVIGATION
                 ========================== -->
 
                 <div class="writeup-navigation">
@@ -1246,7 +1633,7 @@ xfreerdp /v:&lt;TARGET_IP&gt;:3389 /u:administrator</code></pre>
             </span>
 
             <strong>
-                Ozz961
+                Roger Rached
             </strong>
 
         </div>
