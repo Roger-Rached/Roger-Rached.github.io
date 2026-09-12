@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Hack The Box Starting Point — Tier 1: Foundations | 03 — Crocodile | Roger Rached
+    </title>
+
+    <meta name="description"
+        content="Roger Rached's Hack The Box Starting Point Tier 1 writeup for Crocodile — Linux, FTP enumeration, credential discovery, web enumeration and Hydra brute force.">
+
+    <meta name="theme-color" content="#08070d">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../../../../../style.css">
+</head>
+
+<body>
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+
+    <!-- NAVIGATION -->
+    <header class="navbar">
+
+        <a href="/" class="brand">
+            <span class="brand-mark">&gt;_</span>
+            <span>Roger Rached</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="/writeups/">Writeups</a>
+            <a href="/projects/">Projects</a>
+            <a href="/tools/">Tools</a>
+            <a href="/notes/">Notes</a>
+            <a href="/research/">Research</a>
+            <a href="/guides/">Guides</a>
+            <a href="/certifications/">Certifications</a>
+            <a href="/about/">About</a>
+        </nav>
+
+        <a
+            href="https://github.com/roger-rached"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
+            GitHub ↗
+        </a>
+
+    </header>
+
+
+    <main class="page-shell">
+
+        <div class="page-container">
+
+
+            <!-- BACK TO TIER 1 -->
+            <a
+                href="/writeups/htb/starting-point/tier-1/"
+                class="writeup-back"
+            >
+                <span>←</span>
+                Back to Tier 1
+            </a>
+
+
+            <!-- MACHINE NAVIGATION -->
+            <div class="writeup-top-navigation">
+
+                <a href="/writeups/htb/starting-point/tier-1/sequel/">
+                    <span>←</span>
+                    Previous: Sequel
+                </a>
+
+                <a href="/writeups/htb/starting-point/tier-1/responder/">
+                    Next: Responder
+                    <span>→</span>
+                </a>
+
+            </div>
+
+
+            <!-- BREADCRUMBS -->
+            <div class="page-breadcrumb">
+
+                <a href="/">
+                    Home
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/">
+                    Writeups
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/">
+                    Hack The Box
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/">
+                    Starting Point
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/tier-1/">
+                    Tier 1
+                </a>
+
+                <span>/</span>
+
+                <span class="current">
+                    Crocodile
+                </span>
+
+            </div>
+
+
+            <!-- WRITEUP HEADER -->
+            <header class="page-header writeup-intro">
+
+                <span class="section-label">
+                    HACK THE BOX · STARTING POINT · TIER 1
+                </span>
+
+                <h1 class="page-title">
+                    03 — <span>Crocodile.</span>
+                </h1>
+
+                <p class="page-description">
+                    Very Easy · Linux · FTP · Credential Discovery · Web Brute Force
+                </p>
+
+                <div class="page-tag-row">
+
+                    <span class="page-tag">
+                        VERY EASY
+                    </span>
+
+                    <span class="page-tag">
+                        LINUX
+                    </span>
+
+                    <span class="page-tag">
+                        FTP
+                    </span>
+
+                    <span class="page-tag">
+                        VSFTPD
+                    </span>
+
+                    <span class="page-tag">
+                        WEB ENUMERATION
+                    </span>
+
+                    <span class="page-tag">
+                        HYDRA
+                    </span>
+
+                </div>
+
+            </header>
+
+
+            <!-- WRITEUP -->
+            <article class="writeup-article">
+
+
+                <!-- ENUMERATION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        01 — ENUMERATION
+                    </span>
+
+                    <h2>
+                        Scanning the target
+                    </h2>
+
+                    <p>
+                        I began by scanning ports 21 and 80 with Nmap using
+                        default scripts and service/version detection. This
+                        allowed me to quickly identify both the FTP service
+                        and the web server exposed by the target.
+                    </p>
+
+                    <pre class="code-block"><code>nmap -p21,80 -sC -sV 10.129.1.15</code></pre>
+
+
+                    <!-- IMAGE 1 -->
+                    <img
+                        src="images/image1.png"
+                        alt="Nmap scan showing FTP and HTTP services"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Nmap identifies vsftpd 3.0.3 on port 21 and Apache 2.4.41 on port 80.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            Port <strong>21</strong> was running
+                            <strong>vsftpd 3.0.3</strong> and allowed
+                            anonymous FTP access. Port <strong>80</strong>
+                            was running <strong>Apache 2.4.41</strong>,
+                            providing a second attack surface for further
+                            enumeration.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- FTP ACCESS -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        02 — FTP ACCESS
+                    </span>
+
+                    <h2>
+                        Accessing the FTP server
+                    </h2>
+
+                    <p>
+                        The Nmap results showed that anonymous access was
+                        permitted on the FTP server. The FTP response code
+                        <strong>230</strong> confirmed that authentication
+                        was not required for the anonymous account.
+                    </p>
+
+                    <p>
+                        I connected to the service using the standard FTP
+                        command-line client on port 21.
+                    </p>
+
+                    <pre class="code-block"><code>ftp 10.129.1.15</code></pre>
+
+
+                    <!-- IMAGE 2 -->
+                    <img
+                        src="images/image2.png"
+                        alt="Connecting to the anonymous FTP server"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Connecting to the FTP service using the command-line FTP client.
+                    </p>
+
+
+                    <h3 class="writeup-subtitle">
+                        Useful FTP commands
+                    </h3>
+
+                    <pre class="code-block"><code>pwd               # Show current remote directory
+ls                # List files
+dir               # Detailed directory listing
+cd &lt;dir&gt;          # Change remote directory
+lcd &lt;dir&gt;         # Change local directory
+get file.txt      # Download a file
+mget *            # Download multiple files
+put file.txt      # Upload a file
+mkdir test        # Create a directory
+delete file       # Delete a file
+binary            # Binary transfer mode
+ascii             # Text transfer mode
+quit              # Exit</code></pre>
+
+                </section>
+
+
+                <!-- FILE DISCOVERY -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        03 — FILE DISCOVERY
+                    </span>
+
+                    <h2>
+                        Discovering exposed credential files
+                    </h2>
+
+                    <p>
+                        After connecting to the FTP service, I enumerated
+                        the accessible files. Two files immediately stood
+                        out because their names suggested they contained
+                        authentication information:
+                        <strong>allowed.userlist</strong> and
+                        <strong>allowed.userlist.passwd</strong>.
+                    </p>
+
+
+                    <!-- IMAGE 3 -->
+                    <img
+                        src="images/image3.png"
+                        alt="Downloading credential files from the FTP server"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Downloading the exposed files from the anonymous FTP server.
+                    </p>
+
+
+                    <pre class="code-block"><code>get allowed.userlist
+get allowed.userlist.passwd</code></pre>
+
+
+                    <!-- IMAGE 4 -->
+                    <img
+                        src="images/image4.png"
+                        alt="Contents of the allowed user and password files"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        The downloaded files contain usernames and passwords that can be tested against other services.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            Anonymous FTP access exposed two credential
+                            wordlists: <strong>allowed.userlist</strong>
+                            and <strong>allowed.userlist.passwd</strong>.
+                            These files provided candidate credentials for
+                            further authentication testing.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- FTP BRUTE FORCE -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        04 — FTP BRUTE FORCE
+                    </span>
+
+                    <h2>
+                        Testing the credentials against FTP
+                    </h2>
+
+                    <p>
+                        Since the FTP server exposed a username list and a
+                        password list, I first tested them directly against
+                        the FTP authentication service using Hydra.
+                    </p>
+
+                    <pre class="code-block"><code>hydra -L allowed.userlist -P allowed.userlist.passwd ftp://10.129.1.15</code></pre>
+
+                    <p>
+                        The attempt completed without discovering a valid
+                        FTP credential combination:
+                    </p>
+
+                    <pre class="code-block"><code>1 of 1 target completed, 0 valid password found</code></pre>
+
+                    <p>
+                        Rather than discarding the discovered credentials,
+                        I considered whether they could have been reused by
+                        another service exposed on the target.
+                    </p>
+
+                </section>
+
+
+                <!-- WEB ENUMERATION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        05 — WEB ENUMERATION
+                    </span>
+
+                    <h2>
+                        Discovering the login page
+                    </h2>
+
+                    <p>
+                        I shifted focus to port 80 and enumerated the web
+                        application. The service exposed a login page, so I
+                        used Gobuster to identify the underlying path and
+                        discover additional web resources.
+                    </p>
+
+
+                    <!-- IMAGE 5 -->
+                    <img
+                        src="images/image5.png"
+                        alt="HTTP service showing a Login page"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        The HTTP service exposes a login page.
+                    </p>
+
+
+                    <pre class="code-block"><code>gobuster dir -u http://10.129.1.15:80 -w /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-lowercase-2.3-medium.txt -x php,js,html,txt</code></pre>
+
+
+                    <!-- IMAGE 6 -->
+                    <img
+                        src="images/image6.png"
+                        alt="Gobuster discovering the login.php endpoint"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Gobuster discovers the <strong>login.php</strong> endpoint.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            The web application exposed a login endpoint at
+                            <strong>/login.php</strong>. This provided a
+                            potential opportunity to reuse the credentials
+                            obtained from the FTP service.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- WEB BRUTE FORCE -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        06 — WEB BRUTE FORCE
+                    </span>
+
+                    <h2>
+                        Constructing the Hydra request
+                    </h2>
+
+                    <p>
+                        Before attacking the login form, I inspected the
+                        HTTP request to identify the parameter names and the
+                        application's response to invalid credentials. This
+                        information was necessary to construct the correct
+                        Hydra <strong>http-post-form</strong> syntax.
+                    </p>
+
+
+                    <!-- IMAGE 7 -->
+                    <img
+                        src="images/image7.png"
+                        alt="Inspecting the web login request and Hydra parameters"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Inspecting the login request and determining the correct parameters and failure response.
+                    </p>
+
+
+                    <h3 class="writeup-subtitle">
+                        Hydra HTTP POST syntax
+                    </h3>
+
+                    <pre class="code-block"><code>hydra -L [usernames.txt] -P [passwords.txt] [target] http-post-form "[path]:[field1]=^USER^&amp;[field2]=^PASS^:F=[error_message]"</code></pre>
+
+
+                    <h3 class="writeup-subtitle">
+                        Target-specific command
+                    </h3>
+
+                    <pre class="code-block"><code>hydra -L allowed.userlist -P allowed.userlist.passwd 10.129.1.15 http-post-form "/login.php:Username=^USER^&amp;Password=^PASS^&amp;Submit=Login:F=Incorrect information"</code></pre>
+
+
+                    <h3 class="writeup-subtitle">
+                        Reproducing the request with curl
+                    </h3>
+
+                    <p>
+                        I also used curl to reproduce a login attempt manually
+                        and verify the POST parameters being sent to the
+                        application.
+                    </p>
+
+                    <pre class="code-block"><code>curl -s http://10.129.1.15/login.php -d "Username=test&amp;Password=test&amp;Submit=Login"</code></pre>
+
+
+                    <p>
+                        This helped confirm that the parameters used by Hydra
+                        matched the application's actual login request.
+                    </p>
+
+                </section>
+
+
+                <!-- SUCCESSFUL AUTHENTICATION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        07 — SUCCESSFUL AUTHENTICATION
+                    </span>
+
+                    <h2>
+                        Finding the valid credentials
+                    </h2>
+
+                    <p>
+                        After constructing the HTTP POST request correctly,
+                        I launched the brute-force attempt using the
+                        credential lists retrieved from FTP.
+                    </p>
+
+
+                    <!-- IMAGE 8 -->
+                    <img
+                        src="images/image8.png"
+                        alt="Hydra discovering the valid admin credentials"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Hydra successfully identifies the valid credentials for the admin account.
+                    </p>
+
+
+                    <p>
+                        During the process, I encountered an issue with the
+                        original failure-based condition. I therefore tested
+                        a success-based response matcher using the presence
+                        of <strong>Flag</strong> in the response.
+                    </p>
+
+                    <pre class="code-block"><code>/login.php:Username=^USER^&amp;Password=^PASS^&amp;Submit=Login:S=Flag</code></pre>
+
+
+                    <p>
+                        Using the success condition allowed Hydra to identify
+                        the valid login based on the application's successful
+                        response rather than relying on the failure message.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            RESULT
+                        </span>
+
+                        <p>
+                            The credentials exposed through anonymous FTP
+                            were successfully reused against the web
+                            application, resulting in access to the
+                            <strong>admin</strong> account and the final
+                            machine flag.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- WHAT I LEARNED -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        08 — WHAT I LEARNED
+                    </span>
+
+                    <h2>
+                        Lessons from Crocodile
+                    </h2>
+
+                    <p>
+                        Crocodile demonstrated the importance of connecting
+                        information discovered across different services.
+                        Anonymous FTP access initially exposed files that
+                        were not useful for authenticating to FTP itself,
+                        but the same credentials became valuable when tested
+                        against the web application.
+                    </p>
+
+                    <p>
+                        The machine also reinforced the importance of
+                        understanding the underlying HTTP request before
+                        launching automated brute-force attacks. Identifying
+                        the POST parameters and the application's success or
+                        failure response made it possible to build an accurate
+                        Hydra request.
+                    </p>
+
+
+                    <div class="page-tag-row">
+
+                        <span class="page-tag">
+                            NMAP
+                        </span>
+
+                        <span class="page-tag">
+                            FTP
+                        </span>
+
+                        <span class="page-tag">
+                            VSFTPD
+                        </span>
+
+                        <span class="page-tag">
+                            GOBUSTER
+                        </span>
+
+                        <span class="page-tag">
+                            HYDRA
+                        </span>
+
+                        <span class="page-tag">
+                            CURL
+                        </span>
+
+                        <span class="page-tag">
+                            CREDENTIAL REUSE
+                        </span>
+
+                        <span class="page-tag">
+                            LINUX
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <!-- TOOLS -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        09 — TOOLS &amp; TECHNIQUES
+                    </span>
+
+                    <h2>
+                        Tools used
+                    </h2>
+
+                    <p>
+                        The main tools and techniques used during the
+                        exercise were:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            <strong>Nmap</strong> — service and version enumeration
+                        </li>
+
+                        <li>
+                            <strong>FTP Client</strong> — anonymous FTP access and file retrieval
+                        </li>
+
+                        <li>
+                            <strong>Gobuster</strong> — web directory and file enumeration
+                        </li>
+
+                        <li>
+                            <strong>Hydra</strong> — FTP and HTTP authentication brute force
+                        </li>
+
+                        <li>
+                            <strong>curl</strong> — manually reproducing HTTP POST requests
+                        </li>
+
+                        <li>
+                            <strong>Credential Reuse</strong> — testing credentials across exposed services
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <!-- RESOURCES -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        10 — RESOURCES
+                    </span>
+
+                    <h2>
+                        Related resources
+                    </h2>
+
+                    <p>
+                        The resources below cover the machine itself and the
+                        FTP, enumeration and authentication techniques used
+                        throughout the exercise.
+                    </p>
+
+
+                    <!-- HTB -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                LAB REFERENCE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.hackthebox.com/machines/crocodile"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Crocodile
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- NMAP -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://nmap.org/book/man.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap Reference Guide
+                                </strong>
+
+                                <small>
+                                    Port scanning, service detection and NSE
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- FTP -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                FTP
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://datatracker.ietf.org/doc/html/rfc959"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    RFC 959 — File Transfer Protocol
+                                </strong>
+
+                                <small>
+                                    FTP protocol specification and commands
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- GOBUSTER -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WEB ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/OJ/gobuster"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Gobuster
+                                </strong>
+
+                                <small>
+                                    Directory and DNS brute-force enumeration tool
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- HYDRA -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                AUTHENTICATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/vanhauser-thc/thc-hydra"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    THC Hydra
+                                </strong>
+
+                                <small>
+                                    Network login brute-force and authentication testing tool
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- CURL -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                HTTP
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://curl.se/docs/manual.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    curl Documentation
+                                </strong>
+
+                                <small>
+                                    Command-line HTTP requests and request testing
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- BOTTOM NAVIGATION -->
+                <div class="writeup-navigation">
+
+                    <a href="/writeups/htb/starting-point/tier-1/sequel/">
+
+                        <span>
+                            PREVIOUS MACHINE
+                        </span>
+
+                        <strong>
+                            ← Sequel
+                        </strong>
+
+                    </a>
+
+
+                    <a href="/writeups/htb/starting-point/tier-1/responder/">
+
+                        <span>
+                            NEXT MACHINE
+                        </span>
+
+                        <strong>
+                            Responder →
+                        </strong>
+
+                    </a>
+
+                </div>
+
+
+            </article>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-brand">
+
+            <span class="brand-mark">
+                &gt;_
+            </span>
+
+            <strong>
+                Roger Rached
+            </strong>
+
+        </div>
+
+        <p>
+            Cybersecurity · Pentesting · AppSec · AI Security
+        </p>
+
+        <span>
+            © <span id="year"></span> Roger Rached
+        </span>
+
+    </footer>
+
+
+    <script src="../../../../../script.js"></script>
+
+</body>
+
+</html>

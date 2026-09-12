@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Hack The Box Starting Point — Tier 1: Foundations | 01 — Appointment | Roger Rached
+    </title>
+
+    <meta name="description"
+        content="Roger Rached's Hack The Box Starting Point Tier 1 writeup for Appointment — Linux, web enumeration, SQL injection and authentication.">
+
+    <meta name="theme-color" content="#08070d">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../../../../../style.css">
+</head>
+
+<body>
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+
+    <!-- NAVIGATION -->
+    <header class="navbar">
+
+        <a href="/" class="brand">
+            <span class="brand-mark">&gt;_</span>
+            <span>Roger Rached</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="/writeups/">Writeups</a>
+            <a href="/projects/">Projects</a>
+            <a href="/tools/">Tools</a>
+            <a href="/notes/">Notes</a>
+            <a href="/research/">Research</a>
+            <a href="/guides/">Guides</a>
+            <a href="/certifications/">Certifications</a>
+            <a href="/about/">About</a>
+        </nav>
+
+        <a
+            href="https://github.com/roger-rached"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+        >
+            GitHub ↗
+        </a>
+
+    </header>
+
+
+    <main class="page-shell">
+
+        <div class="page-container">
+
+
+            <!-- BACK TO TIER 1 -->
+            <a
+                href="/writeups/htb/starting-point/tier-1/"
+                class="writeup-back"
+            >
+                <span>←</span>
+                Back to Tier 1
+            </a>
+
+
+            <!-- MACHINE NAVIGATION -->
+            <div class="writeup-top-navigation">
+
+                <span></span>
+
+                <a href="/writeups/htb/starting-point/tier-1/sequel/">
+                    Next: Sequel
+                    <span>→</span>
+                </a>
+
+            </div>
+
+
+            <!-- BREADCRUMBS -->
+            <div class="page-breadcrumb">
+
+                <a href="/">
+                    Home
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/">
+                    Writeups
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/">
+                    Hack The Box
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/">
+                    Starting Point
+                </a>
+
+                <span>/</span>
+
+                <a href="/writeups/htb/starting-point/tier-1/">
+                    Tier 1
+                </a>
+
+                <span>/</span>
+
+                <span class="current">
+                    Appointment
+                </span>
+
+            </div>
+
+
+            <!-- WRITEUP HEADER -->
+            <header class="page-header writeup-intro">
+
+                <span class="section-label">
+                    HACK THE BOX · STARTING POINT · TIER 1
+                </span>
+
+                <h1 class="page-title">
+                    01 — <span>Appointment.</span>
+                </h1>
+
+                <p class="page-description">
+                    Very Easy · Linux · SQL Injection
+                </p>
+
+                <div class="page-tag-row">
+
+                    <span class="page-tag">
+                        VERY EASY
+                    </span>
+
+                    <span class="page-tag">
+                        LINUX
+                    </span>
+
+                    <span class="page-tag">
+                        WEB ENUMERATION
+                    </span>
+
+                    <span class="page-tag">
+                        SQL INJECTION
+                    </span>
+
+                    <span class="page-tag">
+                        AUTHENTICATION
+                    </span>
+
+                </div>
+
+            </header>
+
+
+            <!-- WRITEUP -->
+            <article class="writeup-article">
+
+
+                <!-- ENUMERATION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        01 — ENUMERATION
+                    </span>
+
+                    <h2>
+                        Initial Nmap scan
+                    </h2>
+
+                    <p>
+                        I began with an Nmap scan to identify the target's
+                        exposed services and establish its initial attack
+                        surface. The objective was to determine which ports
+                        were open, identify the services running on them, and
+                        decide where further enumeration would be most useful.
+                    </p>
+
+                    <pre class="code-block"><code>nmap -sC -sV &lt;TARGET_IP&gt;</code></pre>
+
+
+                    <!-- IMAGE 1 -->
+                    <img
+                        src="images/image1.png"
+                        alt="Nmap scan showing Apache HTTP Server on port 80"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Initial Nmap enumeration showing HTTP exposed on port 80.
+                    </p>
+
+
+                    <!-- FINDING -->
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            <strong>Port 80</strong> was open and running
+                            <strong>Apache HTTP Server 2.4.38</strong>.
+                            The HTTP service presented a login page, making
+                            the web application the primary area for further
+                            enumeration.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- DIRECTORY ENUMERATION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        02 — DIRECTORY ENUMERATION
+                    </span>
+
+                    <h2>
+                        Discovering web content
+                    </h2>
+
+                    <p>
+                        With HTTP identified as the primary attack surface,
+                        I performed directory and file enumeration using
+                        Gobuster. The goal was to identify accessible
+                        resources and discover application files that were
+                        not immediately visible from the main page.
+                    </p>
+
+                    <pre class="code-block"><code>gobuster dir -u http://&lt;TARGET_IP&gt;:80 -w /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-lowercase-2.3-medium.txt -x php,js,html,txt</code></pre>
+
+
+                    <!-- IMAGE 2 -->
+                    <img
+                        src="images/image2.png"
+                        alt="Gobuster directory enumeration results"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Gobuster enumerating directories and common web application files.
+                    </p>
+
+                </section>
+
+
+                <!-- LOGIN DISCOVERY -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        03 — APPLICATION DISCOVERY
+                    </span>
+
+                    <h2>
+                        Identifying the login endpoint
+                    </h2>
+
+                    <p>
+                        The directory enumeration revealed several
+                        potentially interesting files. One result stood out:
+                        <strong>login.php</strong>.
+                    </p>
+
+
+                    <!-- IMAGE 3 -->
+                    <img
+                        src="images/image3.png"
+                        alt="Gobuster results showing login.php"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Directory enumeration revealing the login.php endpoint.
+                    </p>
+
+
+                    <!-- FINDING -->
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            FINDING
+                        </span>
+
+                        <p>
+                            The application exposed a dedicated
+                            <strong>login.php</strong> endpoint, providing
+                            an authentication interface that warranted
+                            further testing.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SQL INJECTION -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        04 — SQL INJECTION
+                    </span>
+
+                    <h2>
+                        Testing the authentication mechanism
+                    </h2>
+
+                    <p>
+                        I visited the discovered login endpoint and tested
+                        the authentication functionality as a potential
+                        injection point. The login form was vulnerable to
+                        SQL injection, allowing the authentication logic
+                        to be manipulated.
+                    </p>
+
+
+                    <h3 class="writeup-subtitle">
+                        Authentication bypass
+                    </h3>
+
+                    <p>
+                        I used the following payload as the username:
+                    </p>
+
+                    <pre class="code-block"><code>admin'#</code></pre>
+
+                    <p>
+                        The single quote attempts to close the application's
+                        string value, while the <strong>#</strong> character
+                        acts as a comment marker in MySQL, causing the
+                        remainder of the SQL statement to be ignored.
+                        This can remove the password comparison from the
+                        effective query and allow authentication to succeed
+                        when the application is vulnerable to this form of
+                        SQL injection.
+                    </p>
+
+
+                    <div class="page-tag-row">
+
+                        <span class="page-tag">
+                            SQL INJECTION
+                        </span>
+
+                        <span class="page-tag">
+                            AUTHENTICATION BYPASS
+                        </span>
+
+                        <span class="page-tag">
+                            MYSQL
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ACCESS -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        05 — ACCESS
+                    </span>
+
+                    <h2>
+                        Successful authentication
+                    </h2>
+
+                    <p>
+                        The injected username successfully bypassed the
+                        application's authentication mechanism. The
+                        application accepted the request and provided access
+                        to the protected page.
+                    </p>
+
+
+                    <!-- IMAGE 4 -->
+                    <img
+                        src="images/image4.png"
+                        alt="Appointment machine congratulatory message and flag"
+                        class="writeup-image"
+                    >
+
+                    <p class="image-caption">
+                        Successful authentication and the resulting flag.
+                    </p>
+
+
+                    <div class="finding-box">
+
+                        <span class="finding-label">
+                            RESULT
+                        </span>
+
+                        <p>
+                            The SQL injection vulnerability provided
+                            unauthorized access to the application's
+                            protected functionality and exposed the flag.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- WHAT I LEARNED -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        06 — WHAT I LEARNED
+                    </span>
+
+                    <h2>
+                        Lessons from Appointment
+                    </h2>
+
+                    <p>
+                        Appointment reinforced the importance of treating
+                        web applications as an attack surface whenever HTTP
+                        is exposed. Initial service enumeration identified
+                        the web server, while directory enumeration helped
+                        uncover an application endpoint that was not obvious
+                        from the initial scan.
+                    </p>
+
+                    <p>
+                        The machine also demonstrated how improper handling
+                        of user-supplied input can directly affect an
+                        application's authentication logic. A simple SQL
+                        injection payload was enough to alter the intended
+                        query behavior and bypass authentication.
+                    </p>
+
+                    <div class="page-tag-row">
+
+                        <span class="page-tag">
+                            NMAP
+                        </span>
+
+                        <span class="page-tag">
+                            GOBUSTER
+                        </span>
+
+                        <span class="page-tag">
+                            WEB ENUMERATION
+                        </span>
+
+                        <span class="page-tag">
+                            SQL INJECTION
+                        </span>
+
+                        <span class="page-tag">
+                            AUTHENTICATION BYPASS
+                        </span>
+
+                        <span class="page-tag">
+                            LINUX
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <!-- TOOLS -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        07 — TOOLS &amp; TECHNIQUES
+                    </span>
+
+                    <h2>
+                        Tools used
+                    </h2>
+
+                    <p>
+                        The main tools and techniques used during the
+                        exercise were:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            <strong>Nmap</strong> — service and version enumeration
+                        </li>
+
+                        <li>
+                            <strong>Gobuster</strong> — directory and file enumeration
+                        </li>
+
+                        <li>
+                            <strong>SQL Injection</strong> — authentication bypass
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <!-- RESOURCES -->
+                <section class="writeup-section">
+
+                    <span class="writeup-section-label">
+                        08 — RESOURCES
+                    </span>
+
+                    <h2>
+                        Related resources
+                    </h2>
+
+                    <p>
+                        The resources below cover the machine itself and the
+                        enumeration and SQL injection techniques used
+                        throughout the exercise.
+                    </p>
+
+
+                    <!-- HTB -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                LAB REFERENCE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://www.hackthebox.com/machines/appointment"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Hack The Box — Appointment
+                                </strong>
+
+                                <small>
+                                    Official machine page and lab synopsis
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- NMAP -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://nmap.org/book/man.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Nmap Reference Guide
+                                </strong>
+
+                                <small>
+                                    Port scanning, service detection and NSE
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- GOBUSTER -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WEB ENUMERATION
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://github.com/OJ/gobuster"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    Gobuster
+                                </strong>
+
+                                <small>
+                                    Directory and file enumeration tool
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- SQL INJECTION -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                WEB SECURITY
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://owasp.org/www-community/attacks/SQL_Injection"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    OWASP — SQL Injection
+                                </strong>
+
+                                <small>
+                                    SQL injection concepts, risks and prevention
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- MYSQL -->
+                    <div class="resource-box">
+
+                        <div class="resource-header">
+
+                            <span class="resource-label">
+                                DATABASE
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="https://dev.mysql.com/doc/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="resource-link"
+                        >
+
+                            <span class="resource-icon">
+                                ↗
+                            </span>
+
+                            <span class="resource-content">
+
+                                <strong>
+                                    MySQL Documentation
+                                </strong>
+
+                                <small>
+                                    Official MySQL documentation and SQL reference
+                                </small>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- BOTTOM NAVIGATION -->
+                <div class="writeup-navigation">
+
+                    <a href="/writeups/htb/starting-point/tier-1/">
+
+                        <span>
+                            BACK TO TIER 1
+                        </span>
+
+                        <strong>
+                            ← Tier 1
+                        </strong>
+
+                    </a>
+
+
+                    <a href="/writeups/htb/starting-point/tier-1/sequel/">
+
+                        <span>
+                            NEXT MACHINE
+                        </span>
+
+                        <strong>
+                            Sequel →
+                        </strong>
+
+                    </a>
+
+                </div>
+
+
+            </article>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-brand">
+
+            <span class="brand-mark">
+                &gt;_
+            </span>
+
+            <strong>
+                Roger Rached
+            </strong>
+
+        </div>
+
+        <p>
+            Cybersecurity · Pentesting · AppSec · AI Security
+        </p>
+
+        <span>
+            © <span id="year"></span> Roger Rached
+        </span>
+
+    </footer>
+
+
+    <script src="../../../../../script.js"></script>
+
+</body>
+
+</html>
