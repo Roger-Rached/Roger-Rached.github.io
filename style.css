@@ -3468,3 +3468,9 @@ footer {
     .terminal-output-line { animation: none !important; }
     .hero::before { opacity: 0.4; }
 }
+
+
+/* Preserve the semantic status color even on the first line in an output block. */
+.terminal-output-lines > .terminal-output-line:first-child.terminal-success { color: #8ee69a; }
+.terminal-output-lines > .terminal-output-line:first-child.terminal-error { color: #f07888; }
+.terminal-output-lines > .terminal-output-line:first-child.terminal-normal { color: #c2bacd; }
