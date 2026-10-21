@@ -16,11 +16,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (localDate) {
         const updateLocalDate = () => {
             const now = new Date();
-            const formatted = new Intl.DateTimeFormat(undefined, {
+            const parts = new Intl.DateTimeFormat(undefined, {
                 day: "2-digit",
                 month: "short",
                 year: "numeric"
-            }).format(now).toUpperCase();
+            }).formatToParts(now);
+            const dateParts = Object.fromEntries(parts
+                .filter(part => part.type !== "literal")
+                .map(part => [part.type, part.value]));
+            const formatted = [
+                dateParts.day,
+                dateParts.month.replace(".", ""),
+                dateParts.year
+            ].join(" ").toUpperCase();
             localDate.textContent = "SYSTEM DATE: " + formatted;
 
             const nextMidnight = new Date(now);
