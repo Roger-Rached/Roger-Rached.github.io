@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A hands-on guide to Burp Suite Community Edition: proxying HTTP traffic, browsing history, Repeater, request anatomy, safe manual testing and edition limits.">
+    <meta name="theme-color" content="#07060b">
+    <title>Burp Suite Community Edition Guide — Cybersecurity Resources | Roger Rached</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <a href="/" class="brand"><span class="brand-mark">&gt;_</span><span>Roger Rached</span></a>
+        <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation">
+            <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+            <a href="/writeups/">Writeups</a>
+            <a href="/projects/">Projects</a>
+            <a href="/resources/" aria-current="page">Resources</a>
+            <a href="/research/">Research</a>
+            <a href="/guides/">Guides</a>
+            <a href="/certifications/">Certifications</a>
+            <a href="/experience/">Experience</a>
+            <a href="/education/">Education</a>
+            <a href="/about/">About</a>
+        </nav>
+        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer" class="github-link">GitHub ↗</a>
+    </header>
+
+    <main id="main-content" tabindex="-1" class="page-shell">
+        <div class="page-container">
+            <header class="page-header">
+                <div class="page-breadcrumb">
+                    <a href="/">Home</a><span>/</span><a href="/resources/">Resources</a><span>/</span><span class="current">Burp Suite Community Edition</span>
+                </div>
+                <span class="section-label">RED TEAMING / TOOL GUIDE</span>
+                <h1 class="page-title">Burp Suite Community Edition</h1>
+                <p class="page-description">Understand how the intercepting proxy exposes the conversation between a browser and a web application, then learn to test requests manually in a local application.</p>
+                <div class="resource-guide-meta"><span>1,972 substantive words</span><span>~9 min read</span><span>Guide / 02</span></div>
+            </header>
+
+            <div class="page-content resource-guide-layout">
+                <aside class="resource-guide-toc" aria-label="Guide table of contents">
+                    <h2>IN THIS GUIDE</h2>
+                    <ol><li><a href="#what-is-burp">1. What is Burp Suite Community Edition?</a></li>
+<li><a href="#why-it-matters">2. Why it matters in application security</a></li>
+<li><a href="#where-it-fits">3. When and where should you use it?</a></li>
+<li><a href="#http-basics">4. Understand requests, responses and the proxy</a></li>
+<li><a href="#setup">5. Installation and safe setup</a></li>
+<li><a href="#first-workflow">6. A first manual testing workflow</a></li>
+<li><a href="#request-examples">7. Practical request examples and interpretation</a></li>
+<li><a href="#limitations">8. Community Edition limits and common mistakes</a></li>
+<li><a href="#workflow">9. How Burp fits the security workflow</a></li>
+<li><a href="#lab">10. Hands-on local lab</a></li>
+<li><a href="#next-steps">11. Troubleshooting and next steps</a></li><li><a href="#references">References &amp; further reading</a></li></ol>
+                </aside>
+                <article class="resource-guide-article">
+                    <div class="resource-guide-callout"><strong>Scope reminder:</strong> Examples are for your own machine, a local lab, or explicitly authorized targets only. Commands are documented examples; they have not been executed against an external target as part of writing this guide.</div>
+                    <section id="what-is-burp">
+    <h2>1. What is Burp Suite Community Edition?</h2>
+    <p>Burp Suite is a web application security testing platform. Community Edition is the free manual-testing edition and provides an intercepting HTTP(S) and WebSocket proxy, proxy history and essential tools including Repeater, Decoder, Sequencer and Comparer. It is suited to learners, application developers and security testers who need to observe how a browser and server exchange requests and responses. Burp is commercial software distributed by PortSwigger; Community and Professional editions have different capabilities, so the chosen edition should be checked against the vendor's current comparison. <sup><a href="#ref-4" aria-label="Reference 4">[4]</a></sup></p><p>The main idea is to place a trusted testing proxy between your browser and a target application. The proxy records messages so you can inspect methods, paths, headers, cookies, parameters, body content, status codes and response data. You may then send a copy of an interesting request to Repeater and change one variable at a time. Burp does not automatically understand every application's business rules; the tester supplies hypotheses and interprets the response. A tool finding is not proof until it has been reproduced and its impact understood.</p>
+</section>
+
+<section id="why-it-matters">
+    <h2>2. Why it matters in application security</h2>
+    <p>Web applications often enforce security rules through multiple layers: browser controls, server-side validation, sessions, authorization checks and downstream APIs. Looking only at the visible page may not reveal what the server actually receives or returns. An intercepting proxy gives the tester a direct view of HTTP exchanges, making it easier to spot hidden parameters, inconsistent access controls, insecure session handling, unexpected redirects or validation behavior that differs between client and server. It also encourages a repeatable test process because requests can be saved in history and resent with controlled changes.</p><p>For example, a page may hide an administrative button from a normal user, but the underlying request may still be sent manually by a test client. Whether the server correctly rejects that request is a question of server-side authorization. Burp helps create and examine the request; it does not decide whether the behavior is intended. Good testing compares a documented baseline with a modified request and records what changed. Avoid testing production systems or data you do not control, because even seemingly harmless request changes may alter state or send notifications.</p>
+</section>
+
+<section id="where-it-fits">
+    <h2>3. When and where should you use it?</h2>
+    <p>Use Burp for authorized web applications, local training apps, API labs and bug reproduction where you can inspect the relevant HTTP messages. It normally runs on a testing workstation. The browser uses Burp's local proxy listener, and Burp forwards traffic to the application. For HTTPS interception, the browser must trust Burp's locally generated certificate authority for the specific testing profile. Use Burp's built-in browser or a separate disposable browser profile to keep testing certificates and cookies isolated from normal browsing.</p><p>Burp is not a packet-level replacement for Wireshark: it focuses on application messages after protocol decoding rather than the full network frame timeline. It is not a source-code analyzer, a general vulnerability scanner in Community Edition, or a guarantee that an application is secure if no issue is obvious. The workflow is manual and hypothesis driven. Limit target scope in the project, test accounts and environment, avoid using real customer information, and remove the temporary CA certificate or browser profile when the lab is finished.</p>
+</section>
+
+<section id="http-basics">
+    <h2>4. Understand requests, responses and the proxy</h2>
+    <p>An HTTP request generally includes a method, path, protocol version, headers and sometimes a body. A response includes a status line, headers and optional content. Cookies and authorization headers may carry session or authentication context. Query parameters appear in the URL; form or JSON parameters may appear in the body. These fields are part of the evidence you inspect. For an API request, the content type and body format can matter as much as the URL. A request that looks structurally similar to another may be treated differently because of a role, session token or resource identifier.</p><p>Burp's Proxy Intercept view can pause messages so the tester can inspect or edit them before forwarding. Proxy HTTP history stores a chronological record of traffic, including requests that were not paused. The history is valuable for understanding application behavior and retrieving a baseline request for Repeater. Be cautious about saving or exporting history: it may contain session cookies, personal data, reset tokens or proprietary API responses. Keep the project local and protected, and redact sensitive values before sharing a request with a colleague. <sup><a href="#ref-2" aria-label="Reference 2">[2]</a></sup></p>
+</section>
+
+<section id="setup">
+    <h2>5. Installation and safe setup</h2>
+    <p>Download Community Edition from PortSwigger's official site and follow the installer for your operating system. Start a temporary project or use the default ephemeral workspace if that suits your practice; persistent project-file functions are associated with paid feature sets, so verify current edition details. The easiest starting point is Burp's bundled browser, which is configured to use Burp automatically. Confirm that the interception proxy is running and that your browser can load only the local test site you intended to assess.</p><p>For an HTTPS local application, use the certificate setup instructions in the official documentation. Never make your normal browser trust an unfamiliar certificate authority as a general workaround. Create a dedicated profile for testing, scope it to a local host or lab domain, and use dummy credentials. If the browser cannot connect, check the proxy listener address and port, proxy settings, local application binding, firewall rules and certificate configuration one at a time. Keep interception off when you only want to browse normally; pausing every resource request can make a site appear to hang.</p>
+</section>
+
+<section id="first-workflow">
+    <h2>6. A first manual testing workflow</h2>
+    <p>Start a deliberately vulnerable application in an isolated local lab or use a legal training target provided for that purpose. Browse the application normally and locate one ordinary request that reads a record or submits a harmless form. In Proxy history, select the request and inspect its method, path, headers, cookie and body. Note the response status and what the application displays. This gives you a baseline: you should understand which user account was active, what resource was requested and whether the operation was read-only or state-changing.</p><p>Send the request to Repeater using the context menu. In Repeater, resend it unchanged first so you know the copied request still produces the baseline response. Then modify only one low-risk test input in the local lab, such as a dummy search term or an ID referencing a record created for the exercise. Compare status, response length, headers and response body. A different response may indicate different validation or authorization behavior, but it is not enough on its own to prove an exploitable issue. Restore the original request and keep a note of both variants. <sup><a href="#ref-3" aria-label="Reference 3">[3]</a></sup></p>
+</section>
+
+<section id="request-examples">
+    <h2>7. Practical request examples and interpretation</h2>
+    <p>For a local application, a request may resemble the following. The host and cookie values are illustrative placeholders, not a real credential or a tested result.</p><pre><code>GET /account/profile?id=lab-user HTTP/1.1
+Host: app.local
+Cookie: session=&lt;LAB_SESSION_TOKEN&gt;
+Accept: application/json</code></pre><p>Use Repeater to change the `id` value only when the lab includes a second test account or test-owned record. If the response returns the same profile regardless of the identifier, possible explanations include the application ignoring the parameter, returning cached content or enforcing account context elsewhere. If a different user's data appears, stop further exploration, preserve the minimum evidence and report it through the lab or program's approved process. Do not probe real users or change arbitrary identifiers in systems without explicit permission.</p><p>Compare the response status and body carefully. HTTP 200 does not guarantee success; the body may contain an application error. HTTP 403 may reflect authorization, a WAF rule or routing policy. HTTP 302 may redirect to authentication or a canonical URL. JSON fields, content type, response timing and server-side error messages can all be useful, but one unusual response can be noise. Reproduce the behavior twice using the same controlled setup before writing a finding.</p>
+</section>
+
+<section id="limitations">
+    <h2>8. Community Edition limits and common mistakes</h2>
+    <p>Community Edition is designed for manual web security testing. The vendor's current comparison identifies automated website scanning, full Intruder capabilities, project-file saving and other features as Professional capabilities. Do not follow an old tutorial that assumes a paid feature exists in the edition you have installed. Tools and licensing can evolve, so check the official feature comparison rather than relying on a screenshot from another version. A manual workflow can still be rigorous, but it requires the tester to build a structured test plan, maintain evidence and avoid assuming that untested areas are safe.</p><p>Common setup problems include a browser that bypasses the proxy, a certificate that is not installed in the dedicated test profile, an unavailable local listener, mixed HTTP/HTTPS configuration and stale cookies from a previous login. Common testing mistakes include changing several values at once, confusing client-side validation with server-side enforcement, using stale session tokens, or interpreting response differences without controlling for the user's role and application state. Use a known baseline, a second authorized test account if access control is being examined, and small reversible changes. Never store secrets in a public writeup.</p>
+</section>
+
+<section id="workflow">
+    <h2>9. How Burp fits the security workflow</h2>
+    <p>Burp is most useful after scope and test accounts are established, and while you have a clear hypothesis about the application. Map the normal journey, identify requests tied to security-relevant actions, then compare expected and observed behavior. If you find a suspicious result, reproduce it with minimal changes, record the roles and steps required, determine impact, and check whether the behavior is a design decision or defect. After remediation, replay the same test and confirm that the server now enforces the intended rule without breaking normal use.</p><p>For a defensive or engineering team, request/response evidence helps developers trace validation and authorization logic. It can complement browser developer tools, application logs, API specifications and code review. Burp does not automatically integrate with every system; data exchange and collaboration depend on the edition, configuration and organizational workflow. When preparing a report, remove passwords, session identifiers and personal data, include only necessary evidence, and make the test conditions reproducible. A concise reproduction and a justified impact are more actionable than a long list of raw requests.</p>
+</section>
+
+<section id="lab">
+    <h2>10. Hands-on local lab</h2>
+    <p>Use a local training application with two dummy accounts and two records that belong to those accounts. Sign in as the first account, locate a read-only request for one record, and send it to Repeater. Save the untouched request as your baseline. Change only the record identifier to a second record you are authorized to use in this exercise. Observe whether the app denies access, redirects to login, returns a generic error, or returns content. If the lab is designed to demonstrate broken access control, record the difference without applying the technique to external sites.</p><ol><li>Confirm the application's host is local or explicitly in scope.</li><li>Record the signed-in test role and expected access policy.</li><li>Capture the baseline request and response.</li><li>Change one test identifier and compare status and content.</li><li>Write down what evidence supports your conclusion and what remains uncertain.</li><li>Reset the lab to its original state when finished.</li></ol><p>You should be able to describe the proxy path, distinguish history from interception, explain why Repeater is useful, identify the security significance of cookies and authorization context, and distinguish a server-side access-control check from a visual element hidden in the browser. If the application state becomes unclear, restart with fresh lab accounts rather than assuming that the last response explains the whole behavior.</p>
+</section>
+
+<section id="next-steps">
+    <h2>11. Troubleshooting and next steps</h2>
+    <p>If requests do not appear in history, confirm that the browser uses the correct proxy and that you opened the test target through the intended browser profile. If HTTPS errors appear, follow the official CA certificate instructions for that profile instead of disabling certificate checks globally. If Repeater returns a different result than the browser, check cookies, headers, origin/referer context, CSRF tokens, redirect behavior and whether the application uses a one-time request token. Record these dependencies and refresh the baseline when needed.</p><p>To continue learning, study HTTP semantics, cookies, sessions, authentication versus authorization, REST API design, content types and server-side validation. Read the OWASP Web Security Testing Guide for methodology and compare your observations with the intended application behavior. Keep an explicit scope and report findings through the authorized channel. The key skill is controlled experimentation: isolate one variable, preserve evidence, explain a justified conclusion and show how the issue can be retested after a fix.</p>
+</section>
+                    <section id="references">
+                        <h2>References &amp; further reading</h2>
+                        <p>The sources below are official tool documentation or authoritative supporting references. Consult the documentation matching the version and operating system in your lab before using version-sensitive options.</p>
+                        <ol><li id="ref-1"><a href="https://portswigger.net/burp/documentation/desktop" target="_blank" rel="noopener noreferrer">Burp Suite desktop documentation</a> <span>— Official product documentation</span></li>
+<li id="ref-2"><a href="https://portswigger.net/burp/documentation/desktop/tools/proxy" target="_blank" rel="noopener noreferrer">Burp Proxy</a> <span>— Official proxy guide and interception workflow</span></li>
+<li id="ref-3"><a href="https://portswigger.net/burp/documentation/desktop/tools/repeater" target="_blank" rel="noopener noreferrer">Burp Repeater</a> <span>— Official guide to manually resending requests</span></li>
+<li id="ref-4"><a href="https://portswigger.net/burp/communitydownload" target="_blank" rel="noopener noreferrer">Community Edition download and feature comparison</a> <span>— Official edition comparison</span></li></ol>
+                    </section>
+                    <nav class="resource-guide-footer-nav" aria-label="Related guide navigation">
+                        <a href="/resources/">← All resources</a><a href="/resources/nmap/">← Previous guide</a><a href="/resources/gobuster/">Next guide →</a>
+                    </nav>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-brand"><span class="brand-mark">&gt;_</span><strong>Ozz961</strong></div>
+        <p>Cybersecurity · Pentesting · AppSec · AI Security</p>
+        <span>© <span id="year"></span> Ozz961</span>
+    </footer>
+    <script src="../../script.js"></script>
+</body>
+</html>

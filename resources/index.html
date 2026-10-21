@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A cybersecurity resources library with ten tool guides for authorized Red Teaming labs and Blue Teaming investigation, built for practical learning.">
+    <meta name="theme-color" content="#07060b">
+    <title>Cybersecurity Resources — Roger Rached</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <a href="/" class="brand"><span class="brand-mark">&gt;_</span><span>Roger Rached</span></a>
+        <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation">
+            <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+            <a href="/writeups/">Writeups</a>
+            <a href="/projects/">Projects</a>
+            <a href="/resources/" aria-current="page">Resources</a>
+            <a href="/research/">Research</a>
+            <a href="/guides/">Guides</a>
+            <a href="/certifications/">Certifications</a>
+            <a href="/experience/">Experience</a>
+            <a href="/education/">Education</a>
+            <a href="/about/">About</a>
+        </nav>
+        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer" class="github-link">GitHub ↗</a>
+    </header>
+
+    <main id="main-content" tabindex="-1" class="page-shell">
+        <div class="page-container">
+            <header class="page-header">
+                <div class="page-breadcrumb">
+                    <a href="/">Home</a>
+                    <span>/</span>
+                    <span class="current">Resources</span>
+                </div>
+                <span class="section-label">SECURITY KNOWLEDGE / TOOL LIBRARY</span>
+                <h1 class="page-title">Cybersecurity <span>resources.</span></h1>
+                <p class="page-description">Ten practical tool guides for learning how to test, monitor, inspect and investigate systems. Pick a tool below to open its dedicated guide.</p>
+            </header>
+
+            <div class="page-content">
+                <section class="page-section">
+                    <div class="resource-guide-callout">
+                        <strong>Use responsibly.</strong> These guides are educational references. Run testing tools only against systems you own, isolated labs, or targets for which you have explicit authorization. Tool categories here reflect each tool's primary role in this library, not every possible use.
+                    </div>
+                    <p class="resources-intro">Each card gives you the core purpose, the security problem it helps address, and a few concepts to look for in the guide. Use <em>Quick concept</em> to reveal an extra learning cue; the important description and guide link remain visible without flipping or hovering.</p>
+                    <nav class="resource-guide-footer-nav" aria-label="Jump to a team section">
+                        <a href="#red-teaming">Red Teaming — 5 guides ↓</a>
+                        <a href="#blue-teaming">Blue Teaming — 5 guides ↓</a>
+                    </nav>
+                </section>
+
+                <section class="resource-category" id="red-teaming" aria-labelledby="red-teaming-title">
+                    <div class="resource-category-header">
+                        <div>
+                            <span class="section-label">01 / OFFENSIVE SECURITY</span>
+                            <h2 id="red-teaming-title">Red Teaming</h2>
+                            <p>Tools for authorized discovery, manual web testing, path enumeration, controlled vulnerability validation and password-audit labs.</p>
+                        </div>
+                        <span class="resource-category-count">05 TOOLS</span>
+                    </div>
+                    <div class="resource-grid">
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">01</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">NETWORK DISCOVERY</span>
+                                    <h3>Nmap</h3>
+                                </div>
+                            </div>
+                            <p>Nmap helps map reachable hosts and exposed network services so an analyst can build an evidence-based picture of an authorized lab's attack surface.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>What hosts and network services are visible from this testing location?</div>
+                            <div class="resource-tags"><span>Host discovery</span><span>TCP / UDP</span><span>Service detection</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>A port state is a report about what Nmap could observe from one network position; it is not a verdict that a service is vulnerable.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/nmap/">Explore tool →</a><a class="page-link" href="https://nmap.org/book/man.html" target="_blank" rel="noopener noreferrer">Official manual ↗</a></div>
+                        </article>
+
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">02</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">WEB APPLICATION TESTING</span>
+                                    <h3>Burp Suite Community Edition</h3>
+                                </div>
+                            </div>
+                            <p>Burp's intercepting proxy lets a tester inspect browser-to-application traffic and repeat carefully modified requests against a test application.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>How does the application process a request, its parameters, session and response?</div>
+                            <div class="resource-tags"><span>Proxy history</span><span>Repeater</span><span>HTTP / WebSockets</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>Community Edition includes the manual proxy workflow and Repeater; the full scanner and full Intruder attack capability are Professional features.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/burp-suite/">Explore tool →</a><a class="page-link" href="https://portswigger.net/burp/documentation/desktop" target="_blank" rel="noopener noreferrer">Official docs ↗</a></div>
+                        </article>
+
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">03</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">CONTENT ENUMERATION</span>
+                                    <h3>Gobuster</h3>
+                                </div>
+                            </div>
+                            <p>Gobuster tests candidate paths or names against a defined target and helps identify content or virtual hosts that are not linked in normal navigation.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>Which expected or undocumented paths respond on an in-scope test web server?</div>
+                            <div class="resource-tags"><span>Directory mode</span><span>Wordlists</span><span>HTTP status</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>A response code is a clue, not proof that a path contains sensitive data; wildcard routes and custom error pages can generate misleading results.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/gobuster/">Explore tool →</a><a class="page-link" href="https://github.com/OJ/gobuster" target="_blank" rel="noopener noreferrer">Official project ↗</a></div>
+                        </article>
+
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">04</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">CONTROLLED VALIDATION</span>
+                                    <h3>Metasploit Framework</h3>
+                                </div>
+                            </div>
+                            <p>Metasploit organizes modules that support security research and controlled lab validation of known weaknesses after a finding has been investigated.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>Can a suspected lab vulnerability be safely reproduced and its impact understood?</div>
+                            <div class="resource-tags"><span>Modules</span><span>Auxiliary</span><span>Lab validation</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>A module's existence does not confirm a target is vulnerable. Version, configuration, prerequisites and safe validation all matter.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/metasploit/">Explore tool →</a><a class="page-link" href="https://docs.metasploit.com/docs/using-metasploit/basics/using-metasploit.html" target="_blank" rel="noopener noreferrer">Official docs ↗</a></div>
+                        </article>
+
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">05</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">AUTHENTICATION AUDITING</span>
+                                    <h3>Hydra</h3>
+                                </div>
+                            </div>
+                            <p>THC Hydra can support authorized password-auditing exercises against deliberately configured lab services to explore authentication controls.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>Do lab authentication controls resist weak credentials and unsafe retry policies?</div>
+                            <div class="resource-tags"><span>Authentication</span><span>Rate limits</span><span>Audit scope</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>Use a test account and deliberately small input set. Lockout, monitoring, authorization and operational impact are part of the lesson.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/hydra/">Explore tool →</a><a class="page-link" href="https://github.com/vanhauser-thc/thc-hydra" target="_blank" rel="noopener noreferrer">Official project ↗</a></div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="resource-category" id="blue-teaming" aria-labelledby="blue-teaming-title">
+                    <div class="resource-category-header">
+                        <div>
+                            <span class="section-label">02 / DEFENSIVE SECURITY</span>
+                            <h2 id="blue-teaming-title">Blue Teaming</h2>
+                            <p>Tools for packet-level analysis, endpoint and log monitoring, network intrusion detection, and structured network-activity investigation.</p>
+                        </div>
+                        <span class="resource-category-count">05 TOOLS</span>
+                    </div>
+                    <div class="resource-grid">
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">01</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">PACKET ANALYSIS</span>
+                                    <h3>Wireshark</h3>
+                                </div>
+                            </div>
+                            <p>Wireshark decodes packet captures into protocol details, helping analysts troubleshoot network behavior and investigate suspicious traffic.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>What can packet-level evidence show about a conversation or unexpected protocol behavior?</div>
+                            <div class="resource-tags"><span>PCAP</span><span>Display filters</span><span>TCP / DNS</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>Capture filters limit what is collected; display filters only change what is shown. Encrypted payloads generally remain unreadable without authorized decryption material.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/wireshark/">Explore tool →</a><a class="page-link" href="https://www.wireshark.org/docs/wsug_html/index" target="_blank" rel="noopener noreferrer">Official guide ↗</a></div>
+                        </article>
+
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">02</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">ENDPOINT MONITORING</span>
+                                    <h3>Wazuh</h3>
+                                </div>
+                            </div>
+                            <p>Wazuh centralizes configured endpoint and log data, applies analysis rules, and presents alerts that help analysts prioritize investigation.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>Which collected events deserve triage, correlation and a documented response?</div>
+                            <div class="resource-tags"><span>Agents</span><span>Log analysis</span><span>File integrity</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>An alert is a detection signal generated from available telemetry and rules; an analyst still has to validate context and decide whether an incident is confirmed.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/wazuh/">Explore tool →</a><a class="page-link" href="https://documentation.wazuh.com/current/quickstart.html" target="_blank" rel="noopener noreferrer">Official docs ↗</a></div>
+                        </article>
+
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">03</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">NETWORK IDS / IPS</span>
+                                    <h3>Suricata</h3>
+                                </div>
+                            </div>
+                            <p>Suricata inspects traffic against configured signatures and protocols, producing events or alerts that support network detection and response.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>Does observed traffic match a rule or protocol pattern that warrants investigation?</div>
+                            <div class="resource-tags"><span>Rules</span><span>IDS / IPS</span><span>EVE JSON</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>A signature match is evidence to investigate, not automatically a confirmed intrusion; rule quality, traffic visibility and tuning affect results.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/suricata/">Explore tool →</a><a class="page-link" href="https://docs.suricata.io/en/suricata-8.0.7/rules/intro.html" target="_blank" rel="noopener noreferrer">Official docs ↗</a></div>
+                        </article>
+
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">04</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">NETWORK SECURITY MONITORING</span>
+                                    <h3>Zeek</h3>
+                                </div>
+                            </div>
+                            <p>Zeek turns observed network activity into structured logs and events that analysts can correlate across connections and protocols.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>What communication patterns and protocol metadata can be extracted from the traffic a sensor sees?</div>
+                            <div class="resource-tags"><span>conn.log</span><span>DNS / HTTP</span><span>Metadata</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>Zeek commonly produces structured records rather than a GUI packet-by-packet view. Sensor placement and encryption determine what it can observe.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/zeek/">Explore tool →</a><a class="page-link" href="https://docs.zeek.org/en/current/quickstart.html" target="_blank" rel="noopener noreferrer">Official docs ↗</a></div>
+                        </article>
+
+                        <article class="resource-card">
+                            <div class="resource-card-header">
+                                <span class="resource-icon" aria-hidden="true">05</span>
+                                <div class="resource-tool-heading">
+                                    <span class="section-label">WINDOWS ENDPOINT TELEMETRY</span>
+                                    <h3>Microsoft Sysmon</h3>
+                                </div>
+                            </div>
+                            <p>Sysmon records selected Windows system activity to the Event Log, giving investigators richer process and other endpoint evidence when configured.</p>
+                            <div class="resource-problem"><strong>SECURITY PROBLEM</strong>Which process, file, network or configuration events help explain endpoint behavior?</div>
+                            <div class="resource-tags"><span>Event IDs</span><span>Process creation</span><span>Telemetry</span></div>
+                            <details class="resource-card-extra"><summary>Quick concept</summary><p>Sysmon generates telemetry, not a final verdict. Event availability depends on version and configuration; collection and analysis happen elsewhere.</p></details>
+                            <div class="resource-card-footer"><a class="resource-card-link" href="/resources/sysmon/">Explore tool →</a><a class="page-link" href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon" target="_blank" rel="noopener noreferrer">Official docs ↗</a></div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="page-section">
+                    <article class="page-card">
+                        <span class="section-label">KEEP LEARNING</span>
+                        <h2>Connect tools to concepts.</h2>
+                        <p>Tool output becomes more useful when paired with networking fundamentals, operating-system behavior, web protocols, good logging practices and an investigation method. The existing topic indexes remain available as supplementary references.</p>
+                        <div class="resource-card-footer">
+                            <a class="resource-card-link" href="/notes/">Legacy technical notes →</a>
+                            <a class="resource-card-link" href="/tools/">Technology inventory →</a>
+                            <a class="resource-card-link" href="/writeups/">Practical writeups →</a>
+                        </div>
+                    </article>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-brand"><span class="brand-mark">&gt;_</span><strong>Ozz961</strong></div>
+        <p>Cybersecurity · Pentesting · AppSec · AI Security</p>
+        <span>© <span id="year"></span> Ozz961</span>
+    </footer>
+    <script src="../script.js"></script>
+</body>
+</html>

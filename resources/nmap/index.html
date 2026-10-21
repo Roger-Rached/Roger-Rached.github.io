@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A practical guide to Nmap host discovery, TCP and UDP scanning, service identification, result interpretation and responsible scope management.">
+    <meta name="theme-color" content="#07060b">
+    <title>Nmap Guide — Cybersecurity Resources | Roger Rached</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <a href="/" class="brand"><span class="brand-mark">&gt;_</span><span>Roger Rached</span></a>
+        <button class="nav-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation">
+            <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+            <a href="/writeups/">Writeups</a>
+            <a href="/projects/">Projects</a>
+            <a href="/resources/" aria-current="page">Resources</a>
+            <a href="/research/">Research</a>
+            <a href="/guides/">Guides</a>
+            <a href="/certifications/">Certifications</a>
+            <a href="/experience/">Experience</a>
+            <a href="/education/">Education</a>
+            <a href="/about/">About</a>
+        </nav>
+        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer" class="github-link">GitHub ↗</a>
+    </header>
+
+    <main id="main-content" tabindex="-1" class="page-shell">
+        <div class="page-container">
+            <header class="page-header">
+                <div class="page-breadcrumb">
+                    <a href="/">Home</a><span>/</span><a href="/resources/">Resources</a><span>/</span><span class="current">Nmap</span>
+                </div>
+                <span class="section-label">RED TEAMING / TOOL GUIDE</span>
+                <h1 class="page-title">Nmap</h1>
+                <p class="page-description">Learn how Nmap describes reachable hosts and network services, how to interpret port states, and how to turn a scoped scan into defensible follow-up questions.</p>
+                <div class="resource-guide-meta"><span>1,818 substantive words</span><span>~8 min read</span><span>Guide / 01</span></div>
+            </header>
+
+            <div class="page-content resource-guide-layout">
+                <aside class="resource-guide-toc" aria-label="Guide table of contents">
+                    <h2>IN THIS GUIDE</h2>
+                    <ol><li><a href="#what-is-nmap">1. What is Nmap?</a></li>
+<li><a href="#why-it-matters">2. Why does Nmap matter?</a></li>
+<li><a href="#when-and-where">3. When and where should it be used?</a></li>
+<li><a href="#core-concepts">4. Core concepts: hosts, ports and scan states</a></li>
+<li><a href="#setup">5. Installation and first use</a></li>
+<li><a href="#examples">6. Practical examples and output formats</a></li>
+<li><a href="#interpret-results">7. How to interpret results responsibly</a></li>
+<li><a href="#limits-and-errors">8. Limitations, false positives and common mistakes</a></li>
+<li><a href="#workflow">9. How Nmap fits a broader security workflow</a></li>
+<li><a href="#lab">10. Hands-on lab and skills checklist</a></li>
+<li><a href="#next-steps">11. Troubleshooting and what to learn next</a></li><li><a href="#references">References &amp; further reading</a></li></ol>
+                </aside>
+                <article class="resource-guide-article">
+                    <div class="resource-guide-callout"><strong>Scope reminder:</strong> Examples are for your own machine, a local lab, or explicitly authorized targets only. Commands are documented examples; they have not been executed against an external target as part of writing this guide.</div>
+                    <section id="what-is-nmap">
+    <h2>1. What is Nmap?</h2>
+    <p>Nmap, short for Network Mapper, is a network exploration and security auditing tool. It helps an operator discover which hosts respond from a particular network vantage point, examine selected ports, and collect service or operating-system clues. It is used by network administrators for inventory and troubleshooting, by security teams during authorized assessments, and by learners who need to connect protocol theory with observed behavior. Nmap is open-source software with command-line operation and a graphical interface called Zenmap available in supported distributions.</p><p>Nmap is not a vulnerability verdict engine. Its core result describes what the scanner could observe, using a particular method, from a particular source, at a particular time. <sup><a href="#ref-1" aria-label="Reference 1">[1]</a></sup> Service detection may identify a protocol or product family, but banners can be masked, proxies can interfere, and services may be patched in ways that banners do not reveal. The tool is most valuable when results are recorded with scope, timing and method, then interpreted alongside asset ownership and configuration evidence.</p>
+</section>
+
+<section id="why-it-matters">
+    <h2>2. Why does Nmap matter?</h2>
+    <p>A network security review starts with knowing what is reachable. An inventory may be outdated, a firewall rule may expose an unexpected management port, or a lab server may be listening on an address that its owner did not expect. Nmap helps turn those questions into repeatable observations. A carefully scoped scan can show which addresses respond and which transport ports appear open, closed or filtered from the scanner's perspective.</p><p>These observations support prioritization: an exposed remote-administration service may merit verification, while a web service may need application-level review. The presence of an open port does not establish a vulnerability, and a missing result does not prove that a service is absent. Firewalls, routing, packet loss, host controls, scan type and service behavior can all influence results. Nmap therefore belongs early in a workflow, before deeper authorized validation and remediation.</p>
+</section>
+
+<section id="when-and-where">
+    <h2>3. When and where should it be used?</h2>
+    <p>Use Nmap when you have written authorization and need to inventory a known lab subnet, verify a firewall change, confirm which ports a server exposes, or establish a baseline before a controlled change. It normally runs from an analyst workstation, a test VM or an approved jump host with the routing needed to reach the assets. Some scan techniques require elevated privileges because they use raw packets; connect scans and other operations may work without them, depending on operating system and configuration.</p><p>Choose a different tool when the question concerns application business logic, source-code defects, packet interpretation over time, or endpoint process behavior. Nmap can point you toward a service but does not replace a web proxy, packet analyzer, authenticated configuration audit or host log review. Before scanning a range, verify the exact IP addresses, permitted time window, scan intensity, excluded devices and point of contact. Shared networks, printers, fragile OT systems and production services need particular care.</p>
+</section>
+
+<section id="core-concepts">
+    <h2>4. Core concepts: hosts, ports and scan states</h2>
+    <p>A host-discovery phase attempts to determine which systems appear online. Port scanning then probes selected transport ports, most commonly Transmission Control Protocol (TCP) and sometimes User Datagram Protocol (UDP). TCP provides connection-oriented delivery, while UDP sends datagrams without the same handshake. A TCP connect scan asks the operating system to establish a connection; a SYN scan sends a connection-opening packet and interprets the response without completing the full application conversation. The appropriate method depends on permissions, network policy and the test plan.</p><p>Nmap's port states are observations, not simple labels of good or bad. <sup><a href="#ref-2" aria-label="Reference 2">[2]</a></sup> <code>open</code> means an application is accepting connections on that port from the scan's position. <code>closed</code> means the probe reached a host but no application was listening, based on the response. <code>filtered</code> means Nmap could not determine the state because filtering or another network condition prevented a clear answer. States such as <code>open|filtered</code> may remain ambiguous. Service/version detection sends additional probes to infer what might be listening and can cause more interaction than a basic scan.</p>
+</section>
+
+<section id="setup">
+    <h2>5. Installation and first use</h2>
+    <p>Install Nmap from its official download page or your operating system's trusted package manager, and review the version that is installed with <code>nmap --version</code>. Keep the local manual nearby because scan options and platform requirements can vary by release. For the first exercise, scan only the loopback address of your own machine. This is an intentionally narrow target that avoids touching another device on the network.</p><pre><code>nmap -sn 127.0.0.1
+nmap -sT -p 22,80,443 127.0.0.1
+nmap -sV -p 22,80,443 127.0.0.1</code></pre><p>The first example requests host discovery without a port scan; the loopback interface usually responds locally, but exact output depends on the operating system. The second uses a TCP connect scan for three ports. The third adds service/version probes for the selected ports. Ports may appear closed if no local process listens there, and output can vary between machines. Do not copy these commands with someone else's address substituted unless that address is explicitly in scope.</p>
+</section>
+
+<section id="examples">
+    <h2>6. Practical examples and output formats</h2>
+    <p>For an approved test VM, keep the target explicit and the port range as small as the objective allows. If a scope document gives one host, use one host rather than a whole subnet. To check a short list of TCP ports, specify them with <code>-p</code>; to ask for service hints on those ports, add <code>-sV</code>. Operating-system detection, requested with <code>-O</code>, relies on network-stack fingerprints and may be uncertain when firewalls, virtual networks or middleboxes alter responses. It commonly requires elevated privileges for its most useful probes.</p><pre><code>nmap -sT -p 22,80,443 &lt;authorized-lab-ip&gt;
+nmap -sV -p 22,80,443 &lt;authorized-lab-ip&gt;
+nmap -oN lab-scan.txt -sV -p 22,80,443 &lt;authorized-lab-ip&gt;
+nmap -oA lab-baseline -sV -p 22,80,443 &lt;authorized-lab-ip&gt;</code></pre><p>Replace the placeholder only with an authorized address. The first command tests selected TCP ports; the second attempts to identify services; the third stores human-readable output in a file; and <code>-oA</code> writes the standard output set under a shared basename, useful for later comparison. <sup><a href="#ref-3" aria-label="Reference 3">[3]</a></sup> This guide does not assert that these commands were run or that any port is open. Read the command summary, host status, state/reason, service guess and scan metadata together. A version guess is a lead to verify, not proof of an affected version.</p>
+</section>
+
+<section id="interpret-results">
+    <h2>7. How to interpret results responsibly</h2>
+    <p>Interpret each result as a hypothesis tied to its evidence. An open port indicates reachability and a listening endpoint from the scanner's path; it does not establish that the service is misconfigured. A service banner may be incomplete, deliberately generic or altered by a reverse proxy. A port that appears filtered might be blocked by a firewall, silently dropped by the host, or lost due to routing. Repeat tests only when the authorization and test window permit it, and compare differences instead of assuming the first result is the complete truth.</p><p>Record the date, source address, target scope, selected scan options and Nmap version alongside the output. This metadata helps explain discrepancies when a later scan runs from another VLAN or after firewall changes. When results identify a service, confirm ownership and business purpose with an asset register or administrator. Prioritize by exposure and context, and use approved service-specific checks to assess patch state and configuration. Avoid labeling assets “vulnerable” based solely on an open port or service-name string.</p>
+</section>
+
+<section id="limits-and-errors">
+    <h2>8. Limitations, false positives and common mistakes</h2>
+    <p>Network visibility is incomplete by nature. A host may be down, rate-limiting, filtering the source or reachable only through a different route. UDP responses are often absent even when a service exists, so a result marked open or filtered may need cautious interpretation. Version detection can be wrong when a product emulates another service or a proxy changes the response. Operating-system detection is a best-effort fingerprint, and load balancers can make multiple machines appear to be one address or make one machine appear inconsistent.</p><p>Common errors include scanning outside the agreed range, treating a timeout as proof of absence, using an aggressive scan against a fragile service, running privileged scans without understanding their effect, and failing to preserve output. A large port list or high timing setting increases traffic and may trigger monitoring or disrupt low-capacity equipment. Use a documented scope, conservative rate, maintenance window if needed, and stop conditions. If results conflict with configuration records, investigate the discrepancy rather than hiding it.</p>
+</section>
+
+<section id="workflow">
+    <h2>9. How Nmap fits a broader security workflow</h2>
+    <p>Nmap is typically a discovery and enumeration step, not the final assessment. Start with authorization, scope and asset context. Use discovery to identify likely live hosts, scan a justified selection of ports, and perform service detection only where it adds value. Then validate the service's purpose and configuration through approved administrative or application-specific methods. If network behavior is unclear, a packet capture can help explain retransmissions, resets or filtering; if a service is confirmed, a documented patch and configuration review is more reliable than an assumption based on its banner.</p><p>For defensive teams, scan results can compare intended exposure with observed exposure. A periodic approved inventory can flag a newly listening service or an unexpected management interface. Change tracking should separate planned changes from unapproved exposure, and results should be routed to system owners for verification. Store output securely, avoid placing sensitive inventory files in public repositories, and define who is responsible for follow-up. Findings become useful when tied to evidence, impact, owner and a remediation deadline.</p>
+</section>
+
+<section id="lab">
+    <h2>10. Hands-on lab and skills checklist</h2>
+    <p>Use two virtual machines on an isolated host-only network, or begin with loopback if you do not have a lab. On one VM, start a service that you understand and are allowed to test; on the scanner VM, confirm the target address from the lab's network configuration. Record the expected listener and firewall settings before scanning. Perform a small host-discovery check, then scan only the service's port and save the output. Change one configuration item, such as stopping the service or adjusting the local firewall, then repeat the same scoped scan and compare the state and reason text.</p><ol><li>Write down the authorized target, time and source host.</li><li>Use a minimal port list, not a broad scan by default.</li><li>Compare the baseline and changed output.</li><li>Explain what the change proves and what it does not prove.</li><li>Store the output privately and document a short remediation or verification note.</li></ol><p>You should be able to explain host discovery, TCP versus UDP, the meaning of the most common port states, what service detection probes do, how output formats help repeatability, and why an open port alone is not a vulnerability report. If the results do not match expectations, verify routing, local listeners, firewall policy and target scope before repeating the scan.</p>
+</section>
+
+<section id="next-steps">
+    <h2>11. Troubleshooting and what to learn next</h2>
+    <p>If the command reports that a scan type needs elevated privileges, consult the official manual and understand why that scan uses privileged packet access; do not simply run every security tool as administrator. If a scan returns no results, check the address and route from the authorized scanner, firewall policy, host state and whether the chosen discovery probe is appropriate. If service detection seems inaccurate, verify the application directly or consult the service owner. Use a current build and compare the exact options in your installed manual against examples written for another release.</p><p>Next, strengthen TCP/IP fundamentals, subnetting, DNS and routing. Learn to read packet captures, understand firewalls and interpret application banners. Pair Nmap results with a change record or asset inventory so you can explain why a service is expected or unexpected. The central professional skill is not generating a large output file; it is asking a precise question, choosing a proportionate scan, interpreting uncertainty and communicating a defensible conclusion to the owner.</p>
+</section>
+                    <section id="references">
+                        <h2>References &amp; further reading</h2>
+                        <p>The sources below are official tool documentation or authoritative supporting references. Consult the documentation matching the version and operating system in your lab before using version-sensitive options.</p>
+                        <ol><li id="ref-1"><a href="https://nmap.org/book/man.html" target="_blank" rel="noopener noreferrer">Nmap Reference Guide</a> <span>— Official command reference and option semantics</span></li>
+<li id="ref-2"><a href="https://nmap.org/book/port-scanning.html" target="_blank" rel="noopener noreferrer">Nmap: Port Scanning Basics</a> <span>— Official background on scan methods</span></li>
+<li id="ref-3"><a href="https://nmap.org/book/man-output.html" target="_blank" rel="noopener noreferrer">Nmap Output</a> <span>— Official description of supported output formats</span></li></ol>
+                    </section>
+                    <nav class="resource-guide-footer-nav" aria-label="Related guide navigation">
+                        <a href="/resources/">← All resources</a><a href="/resources/burp-suite/">Next guide →</a>
+                    </nav>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-brand"><span class="brand-mark">&gt;_</span><strong>Ozz961</strong></div>
+        <p>Cybersecurity · Pentesting · AppSec · AI Security</p>
+        <span>© <span id="year"></span> Ozz961</span>
+    </footer>
+    <script src="../../script.js"></script>
+</body>
+</html>
