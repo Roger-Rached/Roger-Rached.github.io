@@ -1,167 +1,110 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-    /* -------------------------
-       FOOTER YEAR
-    ------------------------- */
-
     const year = document.getElementById("year");
-
     if (year) {
         year.textContent = new Date().getFullYear();
     }
 
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let commandIndex = 0;
+    // Responsive navigation is a disclosure, not a modal: keyboard users can
+    // continue tabbing naturally, and Escape closes it and restores focus.
+    const navbar = document.querySelector(".navbar");
+    const navToggle = document.querySelector(".nav-toggle");
+    const navLinks = document.querySelector(".nav-links");
+    const mobileNavigation = window.matchMedia("(max-width: 950px)");
 
-    function printCommand() {
+    if (navbar && navToggle && navLinks) {
+        // The CSS leaves all links visible if JavaScript is unavailable.
+        navbar.classList.add("has-mobile-nav");
 
-        if (!terminal) {
-            return;
-        }
+        const setNavigationOpen = (isOpen) => {
+            navbar.classList.toggle("nav-open", isOpen);
+            navToggle.setAttribute("aria-expanded", String(isOpen));
+            navToggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+        };
 
-        terminal.innerHTML = "";
+        navToggle.addEventListener("click", () => {
+            const isOpen = navToggle.getAttribute("aria-expanded") !== "true";
+            setNavigationOpen(isOpen);
 
-        const current = commands[commandIndex];
+            if (isOpen && mobileNavigation.matches) {
+                navLinks.querySelector("a")?.focus();
+            }
+        });
 
-        const commandLine = document.createElement("div");
-        commandLine.className = "terminal-line";
+        navLinks.addEventListener("click", (event) => {
+            if (event.target instanceof Element && event.target.closest("a")) {
+                setNavigationOpen(false);
+            }
+        });
 
-        commandLine.innerHTML = `
-            <span class="terminal-purple">$</span>
-            <span class="terminal-command">${escapeHtml(current.command)}</span>
-        `;
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && navToggle.getAttribute("aria-expanded") === "true") {
+                setNavigationOpen(false);
+                navToggle.focus();
+            }
+        });
 
-        terminal.appendChild(commandLine);
+        document.addEventListener("click", (event) => {
+            if (
+                navToggle.getAttribute("aria-expanded") === "true" &&
+                event.target instanceof Node &&
+                !navbar.contains(event.target)
+            ) {
+                setNavigationOpen(false);
+            }
+        });
 
-        setTimeout(() => {
-
-            const outputLine = document.createElement("div");
-            outputLine.className = "terminal-line terminal-output terminal-success";
-
-            outputLine.textContent = current.output;
-
-            terminal.appendChild(outputLine);
-
-            setTimeout(() => {
-
-                const promptLine = document.createElement("div");
-                promptLine.className = "terminal-line";
-
-                promptLine.innerHTML = `
-                    <span class="terminal-purple">$</span>
-                    <span class="cursor"></span>
-                `;
-
-                terminal.appendChild(promptLine);
-
-            }, 180);
-
-        }, 350);
-
-        commandIndex++;
-
-        if (commandIndex >= commands.length) {
-            commandIndex = 0;
-        }
+        window.addEventListener("resize", () => {
+            if (!mobileNavigation.matches) {
+                setNavigationOpen(false);
+            }
+        });
     }
 
-    function escapeHtml(value) {
-        return value
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
-    }
-
-    printCommand();
-
-    setInterval(printCommand, 3200);
-
-
-    /* -------------------------
-       SCROLL REVEALS
-    ------------------------- */
-
+    // Scroll reveals are progressive enhancement; content remains visible
+    // without JavaScript, without IntersectionObserver, or with reduced motion.
     const revealElements = document.querySelectorAll(
         ".focus-card, .writeup-item, .project-card, .research-box"
     );
 
-    const observer = new IntersectionObserver(
-        (entries) => {
-
+    if (!prefersReducedMotion && "IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-
                 if (entry.isIntersecting) {
-
                     entry.target.classList.add("visible");
-
                     observer.unobserve(entry.target);
                 }
-
             });
+        }, { threshold: 0.08 });
 
-        },
-        {
-            threshold: 0.08
-        }
-    );
-
-    revealElements.forEach((element) => {
-
-        element.classList.add("reveal");
-
-        observer.observe(element);
-
-    });
-
-
-    /* -------------------------
-       HERO MOUSE EFFECT
-    ------------------------- */
-
-    const hero = document.querySelector(".hero");
-
-    if (
-        hero &&
-        window.matchMedia("(pointer:fine)").matches
-    ) {
-
-        hero.addEventListener("mousemove", (event) => {
-
-            const rect = hero.getBoundingClientRect();
-
-            const x =
-                ((event.clientX - rect.left) / rect.width - 0.5) * 12;
-
-            const y =
-                ((event.clientY - rect.top) / rect.height - 0.5) * 12;
-
-            const terminalElement =
-                document.querySelector(".hero-terminal");
-
-            if (terminalElement) {
-
-                terminalElement.style.transform =
-                    `perspective(1000px)
-                     rotateY(${-3 + x * 0.08}deg)
-                     rotateX(${y * -0.04}deg)`;
-            }
+        revealElements.forEach((element) => {
+            element.classList.add("reveal");
+            observer.observe(element);
         });
-
-
-        hero.addEventListener("mouseleave", () => {
-
-            const terminalElement =
-                document.querySelector(".hero-terminal");
-
-            if (terminalElement) {
-
-                terminalElement.style.transform =
-                    "perspective(1000px) rotateY(-3deg)";
-            }
-        });
-
     }
 
+    // The terminal tilt is decorative; do not run it for users who request
+    // reduced motion or on devices without a precise pointer.
+    const hero = document.querySelector(".hero");
+    if (hero && !prefersReducedMotion && window.matchMedia("(pointer: fine)").matches) {
+        const terminalElement = hero.querySelector(".hero-terminal");
+
+        if (terminalElement) {
+            hero.addEventListener("mousemove", (event) => {
+                const rect = hero.getBoundingClientRect();
+                if (!rect.width || !rect.height) return;
+
+                const x = ((event.clientX - rect.left) / rect.width - 0.5) * 12;
+                const y = ((event.clientY - rect.top) / rect.height - 0.5) * 12;
+
+                terminalElement.style.transform =
+                    `perspective(1000px) rotateY(${-3 + x * 0.08}deg) rotateX(${y * -0.04}deg)`;
+            });
+
+            hero.addEventListener("mouseleave", () => {
+                terminalElement.style.transform = "perspective(1000px) rotateY(-3deg)";
+            });
+        }
+    }
 });
