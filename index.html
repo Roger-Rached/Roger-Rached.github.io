@@ -14,7 +14,7 @@
     <meta name="description"
         content="Roger Rached — Cybersecurity, penetration testing, AppSec, AI security, research, tooling, writeups, notes, projects, experience and education.">
 
-    <meta name="theme-color" content="#08070d">
+    <meta name="theme-color" content="#07060b">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -30,9 +30,10 @@
 
 
 <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <div class="ambient ambient-one"></div>
-    <div class="ambient ambient-two"></div>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
 
 
     <!-- =========================
@@ -54,7 +55,16 @@
         </a>
 
 
-        <nav class="nav-links">
+        <button class="nav-toggle" type="button"
+            aria-controls="primary-navigation"
+            aria-expanded="false"
+            aria-label="Open navigation">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
+
+        <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
 
             <a href="/writeups/">
                 Writeups
@@ -107,7 +117,7 @@
 
 
 
-    <main>
+    <main id="main-content" tabindex="-1">
 
 
         <!-- =========================
@@ -116,7 +126,7 @@
 
         <section class="hero">
 
-            <div class="hero-grid"></div>
+            <div class="hero-grid" aria-hidden="true"></div>
 
 
             <div class="hero-content">
@@ -124,7 +134,7 @@
 
                 <div class="status-pill">
 
-                    <span class="status-dot"></span>
+                    <span class="status-dot" aria-hidden="true"></span>
 
                     Building &amp; learning in public
 
@@ -208,18 +218,18 @@
             <!-- TERMINAL -->
 
 
-            <div class="hero-terminal">
+            <div class="hero-terminal" role="img" aria-label="Illustrative terminal animation. All output is simulated; no live scan is running.">
 
                 <div class="terminal-top">
 
-                    <div class="terminal-dots">
+                    <div class="terminal-dots" aria-hidden="true">
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
 
                     <span class="terminal-title">
-                        Roger-Rached@security-lab
+                        SIMULATED LAB · NOT A LIVE SCAN
                     </span>
 
                 </div>
@@ -241,7 +251,7 @@
                 <div class="terminal-body" id="terminal-output"></div>
 
 
-                <div class="terminal-progress">
+                <div class="terminal-progress" aria-hidden="true">
 
                     <span class="terminal-progress-item active"></span>
                     <span class="terminal-progress-item"></span>
@@ -250,8 +260,6 @@
                     <span class="terminal-progress-item"></span>
 
                 </div>
-
-            </div>
 
             </div>
 
