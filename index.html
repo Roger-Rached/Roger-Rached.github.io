@@ -123,6 +123,7 @@
         <section class="hero">
 
             <div class="hero-grid" aria-hidden="true"></div>
+            <canvas class="hero-matrix" id="hero-matrix" aria-hidden="true"></canvas>
 
 
             <div class="hero-content">
@@ -204,6 +205,9 @@
                     <span>
                         Security Research
                     </span>
+                    <span class="system-meta" id="local-date">SYSTEM DATE: LOCAL</span>
+                    <span class="system-meta">SYSTEM STATUS: READY</span>
+                    <span class="system-meta">MODE: LEARNING &amp; RESEARCH</span>
 
                 </div>
 
@@ -214,7 +218,7 @@
             <!-- TERMINAL -->
 
 
-            <div class="hero-terminal" role="img" aria-label="Illustrative terminal animation. All output is simulated; no live scan is running.">
+            <div class="hero-terminal" role="group" aria-labelledby="terminal-window-title" aria-describedby="terminal-disclaimer">
 
                 <div class="terminal-top">
 
@@ -224,9 +228,12 @@
                         <span></span>
                     </div>
 
-                    <span class="terminal-title">
-                        SIMULATED LAB · NOT A LIVE SCAN
+                    <span class="terminal-title" id="terminal-window-title" aria-label="Simulated lab, not a live scan">
+                        <span id="terminal-disclaimer">SIMULATED LAB · NOT A LIVE SCAN</span>
                     </span>
+                    <button class="terminal-replay" id="terminal-replay" type="button" aria-controls="terminal-output">
+                        Replay demo <span aria-hidden="true">↻</span>
+                    </button>
 
                 </div>
 
@@ -247,7 +254,7 @@
                 <div class="terminal-body" id="terminal-output"></div>
 
 
-                <div class="terminal-progress" aria-hidden="true">
+                <div class="terminal-progress" id="terminal-progress" role="progressbar" aria-label="Simulated walkthrough progress" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Stage 1 of 5: Reconnaissance">
 
                     <span class="terminal-progress-item active"></span>
                     <span class="terminal-progress-item"></span>
@@ -258,7 +265,10 @@
                 </div>
 
                 <p class="terminal-motion-note" id="terminal-motion-note" hidden>
-                    STATIC PREVIEW · REDUCED MOTION ENABLED
+                    STATIC SUMMARY · REDUCED MOTION ENABLED
+                </p>
+                <p class="terminal-announcement visually-hidden" id="terminal-announcement" aria-live="polite" aria-atomic="true">
+                    Five-stage fictional demonstration ready. No network activity will be performed.
                 </p>
 
             </div>
