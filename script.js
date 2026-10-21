@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
             hero.style.setProperty("--pointer-y", Math.round(latestPoint.y - rect.top) + "px");
         };
         hero.addEventListener("pointermove", event => {
-            if (event.pointerType === "touch") return;
+            if (prefersReducedMotion() || event.pointerType === "touch") return;
             latestPoint = { x: event.clientX, y: event.clientY };
             if (pendingFrame === null) pendingFrame = window.requestAnimationFrame(applyPointerGlow);
         }, { passive: true });
