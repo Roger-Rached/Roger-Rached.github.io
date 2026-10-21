@@ -98,7 +98,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const hero = document.querySelector(".hero");
     const canvas = document.getElementById("hero-matrix");
     if (hero && canvas && typeof canvas.getContext === "function") {
-        const context = canvas.getContext("2d");
+        let context = null;
+        try {
+            context = canvas.getContext("2d");
+        } catch (error) {
+            console.warn("Hero matrix unavailable; leaving the rest of the page active.", error);
+        }
         if (context) {
             const symbols = "0123456789abcdef<>_/$[]{}";
             const fontSize = 13;
@@ -108,8 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let ratio = 1;
             let drops = [];
             let frameId = null;
-            let lastFrame = 0;
-            let staticDraw = false;
+            let timerId = null;
 
             const resizeCanvas = () => {
                 const rect = hero.getBoundingClientRect();
@@ -123,7 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 context.setTransform(ratio, 0, 0, ratio, 0, 0);
                 const columns = Math.ceil(width / columnWidth);
                 drops = Array.from({ length: columns }, () => Math.random() * (height / fontSize));
-                lastFrame = 0;
                 drawRain(false);
             };
 
@@ -156,24 +159,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const stopRain = () => {
                 if (frameId !== null) window.cancelAnimationFrame(frameId);
+                if (timerId !== null) window.clearTimeout(timerId);
                 frameId = null;
+                timerId = null;
             };
-            const animateRain = timestamp => {
+            const animateRain = () => {
                 frameId = null;
                 if (prefersReducedMotion() || document.visibilityState === "hidden") return;
-                if (timestamp - lastFrame >= 60) {
-                    drawRain(true);
-                    lastFrame = timestamp;
-                }
-                frameId = window.requestAnimationFrame(animateRain);
+                drawRain(true);
+                // Draw at roughly 16 frames/second instead of waking the canvas on every display refresh.
+                timerId = window.setTimeout(() => {
+                    timerId = null;
+                    if (!prefersReducedMotion() && document.visibilityState !== "hidden") {
+                        frameId = window.requestAnimationFrame(animateRain);
+                    }
+                }, 60);
             };
             const refreshRain = () => {
                 stopRain();
-                staticDraw = prefersReducedMotion();
-                if (staticDraw) {
+                if (prefersReducedMotion()) {
                     drawRain(false);
                 } else if (document.visibilityState !== "hidden") {
-                    lastFrame = 0;
                     frameId = window.requestAnimationFrame(animateRain);
                 }
             };
