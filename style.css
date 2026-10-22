@@ -4088,3 +4088,33 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     }
     .terminal-caret { animation: none !important; }
 }
+
+
+/* Research and internship details added in the second homepage update. */
+.research-phase-list { margin: 18px 0 22px; padding-left: 1.25rem; color: var(--text-soft); }
+.research-phase-list li { margin: 0 0 12px; padding-left: 4px; }
+.research-phase-list strong { color: var(--text); }
+.internship-details { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+.internship-details summary { cursor: pointer; color: var(--purple-bright); font-weight: 600; }
+.internship-detail-content { padding-top: 16px; }
+.internship-detail-content h4, .soc-internship-card h4 { margin: 18px 0 10px; color: var(--text); }
+.internship-detail-content ul, .soc-internship-card ul { padding-left: 1.25rem; color: var(--text-soft); }
+.internship-detail-content li, .soc-internship-card li { margin-bottom: 9px; }
+.internship-tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+.internship-tool-grid > div { min-width: 0; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: rgba(255,255,255,.02); }
+.internship-tool-grid strong, .internship-tool-grid span { display: block; }
+.internship-tool-grid strong { color: var(--text); margin-bottom: 5px; }
+.internship-tool-grid span { color: var(--muted); font-size: .9rem; }
+.capstone-callout { margin: 18px 0; padding: 14px 16px; border-left: 2px solid var(--purple-bright); background: rgba(155,92,255,.06); border-radius: 0 8px 8px 0; }
+.capstone-callout p { margin-top: 6px; color: var(--text-soft); }
+.training-breakdown { display: flex; width: 100%; overflow: hidden; border-radius: 8px; min-height: 42px; margin: 12px 0 18px; font-size: .78rem; font-weight: 600; }
+.training-breakdown span { display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px 5px; color: #fff; }
+.training-theory { flex: 30 1 0; background: #57428b; }
+.training-labs { flex: 50 1 0; background: #3c6d78; }
+.training-scenarios { flex: 20 1 0; background: #806337; }
+.nav-links a[aria-current="page"] { color: var(--text); }
+@media (max-width: 700px) {
+  .internship-tool-grid { grid-template-columns: 1fr; }
+  .training-breakdown { font-size: .66rem; }
+  .training-breakdown span { padding: 7px 3px; }
+}
