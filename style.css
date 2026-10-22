@@ -3523,7 +3523,7 @@ body.has-global-cursor-glow::before { opacity:1; }
 }
 
 
-/* Simulated Kali terminal animation controls, caret, and final flag treatment. */
+/* Terminal typography, caret and result emphasis. */
 .terminal-title {
     display: flex;
     flex: 1 1 190px;
@@ -3690,7 +3690,7 @@ body.has-global-cursor-glow::before { opacity:1; }
 }
 
 
-/* Cyber effects release: explicit accessibility override, visible Matrix rain, and phase slides. */
+/* Cyber effects, terminal phase slides and compact layout. */
 .hero-matrix { opacity: 0.62; }
 @media (max-width: 950px) { .hero-matrix { opacity: 0.42; } }
 @media (max-width: 700px) { .hero-matrix { opacity: 0.32; } }
@@ -3724,7 +3724,6 @@ body.has-global-cursor-glow::before { opacity: 1; }
     to { opacity: 1; transform: translateX(0); }
 }
 @media (max-width: 700px) {
-    .terminal-effects { font-size: 0.53rem; min-height: 27px; }
 }
 
 html[data-visual-effects="on"] body::before {
@@ -3749,3 +3748,6 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in { animation: terminalPhaseSlideIn 0.44s cubic-bezier(0.22, 1, 0.36, 1) both; }
     html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating { animation: terminalStageUpdate 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
+
+/* Keep the hero clean: no scroll-down prompt below the terminal. */
+.scroll-down, .scroll-indicator, .scroll-cue, .scroll-prompt, .hero-scroll { display: none !important; }
