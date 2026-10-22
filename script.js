@@ -63,7 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (open && mobileNavigation.matches) navLinks.querySelector("a")?.focus();
         });
         navLinks.addEventListener("click", event => {
-            if (event.target instanceof Element && event.target.closest("a")) setNavigationOpen(false);
+            // Scope disclosure closing to compact layouts so desktop navigation state
+            // is not mutated when a route link is activated.
+            if (mobileNavigation.matches && event.target instanceof Element && event.target.closest("a")) {
+                setNavigationOpen(false);
+            }
         });
         document.addEventListener("keydown", event => {
             if (event.key === "Escape" && navToggle.getAttribute("aria-expanded") === "true") {
