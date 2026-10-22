@@ -24,7 +24,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=cyber-effects-20261022-3">
+    <link rel="stylesheet" href="style.css?v=cli-clean-20261022-4">
 
 </head>
 
@@ -218,7 +218,7 @@
             <!-- TERMINAL -->
 
 
-            <div class="hero-terminal" role="group" aria-labelledby="terminal-window-title" aria-describedby="terminal-motion-note">
+            <div class="hero-terminal" role="group" aria-labelledby="terminal-window-title">
 
                 <div class="terminal-top">
 
@@ -228,19 +228,9 @@
                         <span></span>
                     </div>
 
-                    <span class="terminal-title" id="terminal-window-title" aria-label="Simulated Log4Shell penetration-testing lab">
-                        <span class="terminal-title-main">SIMULATED LAB</span>
-                        <span class="terminal-subtitle">LOG4SHELL CVE-2021-44228 // PREDEFINED MOCK FIXTURE</span>
+                    <span class="terminal-title" id="terminal-window-title" aria-label="Kali security assessment terminal">
+                        <span class="terminal-title-main">KALI // SECURITY ASSESSMENT</span>
                     </span>
-                    <button class="terminal-replay" id="terminal-replay" type="button" aria-controls="terminal-output">
-                        Replay demo <span aria-hidden="true">↻</span>
-                    </button>
-                    <button class="terminal-pause" id="terminal-pause" type="button" aria-controls="terminal-output" aria-pressed="false">
-                        Pause
-                    </button>
-                    <button class="terminal-effects" id="visual-effects-toggle" type="button" aria-controls="hero-matrix terminal-output" aria-pressed="true" aria-label="Toggle Matrix background, cursor glow, and phase animations">
-                        Effects: On
-                    </button>
 
                 </div>
 
@@ -258,19 +248,19 @@
                 </div>
 
 
-                <div class="terminal-body" id="terminal-output" aria-label="Simulated Log4Shell lab transcript" tabindex="0">
+                <div class="terminal-body" id="terminal-output" aria-label="Kali command-line security assessment" tabindex="0">
                     <div class="terminal-output-lines">
                         <div class="terminal-command">
-                            <span class="terminal-prompt">Ozz961@kali:~$ </span>
-                            <span class="terminal-command-text">whoami</span>
+                            <span class="terminal-prompt">kali@kali:~$ </span>
+                            <span class="terminal-command-text">id</span>
                         </div>
-                        <div class="terminal-output-line terminal-success">kali</div>
-                        <div class="terminal-output-line terminal-normal">[SIM] Loading the predefined Log4Shell fixture…</div>
+                        <div class="terminal-output-line terminal-success">uid=1000(kali) gid=1000(kali) groups=1000(kali),27(sudo)</div>
+                        <div class="terminal-output-line terminal-normal">Working directory: /home/kali/assessments/log4j</div>
                     </div>
                 </div>
 
 
-                <div class="terminal-progress" id="terminal-progress" role="progressbar" aria-label="Five-stage Log4Shell demonstration workflow progress" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Stage 1 of 5: Log4Shell scope and reconnaissance">
+                <div class="terminal-progress" id="terminal-progress" role="progressbar" aria-label="Five-stage security assessment progress" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Stage 1 of 5: Log4Shell scope and reconnaissance">
 
                     <span class="terminal-progress-item active"></span>
                     <span class="terminal-progress-item"></span>
@@ -280,11 +270,8 @@
 
                 </div>
 
-                <p class="terminal-motion-note" id="terminal-motion-note" role="note">
-                    SIMULATED LOG4SHELL OUTPUT — NO EXPLOITATION OR NETWORK TRAFFIC
-                </p>
                 <p class="terminal-announcement visually-hidden" id="terminal-announcement" aria-live="polite" aria-atomic="true">
-                    Five-stage Log4Shell CVE-2021-44228 demonstration. No commands or network requests are executed.
+                    Security assessment workflow status.
                 </p>
 
             </div>
@@ -1096,10 +1083,10 @@
     </footer>
 
     <!-- GLOBAL SITE JAVASCRIPT -->
-    <script src="script.js?v=cyber-effects-20261022-3"></script>
+    <script src="script.js?v=cli-clean-20261022-4"></script>
 
     <!-- HOMEPAGE PENTESTING TERMINAL -->
-    <script src="pentesting-terminal-animation.js?v=cyber-effects-20261022-3"></script>
+    <script src="pentesting-terminal-animation.js?v=cli-clean-20261022-4"></script>
 
 </body>
 
