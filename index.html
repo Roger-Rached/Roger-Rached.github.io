@@ -218,7 +218,7 @@
             <!-- TERMINAL -->
 
 
-            <div class="hero-terminal" role="group" aria-labelledby="terminal-window-title" aria-describedby="terminal-disclaimer">
+            <div class="hero-terminal" role="group" aria-labelledby="terminal-window-title" aria-describedby="terminal-motion-note">
 
                 <div class="terminal-top">
 
@@ -228,9 +228,9 @@
                         <span></span>
                     </div>
 
-                    <span class="terminal-title" id="terminal-window-title" aria-label="Simulated lab, not a live scan">
-                        <span id="terminal-disclaimer">SIMULATED LAB · NOT A LIVE SCAN</span>
-                    </span>
+                    <span class="terminal-title" id="terminal-window-title" aria-label="Penetration testing workflow demonstration">
+                        <span class="terminal-title-main">PENETRATION TESTING WORKFLOW</span>
+                        <span class="terminal-subtitle">AUTHORIZED SECURITY ASSESSMENT // DEMONSTRATION MODE</span></span>
                     <button class="terminal-replay" id="terminal-replay" type="button" aria-controls="terminal-output">
                         Replay demo <span aria-hidden="true">↻</span>
                     </button>
@@ -245,7 +245,7 @@
                     </span>
 
                     <span class="terminal-stage-name" id="terminal-stage-name">
-                        RECONNAISSANCE
+                        SCOPE &amp; RECONNAISSANCE
                     </span>
 
                 </div>
@@ -253,17 +253,15 @@
 
                 <div class="terminal-body" id="terminal-output">
                     <div class="terminal-output-lines">
-                        <div class="terminal-command">
-                            <span class="terminal-prompt">ozz@lab:~$ </span>
-                            <span class="terminal-command-text">nmap -sn 10.10.10.42</span>
-                        </div>
-                        <div class="terminal-output-line terminal-normal">[SIMULATED] Fictional lab output — no scan is running.</div>
-                        <div class="terminal-output-line terminal-success">[+] Illustrative host discovery result.</div>
+                        <div class="terminal-output-line terminal-stage-label">[01/05] SCOPE &amp; RECONNAISSANCE</div>
+                        <div class="terminal-output-line terminal-normal">[*] Initializing authorized assessment context (demonstration mode)...</div>
+                        <div class="terminal-output-line terminal-success">[+] Scope: authorized demonstration target</div>
+                        <div class="terminal-output-line terminal-normal">[i] This decorative transcript is generated locally; no commands or network requests are executed.</div>
                     </div>
                 </div>
 
 
-                <div class="terminal-progress" id="terminal-progress" role="progressbar" aria-label="Simulated walkthrough progress" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Stage 1 of 5: Reconnaissance">
+                <div class="terminal-progress" id="terminal-progress" role="progressbar" aria-label="Five-stage demonstration workflow progress" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Stage 1 of 5: Scope and reconnaissance">
 
                     <span class="terminal-progress-item active"></span>
                     <span class="terminal-progress-item"></span>
@@ -273,11 +271,11 @@
 
                 </div>
 
-                <p class="terminal-motion-note" id="terminal-motion-note" hidden>
-                    STATIC SUMMARY · REDUCED MOTION ENABLED
+                <p class="terminal-motion-note" id="terminal-motion-note" role="note">
+                    DEMONSTRATION ONLY — NO LIVE TESTS EXECUTED
                 </p>
                 <p class="terminal-announcement visually-hidden" id="terminal-announcement" aria-live="polite" aria-atomic="true">
-                    Five-stage fictional demonstration ready. No network activity will be performed.
+                    Five-stage penetration-testing workflow demonstration. No commands or network requests are executed.
                 </p>
 
             </div>

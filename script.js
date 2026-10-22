@@ -94,201 +94,121 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Lightweight Matrix rain: stable glyphs, bounded frame rate and one scheduled frame at a time.
+    // Matrix rain: stable glyph trails, a bounded draw cadence, and a single scheduled frame.
     const hero = document.querySelector(".hero");
     const canvas = document.getElementById("hero-matrix");
-    if (hero && canvas && typeof canvas.getContext === "function" &&
-        canvas.dataset.matrixInitialized !== "true") {
+    if (hero && canvas && typeof canvas.getContext === "function" && canvas.dataset.matrixInitialized !== "true") {
         let context = null;
-        try {
-            context = canvas.getContext("2d");
-        } catch (error) {
-            console.warn("Hero Matrix canvas is unavailable; the rest of the homepage remains active.", error);
-        }
-
+        try { context = canvas.getContext("2d"); }
+        catch (error) { console.warn("Matrix background unavailable; other homepage interactions remain enabled.", error); }
         if (context) {
             canvas.dataset.matrixInitialized = "true";
             const symbols = "0123456789abcdef<>_/$[]{}";
-            const fontSize = 13;
-            const columnWidth = 17;
+            const fontSize = 13, columnWidth = 17;
             const compactQuery = window.matchMedia("(max-width: 700px)");
-            let width = 0;
-            let height = 0;
-            let ratio = 1;
-            let drops = [];
-            let glyphs = [];
-            let frameId = null;
-            let timerId = null;
-            let lastFrameAt = 0;
-
-            const randomGlyph = () => symbols[Math.floor(Math.random() * symbols.length)];
-
-            const stopRain = () => {
-                if (frameId !== null) window.cancelAnimationFrame(frameId);
-                if (timerId !== null) window.clearTimeout(timerId);
-                frameId = null;
-                timerId = null;
-                lastFrameAt = 0;
+            let width=0,height=0,ratio=1,drops=[],glyphs=[],rafId=null,timerId=null,lastDrawAt=0,resizeObserver=null;
+            const randomGlyph=()=>symbols[Math.floor(Math.random()*symbols.length)];
+            const stopMatrix=()=>{
+                if(rafId!==null)window.cancelAnimationFrame(rafId);
+                if(timerId!==null)window.clearTimeout(timerId);
+                rafId=null;timerId=null;lastDrawAt=0;
             };
-
-            const drawRain = advance => {
-                if (!context || !width || !height) return;
-                context.clearRect(0, 0, width, height);
-                const compact = compactQuery.matches;
-                const stride = compact ? 2 : 1;
-                context.font = fontSize + 'px "JetBrains Mono", monospace';
-
-                for (let column = 0; column < drops.length; column += stride) {
-                    const y = drops[column] * fontSize;
-                    for (let trail = 0; trail < 4; trail++) {
-                        const charY = y - trail * fontSize;
-                        if (charY < 0 || charY > height) continue;
-                        if (advance && Math.random() < 0.018) {
-                            glyphs[column][trail] = randomGlyph();
-                        }
-                        const alpha = (0.12 - trail * 0.025) * (compact ? 0.65 : 1);
-                        context.fillStyle = column % 3 === 0
-                            ? "rgba(155, 92, 255, " + alpha + ")"
-                            : "rgba(112, 132, 255, " + alpha + ")";
-                        context.fillText(glyphs[column][trail], column * columnWidth, charY);
+            const drawMatrix=advance=>{
+                if(!context||!width||!height)return;
+                context.clearRect(0,0,width,height);
+                const compact=compactQuery.matches,stride=compact?2:1;
+                context.font=fontSize+'px "JetBrains Mono", monospace';
+                for(let column=0;column<drops.length;column+=stride){
+                    const y=drops[column]*fontSize;
+                    for(let trail=0;trail<4;trail++){
+                        const charY=y-trail*fontSize;
+                        if(charY < -fontSize || charY > height+fontSize)continue;
+                        if(advance&&Math.random()<0.014)glyphs[column][trail]=randomGlyph();
+                        const alpha=(0.12-trail*0.025)*(compact?0.62:1);
+                        context.fillStyle=column%3===0 ? "rgba(155, 92, 255, "+alpha+")" : "rgba(112, 132, 255, "+alpha+")";
+                        context.fillText(glyphs[column][trail],column*columnWidth,charY);
                     }
-                    if (advance) {
-                        drops[column] += compact ? 0.22 : 0.30;
-                        if (drops[column] * fontSize > height + fontSize * 5 && Math.random() > 0.97) {
-                            drops[column] = -Math.random() * 8;
-                        }
+                    if(advance){
+                        drops[column]+=compact?0.24:0.31;
+                        if(drops[column]*fontSize>height+fontSize*5&&Math.random()>0.975)drops[column]=-Math.random()*8;
                     }
                 }
             };
-
-            const resizeCanvas = force => {
-                const rect = hero.getBoundingClientRect();
-                const nextWidth = Math.max(1, Math.round(rect.width));
-                const nextHeight = Math.max(1, Math.round(rect.height));
-                if (!force && nextWidth === width && nextHeight === height && drops.length) return;
-
-                width = nextWidth;
-                height = nextHeight;
-                ratio = Math.min(window.devicePixelRatio || 1, compactQuery.matches ? 1 : 1.35);
-                canvas.width = Math.round(width * ratio);
-                canvas.height = Math.round(height * ratio);
-                canvas.style.width = width + "px";
-                canvas.style.height = height + "px";
-                context.setTransform(ratio, 0, 0, ratio, 0, 0);
-
-                const columns = Math.ceil(width / columnWidth);
-                drops = Array.from({ length: columns }, () => Math.random() * (height / fontSize));
-                glyphs = Array.from({ length: columns }, () =>
-                    Array.from({ length: 4 }, randomGlyph)
-                );
-                drawRain(false);
+            const resizeMatrix=force=>{
+                const rect=hero.getBoundingClientRect(),nextWidth=Math.max(1,Math.round(rect.width)),nextHeight=Math.max(1,Math.round(rect.height));
+                if(!force&&nextWidth===width&&nextHeight===height&&drops.length)return;
+                width=nextWidth;height=nextHeight;
+                ratio=Math.min(window.devicePixelRatio||1,compactQuery.matches?1:1.25);
+                canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
+                canvas.style.width=width+"px";canvas.style.height=height+"px";
+                context.setTransform(ratio,0,0,ratio,0,0);
+                const columns=Math.ceil(width/columnWidth);
+                drops=Array.from({length:columns},()=>Math.random()*(height/fontSize));
+                glyphs=Array.from({length:columns},()=>Array.from({length:4},randomGlyph));
+                drawMatrix(false);
             };
-
-            const scheduleNextFrame = () => {
-                if (frameId !== null || timerId !== null ||
-                    prefersReducedMotion() || document.visibilityState === "hidden") return;
-
-                timerId = window.setTimeout(() => {
-                    timerId = null;
-                    if (!prefersReducedMotion() && document.visibilityState !== "hidden") {
-                        frameId = window.requestAnimationFrame(animateRain);
-                    }
-                }, compactQuery.matches ? 58 : 34);
+            const scheduleMatrix=()=>{
+                if(rafId!==null||timerId!==null||prefersReducedMotion()||document.visibilityState==="hidden")return;
+                timerId=window.setTimeout(()=>{
+                    timerId=null;
+                    if(!prefersReducedMotion()&&document.visibilityState!=="hidden")rafId=window.requestAnimationFrame(animateMatrix);
+                },compactQuery.matches?65:38);
             };
-
-            const animateRain = timestamp => {
-                frameId = null;
-                if (prefersReducedMotion() || document.visibilityState === "hidden") return;
-                const frameInterval = compactQuery.matches ? 1000 / 13 : 1000 / 20;
-                if (!lastFrameAt || timestamp - lastFrameAt >= frameInterval) {
-                    drawRain(true);
-                    lastFrameAt = timestamp;
-                }
-                scheduleNextFrame();
+            const animateMatrix=timestamp=>{
+                rafId=null;
+                if(prefersReducedMotion()||document.visibilityState==="hidden")return;
+                const minInterval=compactQuery.matches?1000/14:1000/24;
+                if(!lastDrawAt||timestamp-lastDrawAt>=minInterval){drawMatrix(true);lastDrawAt=timestamp;}
+                scheduleMatrix();
             };
-
-            const refreshRain = () => {
-                stopRain();
-                if (prefersReducedMotion()) {
-                    drawRain(false);
-                } else if (document.visibilityState !== "hidden") {
-                    scheduleNextFrame();
-                }
+            const refreshMatrix=()=>{
+                stopMatrix();
+                if(prefersReducedMotion())drawMatrix(false);
+                else if(document.visibilityState!=="hidden")scheduleMatrix();
             };
-
-            resizeCanvas(true);
-            refreshRain();
-
-            if ("ResizeObserver" in window) {
-                const resizeObserver = new ResizeObserver(() => resizeCanvas(false));
-                resizeObserver.observe(hero);
-            } else {
-                window.addEventListener("resize", () => resizeCanvas(false), { passive: true });
-            }
-
-            document.addEventListener("visibilitychange", refreshRain);
-            window.addEventListener("pagehide", stopRain);
-            window.addEventListener("pageshow", refreshRain);
-            if (reducedMotion.addEventListener) reducedMotion.addEventListener("change", refreshRain);
-            else if (reducedMotion.addListener) reducedMotion.addListener(refreshRain);
-            const refreshCompactMode = () => {
-                resizeCanvas(true);
-                refreshRain();
-            };
-            if (compactQuery.addEventListener) compactQuery.addEventListener("change", refreshCompactMode);
-            else if (compactQuery.addListener) compactQuery.addListener(refreshCompactMode);
+            resizeMatrix(true);refreshMatrix();
+            if("ResizeObserver"in window){resizeObserver=new ResizeObserver(()=>resizeMatrix(false));resizeObserver.observe(hero);}
+            else window.addEventListener("resize",()=>resizeMatrix(false),{passive:true});
+            document.addEventListener("visibilitychange",refreshMatrix);
+            window.addEventListener("pagehide",stopMatrix);window.addEventListener("pageshow",refreshMatrix);
+            const refreshForMotionOrSize=()=>{resizeMatrix(true);refreshMatrix();};
+            if(reducedMotion.addEventListener)reducedMotion.addEventListener("change",refreshMatrix);
+            else if(reducedMotion.addListener)reducedMotion.addListener(refreshMatrix);
+            if(compactQuery.addEventListener)compactQuery.addEventListener("change",refreshForMotionOrSize);
+            else if(compactQuery.addListener)compactQuery.addListener(refreshForMotionOrSize);
         }
     }
 
-    // Site-wide cursor glow, behind page content and disabled for touch/reduced motion.
-    const finePointer = window.matchMedia("(pointer: fine)");
-    const pointerBody = document.body;
-    if (pointerBody && finePointer.matches && !prefersReducedMotion()) {
-        let pendingGlowFrame = null;
-        let latestPointer = null;
-
-        const hideCursorGlow = () => {
-            latestPointer = null;
-            if (pendingGlowFrame !== null) window.cancelAnimationFrame(pendingGlowFrame);
-            pendingGlowFrame = null;
-            pointerBody.classList.remove("has-global-cursor-glow");
-            pointerBody.style.setProperty("--site-cursor-x", "-1000px");
-            pointerBody.style.setProperty("--site-cursor-y", "-1000px");
+    // One site-wide cursor glow, reusing one scheduled animation frame.
+    const glowBody=document.body,finePointer=window.matchMedia("(pointer: fine)");
+    if(glowBody&&glowBody.dataset.cursorGlowInitialized!=="true"){
+        glowBody.dataset.cursorGlowInitialized="true";
+        let pointerFrame=null,pointerPoint=null,active=false;
+        const hideGlow=()=>{
+            active=false;pointerPoint=null;
+            if(pointerFrame!==null)window.cancelAnimationFrame(pointerFrame);
+            pointerFrame=null;glowBody.classList.remove("has-global-cursor-glow");
+            glowBody.style.setProperty("--site-cursor-x","-1000px");glowBody.style.setProperty("--site-cursor-y","-1000px");
         };
-
-        const paintCursorGlow = () => {
-            pendingGlowFrame = null;
-            if (!latestPointer || prefersReducedMotion()) return;
-            pointerBody.style.setProperty("--site-cursor-x", latestPointer.x + "px");
-            pointerBody.style.setProperty("--site-cursor-y", latestPointer.y + "px");
-            pointerBody.classList.add("has-global-cursor-glow");
+        const paintGlow=()=>{
+            pointerFrame=null;if(!pointerPoint||prefersReducedMotion())return;
+            glowBody.style.setProperty("--site-cursor-x",pointerPoint.x+"px");
+            glowBody.style.setProperty("--site-cursor-y",pointerPoint.y+"px");
+            if(!active){active=true;glowBody.classList.add("has-global-cursor-glow");}
         };
-
-        document.addEventListener("pointermove", event => {
-            if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-            latestPointer = { x: event.clientX, y: event.clientY };
-            if (pendingGlowFrame === null) {
-                pendingGlowFrame = window.requestAnimationFrame(paintCursorGlow);
-            }
-        }, { passive: true });
-
-        document.addEventListener("pointerout", event => {
-            if (!event.relatedTarget) hideCursorGlow();
-        }, { passive: true });
-
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "hidden") hideCursorGlow();
-        });
-        window.addEventListener("blur", hideCursorGlow);
-        if (reducedMotion.addEventListener) {
-            reducedMotion.addEventListener("change", () => {
-                if (prefersReducedMotion()) hideCursorGlow();
-            });
-        } else if (reducedMotion.addListener) {
-            reducedMotion.addListener(() => {
-                if (prefersReducedMotion()) hideCursorGlow();
-            });
-        }
+        document.addEventListener("pointermove",event=>{
+            if(!finePointer.matches||prefersReducedMotion()||(event.pointerType!=="mouse"&&event.pointerType!=="pen"))return;
+            pointerPoint={x:event.clientX,y:event.clientY};
+            if(pointerFrame===null)pointerFrame=window.requestAnimationFrame(paintGlow);
+        },{passive:true});
+        document.addEventListener("pointerout",event=>{if(!event.relatedTarget)hideGlow();},{passive:true});
+        document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")hideGlow();});
+        window.addEventListener("blur",hideGlow);
+        const refreshGlowAvailability=()=>{if(!finePointer.matches||prefersReducedMotion())hideGlow();};
+        if(reducedMotion.addEventListener)reducedMotion.addEventListener("change",refreshGlowAvailability);
+        else if(reducedMotion.addListener)reducedMotion.addListener(refreshGlowAvailability);
+        if(finePointer.addEventListener)finePointer.addEventListener("change",refreshGlowAvailability);
+        else if(finePointer.addListener)finePointer.addListener(refreshGlowAvailability);
     }
 
     // Reduce repeated brand animation to a user-driven hover/focus effect, not a persistent glitch.
