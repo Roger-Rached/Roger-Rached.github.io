@@ -3474,3 +3474,74 @@ footer {
 .terminal-output-lines > .terminal-output-line:first-child.terminal-success { color: #8ee69a; }
 .terminal-output-lines > .terminal-output-line:first-child.terminal-error { color: #f07888; }
 .terminal-output-lines > .terminal-output-line:first-child.terminal-normal { color: #c2bacd; }
+
+
+/* Site-wide cursor glow: keep the soft spotlight behind page content. */
+body {
+    isolation: isolate;
+    --site-cursor-x: -1000px;
+    --site-cursor-y: -1000px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+        280px circle at var(--site-cursor-x) var(--site-cursor-y),
+        rgba(183, 124, 255, 0.13),
+        rgba(119, 113, 255, 0.06) 38%,
+        transparent 74%
+    );
+    transition: opacity 0.18s ease;
+}
+
+body.has-global-cursor-glow::before {
+    opacity: 1;
+}
+
+.nav-links a[aria-current="page"] {
+    color: var(--text);
+}
+
+.nav-links a[aria-current="page"]::after {
+    content: "";
+    display: block;
+    height: 2px;
+    margin-top: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--purple), #6f83ff);
+}
+
+.hero-matrix {
+    contain: strict;
+}
+
+@media (max-width: 950px) {
+    body::before {
+        background: radial-gradient(
+            220px circle at var(--site-cursor-x) var(--site-cursor-y),
+            rgba(183, 124, 255, 0.10),
+            transparent 74%
+        );
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    body::before {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before {
+        display: none;
+        transition: none;
+    }
+    .nav-links a[aria-current="page"]::after {
+        background: var(--purple);
+    }
+}

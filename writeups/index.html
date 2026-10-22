@@ -36,14 +36,24 @@
             <span>Roger Rached</span>
         </a>
 
-        <nav class="nav-links">
-            <a href="/writeups/">Writeups</a>
+        <button class="nav-toggle" type="button"
+            aria-controls="primary-navigation"
+            aria-expanded="false"
+            aria-label="Open navigation">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
+
+        <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+            <a href="/writeups/" aria-current="page">Writeups</a>
             <a href="/projects/">Projects</a>
             <a href="/resources/">Resources</a>
-            
             <a href="/research/">Research</a>
             <a href="/guides/">Guides</a>
             <a href="/certifications/">Certifications</a>
+            <a href="/experience/">Experience</a>
+            <a href="/education/">Education</a>
             <a href="/about/">About</a>
         </nav>
 
@@ -247,26 +257,26 @@
                     <article class="page-card">
 
                         <span class="section-label">
-                            OFFENSIVE SECURITY
+                            WEB SECURITY ACADEMY
                         </span>
 
                         <h3>
-                            Penetration Testing
+                            PortSwigger Labs
                         </h3>
 
                         <p>
-                            Practical methodology, reconnaissance,
-                            enumeration, exploitation and privilege escalation.
+                            Hands-on web application security labs covering vulnerabilities,
+                            exploitation techniques, and practical approaches to web security testing.
                         </p>
 
                         <div class="page-tag-row">
-                            <span class="page-tag">Recon</span>
-                            <span class="page-tag">Exploit</span>
-                            <span class="page-tag">PrivEsc</span>
+                            <span class="page-tag">Web Security</span>
+                            <span class="page-tag">Labs</span>
+                            <span class="page-tag">Learning Resource</span>
                         </div>
 
-                        <a href="#" class="page-link">
-                            Coming soon →
+                        <a href="https://portswigger.net/web-security" class="page-link" target="_blank" rel="noopener noreferrer">
+                            Explore Web Security Academy ↗
                         </a>
 
                     </article>
