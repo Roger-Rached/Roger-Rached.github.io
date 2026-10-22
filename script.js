@@ -10,40 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const prefersReducedMotion = () => Boolean(reducedMotion.matches);
-    const effectsToggle = document.getElementById("visual-effects-toggle");
-    let visualEffectsEnabled = !prefersReducedMotion();
-    let userSelectedVisualEffects = false;
+    // Homepage cyber effects run by default; CSS exposes the same state to the phase animation.
+    const visualEffectsEnabled = true;
     const motionSuppressed = () => !visualEffectsEnabled;
-    const syncVisualEffectsControl = () => {
-        document.documentElement.dataset.visualEffects = visualEffectsEnabled ? "on" : "off";
-        if (effectsToggle) {
-            effectsToggle.textContent = visualEffectsEnabled ? "Effects: On" : "Effects: Off";
-            effectsToggle.setAttribute("aria-pressed", String(visualEffectsEnabled));
-            effectsToggle.setAttribute("aria-label", visualEffectsEnabled
-                ? "Turn off Matrix background, cursor glow, and phase animations"
-                : "Turn on Matrix background, cursor glow, and phase animations");
-        }
-    };
-    const notifyVisualEffectsChange = () => {
-        syncVisualEffectsControl();
-        document.dispatchEvent(new CustomEvent("portfolio:visual-effects-change", {
-            detail: { enabled: visualEffectsEnabled }
-        }));
-    };
-    syncVisualEffectsControl();
-    if (effectsToggle) {
-        effectsToggle.addEventListener("click", () => {
-            userSelectedVisualEffects = true;
-            visualEffectsEnabled = !visualEffectsEnabled;
-            notifyVisualEffectsChange();
-        });
-    }
-    const refreshForMotionPreference = () => {
-        if (!userSelectedVisualEffects) visualEffectsEnabled = !prefersReducedMotion();
-        notifyVisualEffectsChange();
-    };
-    if (reducedMotion.addEventListener) reducedMotion.addEventListener("change", refreshForMotionPreference);
-    else if (reducedMotion.addListener) reducedMotion.addListener(refreshForMotionPreference);
+    document.documentElement.dataset.visualEffects = "on";
 
     // Local system-date label: uses the visitor's own local calendar date.
     const localDate = document.getElementById("local-date");
@@ -206,7 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if("ResizeObserver"in window){resizeObserver=new ResizeObserver(()=>resizeMatrix(false));resizeObserver.observe(hero);}
             else window.addEventListener("resize",()=>resizeMatrix(false),{passive:true});
             document.addEventListener("visibilitychange",refreshMatrix);
-            document.addEventListener("portfolio:visual-effects-change",refreshMatrix);
             window.addEventListener("pagehide",stopMatrix);window.addEventListener("pageshow",refreshMatrix);
             const refreshForMotionOrSize=()=>{resizeMatrix(true);refreshMatrix();};
             if(reducedMotion.addEventListener)reducedMotion.addEventListener("change",refreshMatrix);
@@ -247,7 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")hideGlow();});
         window.addEventListener("blur",hideGlow);
         const refreshGlowAvailability=()=>{if(!finePointer.matches||motionSuppressed())hideGlow();};
-        document.addEventListener("portfolio:visual-effects-change",refreshGlowAvailability);
         if(reducedMotion.addEventListener)reducedMotion.addEventListener("change",refreshGlowAvailability);
         else if(reducedMotion.addListener)reducedMotion.addListener(refreshGlowAvailability);
         if(finePointer.addEventListener)finePointer.addEventListener("change",refreshGlowAvailability);
