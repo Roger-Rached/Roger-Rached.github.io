@@ -84,7 +84,6 @@ const certificateGroups = [
       const card = make("article", "page-card credential-card");
       const issuerLine = make("div", "credential-card-top");
       issuerLine.append(make("span", "section-label", certificate.entryType || group.issuer));
-      if (certificate.issued) issuerLine.append(make("span", "credential-date", certificate.issued));
       card.append(issuerLine);
       card.append(make("h3", "credential-title", certificate.name));
 
