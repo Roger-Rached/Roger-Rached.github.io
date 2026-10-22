@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const effectsToggle = document.getElementById("visual-effects-toggle");
     let visualEffectsEnabled = !prefersReducedMotion();
     let userSelectedVisualEffects = false;
-    const motionSuppressed = () => prefersReducedMotion() && !visualEffectsEnabled;
+    const motionSuppressed = () => !visualEffectsEnabled;
     const syncVisualEffectsControl = () => {
         document.documentElement.dataset.visualEffects = visualEffectsEnabled ? "on" : "off";
         if (effectsToggle) {
