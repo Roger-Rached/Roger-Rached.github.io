@@ -10,6 +10,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const prefersReducedMotion = () => Boolean(reducedMotion.matches);
+    const effectsToggle = document.getElementById("visual-effects-toggle");
+    let visualEffectsEnabled = !prefersReducedMotion();
+    let userSelectedVisualEffects = false;
+    const motionSuppressed = () => prefersReducedMotion() && !visualEffectsEnabled;
+    const syncVisualEffectsControl = () => {
+        document.documentElement.dataset.visualEffects = visualEffectsEnabled ? "on" : "off";
+        if (effectsToggle) {
+            effectsToggle.textContent = visualEffectsEnabled ? "Effects: On" : "Effects: Off";
+            effectsToggle.setAttribute("aria-pressed", String(visualEffectsEnabled));
+            effectsToggle.setAttribute("aria-label", visualEffectsEnabled
+                ? "Turn off Matrix background, cursor glow, and phase animations"
+                : "Turn on Matrix background, cursor glow, and phase animations");
+        }
+    };
+    const notifyVisualEffectsChange = () => {
+        syncVisualEffectsControl();
+        document.dispatchEvent(new CustomEvent("portfolio:visual-effects-change", {
+            detail: { enabled: visualEffectsEnabled }
+        }));
+    };
+    syncVisualEffectsControl();
+    if (effectsToggle) {
+        effectsToggle.addEventListener("click", () => {
+            userSelectedVisualEffects = true;
+            visualEffectsEnabled = !visualEffectsEnabled;
+            notifyVisualEffectsChange();
+        });
+    }
+    const refreshForMotionPreference = () => {
+        if (!userSelectedVisualEffects) visualEffectsEnabled = !prefersReducedMotion();
+        notifyVisualEffectsChange();
+    };
+    if (reducedMotion.addEventListener) reducedMotion.addEventListener("change", refreshForMotionPreference);
+    else if (reducedMotion.addListener) reducedMotion.addListener(refreshForMotionPreference);
 
     // Local system-date label: uses the visitor's own local calendar date.
     const localDate = document.getElementById("local-date");
@@ -103,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         catch (error) { console.warn("Matrix background unavailable; other homepage interactions remain enabled.", error); }
         if (context) {
             canvas.dataset.matrixInitialized = "true";
-            const symbols = "0123456789abcdef<>_/$[]{}";
+            const symbols = "01<>[]{}ABCDEFGHIJKLMNOPQRSTUVWXYZ$#%";
             const fontSize = 13, columnWidth = 17;
             const compactQuery = window.matchMedia("(max-width: 700px)");
             let width=0,height=0,ratio=1,drops=[],glyphs=[],rafId=null,timerId=null,lastDrawAt=0,resizeObserver=null;
@@ -120,12 +154,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 context.font=fontSize+'px "JetBrains Mono", monospace';
                 for(let column=0;column<drops.length;column+=stride){
                     const y=drops[column]*fontSize;
-                    for(let trail=0;trail<4;trail++){
+                    for(let trail=0;trail<8;trail++){
                         const charY=y-trail*fontSize;
                         if(charY < -fontSize || charY > height+fontSize)continue;
-                        if(advance&&Math.random()<0.014)glyphs[column][trail]=randomGlyph();
-                        const alpha=(0.12-trail*0.025)*(compact?0.62:1);
-                        context.fillStyle=column%3===0 ? "rgba(155, 92, 255, "+alpha+")" : "rgba(112, 132, 255, "+alpha+")";
+                        if(advance&&Math.random()<0.02)glyphs[column][trail]=randomGlyph();
+                        const alpha=(0.27-trail*0.028)*(compact?0.72:1);
+                        context.fillStyle=column%6===0
+                            ? "rgba(173, 130, 255, "+alpha+")"
+                            : "rgba(91, 255, 145, "+alpha+")";
                         context.fillText(glyphs[column][trail],column*columnWidth,charY);
                     }
                     if(advance){
@@ -144,32 +180,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 context.setTransform(ratio,0,0,ratio,0,0);
                 const columns=Math.ceil(width/columnWidth);
                 drops=Array.from({length:columns},()=>Math.random()*(height/fontSize));
-                glyphs=Array.from({length:columns},()=>Array.from({length:4},randomGlyph));
+                glyphs=Array.from({length:columns},()=>Array.from({length:8},randomGlyph));
                 drawMatrix(false);
             };
             const scheduleMatrix=()=>{
-                if(rafId!==null||timerId!==null||prefersReducedMotion()||document.visibilityState==="hidden")return;
+                if(rafId!==null||timerId!==null||motionSuppressed()||document.visibilityState==="hidden")return;
                 timerId=window.setTimeout(()=>{
                     timerId=null;
-                    if(!prefersReducedMotion()&&document.visibilityState!=="hidden")rafId=window.requestAnimationFrame(animateMatrix);
+                    if(!motionSuppressed()&&document.visibilityState!=="hidden")rafId=window.requestAnimationFrame(animateMatrix);
                 },compactQuery.matches?65:38);
             };
             const animateMatrix=timestamp=>{
                 rafId=null;
-                if(prefersReducedMotion()||document.visibilityState==="hidden")return;
+                if(motionSuppressed()||document.visibilityState==="hidden")return;
                 const minInterval=compactQuery.matches?1000/14:1000/24;
                 if(!lastDrawAt||timestamp-lastDrawAt>=minInterval){drawMatrix(true);lastDrawAt=timestamp;}
                 scheduleMatrix();
             };
             const refreshMatrix=()=>{
                 stopMatrix();
-                if(prefersReducedMotion())drawMatrix(false);
+                if(motionSuppressed())drawMatrix(false);
                 else if(document.visibilityState!=="hidden")scheduleMatrix();
             };
             resizeMatrix(true);refreshMatrix();
             if("ResizeObserver"in window){resizeObserver=new ResizeObserver(()=>resizeMatrix(false));resizeObserver.observe(hero);}
             else window.addEventListener("resize",()=>resizeMatrix(false),{passive:true});
             document.addEventListener("visibilitychange",refreshMatrix);
+            document.addEventListener("portfolio:visual-effects-change",refreshMatrix);
             window.addEventListener("pagehide",stopMatrix);window.addEventListener("pageshow",refreshMatrix);
             const refreshForMotionOrSize=()=>{resizeMatrix(true);refreshMatrix();};
             if(reducedMotion.addEventListener)reducedMotion.addEventListener("change",refreshMatrix);
@@ -191,20 +228,26 @@ document.addEventListener("DOMContentLoaded", () => {
             glowBody.style.setProperty("--site-cursor-x","-1000px");glowBody.style.setProperty("--site-cursor-y","-1000px");
         };
         const paintGlow=()=>{
-            pointerFrame=null;if(!pointerPoint||prefersReducedMotion())return;
+            pointerFrame=null;if(!pointerPoint||motionSuppressed())return;
             glowBody.style.setProperty("--site-cursor-x",pointerPoint.x+"px");
             glowBody.style.setProperty("--site-cursor-y",pointerPoint.y+"px");
             if(!active){active=true;glowBody.classList.add("has-global-cursor-glow");}
         };
         document.addEventListener("pointermove",event=>{
-            if(!finePointer.matches||prefersReducedMotion()||(event.pointerType!=="mouse"&&event.pointerType!=="pen"))return;
+            if(!finePointer.matches||motionSuppressed()||(event.pointerType!=="mouse"&&event.pointerType!=="pen"))return;
             pointerPoint={x:event.clientX,y:event.clientY};
+            if(hero && hero.contains(event.target)) {
+                const rect=hero.getBoundingClientRect();
+                hero.style.setProperty("--pointer-x",(event.clientX-rect.left)+"px");
+                hero.style.setProperty("--pointer-y",(event.clientY-rect.top)+"px");
+            }
             if(pointerFrame===null)pointerFrame=window.requestAnimationFrame(paintGlow);
         },{passive:true});
         document.addEventListener("pointerout",event=>{if(!event.relatedTarget)hideGlow();},{passive:true});
         document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")hideGlow();});
         window.addEventListener("blur",hideGlow);
-        const refreshGlowAvailability=()=>{if(!finePointer.matches||prefersReducedMotion())hideGlow();};
+        const refreshGlowAvailability=()=>{if(!finePointer.matches||motionSuppressed())hideGlow();};
+        document.addEventListener("portfolio:visual-effects-change",refreshGlowAvailability);
         if(reducedMotion.addEventListener)reducedMotion.addEventListener("change",refreshGlowAvailability);
         else if(reducedMotion.addListener)reducedMotion.addListener(refreshGlowAvailability);
         if(finePointer.addEventListener)finePointer.addEventListener("change",refreshGlowAvailability);
