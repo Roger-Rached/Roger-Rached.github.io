@@ -3688,3 +3688,88 @@ body.has-global-cursor-glow::before { opacity:1; }
     .terminal-replay,
     .terminal-pause { transition: none; }
 }
+
+
+/* Cyber effects release: explicit accessibility override, visible Matrix rain, and phase slides. */
+.hero-matrix { opacity: 0.62; }
+@media (max-width: 950px) { .hero-matrix { opacity: 0.42; } }
+@media (max-width: 700px) { .hero-matrix { opacity: 0.32; } }
+
+body::before {
+    z-index: 9998;
+    mix-blend-mode: screen;
+}
+body.has-global-cursor-glow::before { opacity: 1; }
+
+.terminal-effects {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: rgba(80, 255, 145, 0.07);
+    color: #92ffbc;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.57rem;
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.terminal-effects:hover,
+.terminal-effects:focus-visible {
+    color: #e9fff0;
+    border-color: rgba(116, 255, 163, 0.65);
+    background: rgba(80, 255, 145, 0.13);
+}
+.terminal-effects:focus-visible { outline: 2px solid #75e89a; outline-offset: 3px; }
+
+.terminal-body.terminal-phase-slide-out {
+    animation: terminalPhaseSlideOut 0.22s ease-in both;
+    pointer-events: none;
+}
+.terminal-body.terminal-phase-slide-in {
+    animation: terminalPhaseSlideIn 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.terminal-stage.terminal-stage-updating {
+    animation: terminalStageUpdate 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes terminalPhaseSlideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-26px); }
+}
+@keyframes terminalPhaseSlideIn {
+    from { opacity: 0.1; transform: translateX(28px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes terminalStageUpdate {
+    from { opacity: 0.15; transform: translateX(12px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@media (max-width: 700px) {
+    .terminal-effects { font-size: 0.53rem; min-height: 27px; }
+}
+
+html[data-visual-effects="on"] body::before {
+    display: block;
+    transition: opacity 0.15s ease;
+}
+html[data-visual-effects="on"] .hero::before { opacity: 0.72; }
+html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-out,
+html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in,
+html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating {
+    animation-duration: 0.22s;
+}
+html[data-visual-effects="on"] .terminal-caret { animation: terminal-caret-blink 1s steps(2, start) infinite; }
+html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-in 0.55s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-visual-effects="on"] body::before { display: block; transition: opacity 0.15s ease; }
+    html[data-visual-effects="on"] .terminal-output-line { animation: terminalLineIn 0.18s ease both !important; }
+    html[data-visual-effects="on"] .terminal-caret { animation: terminal-caret-blink 1s steps(2, start) infinite; }
+    html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-in 0.55s ease both; }
+    html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-out { animation: terminalPhaseSlideOut 0.22s ease-in both; }
+    html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in { animation: terminalPhaseSlideIn 0.44s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating { animation: terminalStageUpdate 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
