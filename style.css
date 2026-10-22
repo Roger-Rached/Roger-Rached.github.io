@@ -3751,3 +3751,337 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 
 /* Keep the hero clean: no scroll-down prompt below the terminal. */
 .scroll-down, .scroll-indicator, .scroll-cue, .scroll-prompt, .hero-scroll { display: none !important; }
+
+
+/* Refined Kali-style terminal: understated chrome, readable prompt, staged transcript. */
+.hero-terminal {
+    overflow: hidden;
+    border-color: rgba(130, 108, 178, 0.26);
+    background: rgba(8, 9, 16, 0.96);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.24), 0 0 30px rgba(113, 82, 181, 0.055);
+}
+
+.terminal-top {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 17px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+    background: rgba(255, 255, 255, 0.018);
+}
+
+.terminal-session-path {
+    color: #8a849b;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.025em;
+}
+
+.terminal-stage {
+    min-height: 43px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+    background: rgba(120, 88, 180, 0.035);
+}
+
+.terminal-stage-number {
+    color: #a5e5b2;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.terminal-stage-total {
+    color: #5f5b70;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.61rem;
+}
+
+.terminal-stage-name {
+    min-width: 0;
+    margin-left: 4px;
+    color: #d2c5e7;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.065em;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.terminal-body {
+    box-sizing: border-box;
+    height: 286px;
+    min-height: 286px;
+    max-height: 286px;
+    padding: 16px 18px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(142, 111, 183, 0.35) transparent;
+    background:
+        linear-gradient(90deg, rgba(101, 75, 150, 0.035), transparent 45%),
+        #090a10;
+    color: #c9c9d2;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.69rem;
+    line-height: 1.65;
+    text-align: left;
+}
+
+.terminal-command {
+    display: block;
+    min-width: 0;
+    margin: 0 0 2px;
+    padding: 0;
+    color: inherit;
+    white-space: normal;
+}
+
+.terminal-prompt-context {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    min-width: 0;
+    color: #a1a4b2;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.terminal-prompt-decoration {
+    color: #737987;
+}
+
+.terminal-prompt-user,
+.terminal-prompt-host {
+    color: #7fce94;
+}
+
+.terminal-prompt-path {
+    color: #b5a4da;
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: flex-start;
+    min-width: 0;
+    margin-bottom: 3px;
+    line-height: 1.65;
+}
+
+.terminal-prompt {
+    flex: 0 0 auto;
+    padding-right: 0.4em;
+    color: #8dd99f;
+    white-space: pre;
+}
+
+.terminal-command-text {
+    display: inline;
+    min-width: 0;
+    max-width: 100%;
+    color: #e0dce9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.terminal-output-line {
+    display: block;
+    margin: 0;
+    color: #c1c2cc;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.65;
+    animation: terminalOutputAppear 0.16s ease both;
+}
+
+.terminal-output-line.terminal-normal {
+    color: #bdc0cb;
+}
+
+.terminal-output-line.terminal-success {
+    color: #8ee69a;
+}
+
+.terminal-output-line.terminal-warning,
+.terminal-output-line.terminal-danger,
+.terminal-output-line.terminal-error {
+    color: #f0808b;
+}
+
+.terminal-output-line.terminal-flag-reveal {
+    display: inline-block;
+    max-width: 100%;
+    margin: 5px 0 7px;
+    padding: 4px 8px;
+    border: 1px solid rgba(124, 221, 148, 0.34);
+    border-radius: 4px;
+    background: rgba(64, 180, 96, 0.075);
+    color: #9ae9a9;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+    animation: terminalFlagAppear 0.42s ease both;
+}
+
+.terminal-caret {
+    display: inline-block;
+    width: 0.54em;
+    height: 1.05em;
+    margin-left: 1px;
+    vertical-align: -0.13em;
+    background: #a7e9b5;
+    box-shadow: 0 0 8px rgba(108, 221, 139, 0.28);
+    animation: terminal-caret-blink 1s steps(2, start) infinite;
+}
+
+.terminal-progress-wrap {
+    padding: 11px 17px 13px;
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+    background: rgba(255, 255, 255, 0.012);
+}
+
+.terminal-progress-track {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    margin: 0 0 9px;
+}
+
+.terminal-progress-item {
+    flex: 1 1 0;
+    width: auto;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.10);
+    transition: background 0.28s ease, box-shadow 0.28s ease;
+}
+
+.terminal-progress-item.active {
+    width: auto;
+    background: #9d80ce;
+    box-shadow: 0 0 8px rgba(157, 128, 206, 0.32);
+}
+
+.terminal-progress-item.completed {
+    background: #73d88c;
+    box-shadow: 0 0 7px rgba(115, 216, 140, 0.16);
+}
+
+.terminal-stage-steps {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.terminal-stage-step {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    color: #6f7180;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.55rem;
+    line-height: 1.45;
+    white-space: nowrap;
+    transition: color 0.24s ease;
+}
+
+.terminal-stage-step-number {
+    color: #666878;
+    font-size: 0.52rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.terminal-stage-step-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.terminal-stage-step.active {
+    color: #d4c1f4;
+}
+
+.terminal-stage-step.active .terminal-stage-step-number {
+    color: #b4a0e5;
+}
+
+.terminal-stage-step.completed,
+.terminal-stage-step.completed .terminal-stage-step-number {
+    color: #80d995;
+}
+
+.terminal-body.terminal-phase-slide-out {
+    pointer-events: none;
+    animation: terminalPhaseSlideOut 0.21s ease-in both;
+}
+
+.terminal-body.terminal-phase-slide-in {
+    animation: terminalPhaseSlideIn 0.43s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.terminal-stage.terminal-stage-updating {
+    animation: terminalStageUpdate 0.35s ease-out both;
+}
+
+@keyframes terminalOutputAppear {
+    from { opacity: 0.25; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes terminalFlagAppear {
+    from { opacity: 0.3; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 700px) {
+    .terminal-top { min-height: 34px; padding: 8px 13px; }
+    .terminal-session-path { font-size: 0.58rem; }
+    .terminal-stage { gap: 6px; min-height: 40px; padding: 0 13px; }
+    .terminal-stage-name { font-size: 0.59rem; letter-spacing: 0.035em; }
+    .terminal-body {
+        height: 272px;
+        min-height: 272px;
+        max-height: 272px;
+        padding: 13px 13px;
+        font-size: 0.63rem;
+    }
+    .terminal-progress-wrap { padding: 10px 12px 11px; }
+    .terminal-stage-steps { gap: 2px; }
+    .terminal-stage-step { gap: 2px; font-size: 0.48rem; }
+    .terminal-stage-step-number { font-size: 0.45rem; }
+}
+
+@media (max-width: 360px) {
+    .terminal-stage-step { flex-direction: column; align-items: center; gap: 0; }
+    .terminal-stage-step-label { max-width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .terminal-body.terminal-phase-slide-out,
+    .terminal-body.terminal-phase-slide-in,
+    .terminal-stage.terminal-stage-updating,
+    .terminal-output-line,
+    .terminal-output-line.terminal-flag-reveal {
+        animation: none !important;
+    }
+    .terminal-progress-item,
+    .terminal-stage-step {
+        transition: none !important;
+    }
+    .terminal-caret { animation: none !important; }
+}

@@ -24,7 +24,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=zsh-unified-loop-20261022-6">
+    <link rel="stylesheet" href="style.css?v=refined-kali-workflow-20261022-8">
 
 </head>
 
@@ -218,62 +218,50 @@
             <!-- TERMINAL -->
 
 
-            <div class="hero-terminal" role="group" aria-labelledby="terminal-window-title">
-
+            <div class="hero-terminal" role="group" aria-label="Terminal session">
                 <div class="terminal-top">
-
                     <div class="terminal-dots" aria-hidden="true">
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
-
-                    <span class="terminal-title" id="terminal-window-title" aria-label="Zsh shell on Kali Linux running the HTB Unified walkthrough">
-                        <span class="terminal-title-main">ZSH // KALI · HTB UNIFIED</span>
-                    </span>
-
+                    <span class="terminal-session-path">~/htb/unified</span>
                 </div>
-
 
                 <div class="terminal-stage">
-
-                    <span class="terminal-stage-number" id="terminal-stage-number">
-                        01
-                    </span>
-
-                    <span class="terminal-stage-name" id="terminal-stage-name">
-                        RECONNAISSANCE
-                    </span>
-
+                    <span class="terminal-stage-number" id="terminal-stage-number">01</span>
+                    <span class="terminal-stage-total" aria-hidden="true">/ 05</span>
+                    <span class="terminal-stage-name" id="terminal-stage-name">RECONNAISSANCE</span>
                 </div>
 
-
-                <div class="terminal-body" id="terminal-output" aria-label="Zsh command-line HTB Unified assessment" tabindex="0">
-                    <div class="terminal-output-lines">
-                        <div class="terminal-command">
-                            <span class="terminal-prompt">Ozz961@kali~$ </span>
-                            <span class="terminal-command-text">echo $SHELL</span>
+                <div class="terminal-body" id="terminal-output" aria-label="Animated command-line transcript" tabindex="0">
+                    <div class="terminal-command">
+                        <div class="terminal-prompt-context" aria-hidden="true">
+                            <span class="terminal-prompt-decoration">┌──(</span><span class="terminal-prompt-user">Ozz961</span><span class="terminal-prompt-decoration">㉿</span><span class="terminal-prompt-host">kali</span><span class="terminal-prompt-decoration">)-[</span><span class="terminal-prompt-path">~/htb/unified</span><span class="terminal-prompt-decoration">]</span>
                         </div>
-                        <div class="terminal-output-line terminal-success">/usr/bin/zsh</div>
-                        <div class="terminal-output-line terminal-normal">Zsh 5.x — interactive shell</div>
+                        <div class="terminal-input-line"><span class="terminal-prompt">└─$ </span><span class="terminal-command-text">whoami</span></div>
                     </div>
+                    <div class="terminal-output-line terminal-success">Ozz961</div>
                 </div>
 
-
-                <div class="terminal-progress" id="terminal-progress" role="progressbar" aria-label="Five-stage HTB Unified walkthrough progress" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Stage 1 of 5: reconnaissance and port scan">
-
-                    <span class="terminal-progress-item active"></span>
-                    <span class="terminal-progress-item"></span>
-                    <span class="terminal-progress-item"></span>
-                    <span class="terminal-progress-item"></span>
-                    <span class="terminal-progress-item"></span>
-
+                <div class="terminal-progress-wrap">
+                    <div class="terminal-progress-track" id="terminal-progressbar" role="progressbar" aria-label="Pentesting workflow progress" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Stage 1 of 5: reconnaissance">
+                        <span class="terminal-progress-item active"></span>
+                        <span class="terminal-progress-item"></span>
+                        <span class="terminal-progress-item"></span>
+                        <span class="terminal-progress-item"></span>
+                        <span class="terminal-progress-item"></span>
+                    </div>
+                    <ol class="terminal-stage-steps" aria-label="Penetration-testing stages">
+                        <li class="terminal-stage-step active" aria-current="step"><span class="terminal-stage-step-number">01</span><span class="terminal-stage-step-label">Recon</span></li>
+                        <li class="terminal-stage-step"><span class="terminal-stage-step-number">02</span><span class="terminal-stage-step-label">Enum</span></li>
+                        <li class="terminal-stage-step"><span class="terminal-stage-step-number">03</span><span class="terminal-stage-step-label">Validate</span></li>
+                        <li class="terminal-stage-step"><span class="terminal-stage-step-number">04</span><span class="terminal-stage-step-label">Access</span></li>
+                        <li class="terminal-stage-step"><span class="terminal-stage-step-number">05</span><span class="terminal-stage-step-label">Report</span></li>
+                    </ol>
                 </div>
 
-                <p class="terminal-announcement visually-hidden" id="terminal-announcement" aria-live="polite" aria-atomic="true">
-                    Security assessment workflow status.
-                </p>
-
+                <p class="terminal-announcement visually-hidden" id="terminal-announcement" aria-live="polite" aria-atomic="true">Assessment stage status.</p>
             </div>
 
 
@@ -1086,7 +1074,7 @@
     <script src="script.js?v=cli-clean-20261022-4"></script>
 
     <!-- HOMEPAGE PENTESTING TERMINAL -->
-    <script src="pentesting-terminal-animation.js?v=cli-clean-20261022-4"></script>
+    <script src="pentesting-terminal-animation.js?v=refined-kali-workflow-20261022-8"></script>
 
 </body>
 
