@@ -3702,14 +3702,14 @@ body::before {
 body.has-global-cursor-glow::before { opacity: 1; }
 
 .terminal-body.terminal-phase-slide-out {
-    animation: terminalPhaseSlideOut 0.22s ease-in both;
+    animation: terminalPhaseSlideOut 0.44s ease-in both;
     pointer-events: none;
 }
 .terminal-body.terminal-phase-slide-in {
-    animation: terminalPhaseSlideIn 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: terminalPhaseSlideIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .terminal-stage.terminal-stage-updating {
-    animation: terminalStageUpdate 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: terminalStageUpdate 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes terminalPhaseSlideOut {
     from { opacity: 1; transform: translateX(0); }
@@ -3731,22 +3731,20 @@ html[data-visual-effects="on"] body::before {
     transition: opacity 0.15s ease;
 }
 html[data-visual-effects="on"] .hero::before { opacity: 0.72; }
-html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-out,
-html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in,
-html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating {
-    animation-duration: 0.22s;
-}
+html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-out { animation-duration: 0.44s; }
+html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in { animation-duration: 0.75s; }
+html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating { animation-duration: 0.62s; }
 html[data-visual-effects="on"] .terminal-caret { animation: terminal-caret-blink 1s steps(2, start) infinite; }
 html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-in 0.55s ease both; }
 
 @media (prefers-reduced-motion: reduce) {
-    html[data-visual-effects="on"] body::before { display: block; transition: opacity 0.15s ease; }
-    html[data-visual-effects="on"] .terminal-output-line { animation: terminalLineIn 0.18s ease both !important; }
-    html[data-visual-effects="on"] .terminal-caret { animation: terminal-caret-blink 1s steps(2, start) infinite; }
-    html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-in 0.55s ease both; }
-    html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-out { animation: terminalPhaseSlideOut 0.22s ease-in both; }
-    html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in { animation: terminalPhaseSlideIn 0.44s cubic-bezier(0.22, 1, 0.36, 1) both; }
-    html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating { animation: terminalStageUpdate 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    html[data-visual-effects="on"] body::before { display: block; transition: none; }
+    html[data-visual-effects="on"] .terminal-output-line,
+    html[data-visual-effects="on"] .terminal-caret,
+    html[data-visual-effects="on"] .terminal-flag-reveal,
+    html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-out,
+    html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in,
+    html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating { animation: none !important; }
 }
 
 /* Keep the hero clean: no scroll-down prompt below the terminal. */
@@ -3935,7 +3933,7 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     color: #9ae9a9;
     font-weight: 700;
     overflow-wrap: anywhere;
-    animation: terminalFlagAppear 0.42s ease both;
+    animation: terminalFlagAppear 0.58s ease both;
 }
 
 .terminal-caret {
@@ -3969,7 +3967,7 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     height: 3px;
     border-radius: 2px;
     background: rgba(174, 120, 255, 0.12);
-    transition: background 0.28s ease, box-shadow 0.28s ease;
+    transition: background 0.46s ease, box-shadow 0.46s ease;
 }
 
 .terminal-progress-item.active {
@@ -4003,7 +4001,7 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     font-size: 0.55rem;
     line-height: 1.45;
     white-space: nowrap;
-    transition: color 0.24s ease;
+    transition: color 0.52s ease;
 }
 
 .terminal-stage-step-number {
@@ -4032,15 +4030,15 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 
 .terminal-body.terminal-phase-slide-out {
     pointer-events: none;
-    animation: terminalPhaseSlideOut 0.21s ease-in both;
+    animation: terminalPhaseSlideOut 0.44s ease-in both;
 }
 
 .terminal-body.terminal-phase-slide-in {
-    animation: terminalPhaseSlideIn 0.43s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: terminalPhaseSlideIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .terminal-stage.terminal-stage-updating {
-    animation: terminalStageUpdate 0.35s ease-out both;
+    animation: terminalStageUpdate 0.62s ease-out both;
 }
 
 @keyframes terminalOutputAppear {
