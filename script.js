@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Reduce repeated brand animation to a user-driven hover/focus effect, not a persistent glitch.
     if (reducedMotion.addEventListener) {
         reducedMotion.addEventListener("change", () => {
-            if (prefersReducedMotion() && hero) {
+            if (prefersReducedMotion() && !visualEffectsEnabled && hero) {
                 hero.style.removeProperty("--pointer-x");
                 hero.style.removeProperty("--pointer-y");
             }
