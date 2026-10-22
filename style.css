@@ -3595,6 +3595,7 @@ body.has-global-cursor-glow::before { opacity:1; }
 }
 .terminal-prompt {
     flex: 0 0 auto;
+    padding-right: 0.35em;
     color: var(--purple-bright);
     overflow-wrap: anywhere;
 }
