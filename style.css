@@ -4088,3 +4088,30 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     }
     .terminal-caret { animation: none !important; }
 }
+
+
+/* Final pacing override: keep stage changes deliberate instead of flashing past. */
+html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-out {
+    animation-duration: 0.52s !important;
+}
+html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in {
+    animation-duration: 0.82s !important;
+}
+html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating {
+    animation-duration: 0.64s !important;
+}
+html[data-visual-effects="on"] .terminal-output-line {
+    animation-duration: 0.34s;
+}
+html[data-visual-effects="on"] .terminal-progress-item,
+html[data-visual-effects="on"] .terminal-stage-step {
+    transition-duration: 0.52s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-out,
+    html[data-visual-effects="on"] .terminal-body.terminal-phase-slide-in,
+    html[data-visual-effects="on"] .terminal-stage.terminal-stage-updating {
+        animation: none !important;
+    }
+}
