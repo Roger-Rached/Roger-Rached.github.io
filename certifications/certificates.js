@@ -60,68 +60,61 @@ const certificateGroups = [
 (() => {
   const directory = document.querySelector("#certification-directory");
   if (!directory) return;
-
   const make = (tag, className, text) => {
-    const element = document.createElement(tag);
-    if (className) element.className = className;
-    if (text !== undefined && text !== null && text !== "") element.textContent = text;
-    return element;
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text !== undefined && text !== null && text !== "") el.textContent = text;
+    return el;
   };
-
-  certificateGroups.forEach((group, groupIndex) => {
-    const section = make("section", "page-section credential-section");
-    section.setAttribute("aria-labelledby", `issuer-heading-${groupIndex + 1}`);
-
-    const sectionHeading = make("div", "page-section-title");
-    sectionHeading.append(make("span", "number", String(groupIndex + 1).padStart(2, "0")));
-    const heading = make("h2", "", group.issuer);
-    heading.id = `issuer-heading-${groupIndex + 1}`;
-    sectionHeading.append(heading);
-    section.append(sectionHeading);
-
-    const grid = make("div", "page-grid credential-grid");
-    group.certificates.forEach((certificate) => {
-      const card = make("article", "page-card credential-card");
-      const issuerLine = make("div", "credential-card-top");
-      issuerLine.append(make("span", "section-label", certificate.entryType || group.issuer));
-      card.append(issuerLine);
-      card.append(make("h3", "credential-title", certificate.name));
-
-      const metadata = make("dl", "credential-metadata");
-      if (certificate.issued) {
-        const dateTerm = make("dt", "", "Issued");
-        const dateValue = make("dd", "", certificate.issued);
-        metadata.append(dateTerm, dateValue);
+  const slug = value => value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  const total = certificateGroups.reduce((n,g)=>n+g.certificates.length,0);
+  const previewTotal = certificateGroups.reduce((n,g)=>n+g.certificates.filter(c=>c.image).length,0);
+  const panel=make("section","credential-tools");
+  panel.setAttribute("aria-label","Certification directory tools");
+  const stats=make("div","credential-summary");
+  [{value:String(total).padStart(2,"0"),label:"Credential entries"},{value:String(certificateGroups.length).padStart(2,"0"),label:"Issuing organizations"},{value:String(previewTotal).padStart(2,"0"),label:"Certificate previews"}].forEach(item=>{
+    const stat=make("div","credential-stat");
+    stat.append(make("span","credential-stat-value",item.value),make("span","credential-stat-label",item.label));stats.append(stat);
+  });
+  panel.append(stats);
+  const nav=make("nav","credential-issuer-nav");nav.setAttribute("aria-label","Jump to an issuing organization");
+  certificateGroups.forEach(group=>{const a=make("a","credential-issuer-chip",group.issuer);a.href="#issuer-"+slug(group.issuer);nav.append(a);});
+  panel.append(nav);
+  const row=make("div","credential-search-row");
+  const label=make("label","credential-search-label","Find a credential");
+  const input=make("input","credential-search-input");input.type="search";input.placeholder="Search by certificate, issuer, date, or ID…";input.autocomplete="off";input.setAttribute("aria-label","Search certificates by name, issuer, date, or credential ID");label.append(input);
+  const count=make("p","credential-result-count",total+" entries");count.setAttribute("aria-live","polite");row.append(label,count);panel.append(row);
+  const empty=make("p","credential-empty-state","No certificates match your search. Try another name, issuer, or credential ID.");empty.hidden=true;directory.before(panel,empty);
+  const cards=[];
+  certificateGroups.forEach((group,i)=>{
+    const section=make("section","page-section credential-section");section.id="issuer-"+slug(group.issuer);section.setAttribute("aria-labelledby","issuer-heading-"+(i+1));
+    const sh=make("div","page-section-title");sh.append(make("span","number",String(i+1).padStart(2,"0")));
+    const h=make("h2","",group.issuer);h.id="issuer-heading-"+(i+1);sh.append(h);section.append(sh);
+    const grid=make("div","page-grid credential-grid");
+    group.certificates.forEach(c=>{
+      const card=make("article","page-card credential-card");
+      const top=make("div","credential-card-top");top.append(make("span","section-label",c.entryType||group.issuer));card.append(top);
+      if(c.image){
+        const preview=make("a","credential-preview");preview.href=c.image;preview.target="_blank";preview.rel="noopener noreferrer";preview.setAttribute("aria-label","Open certificate image for "+c.name+" in a new tab");
+        const img=make("img","credential-preview-image");img.src=c.image;img.alt="Certificate preview: "+c.name;img.loading="lazy";img.decoding="async";preview.append(img,make("span","credential-preview-hint","Open image ↗"));card.append(preview);
       }
-      if (certificate.credentialId) {
-        const idTerm = make("dt", "", "Credential ID");
-        const idValue = make("dd", "credential-id-value", certificate.credentialId);
-        metadata.append(idTerm, idValue);
-      }
-      if (metadata.childElementCount) card.append(metadata);
-
-      if (certificate.issuerNote) {
-        card.append(make("p", "credential-note", `Issuer: ${certificate.issuerNote}`));
-      }
-      if (certificate.skills && certificate.skills.length) {
-        const tags = make("div", "page-tag-row credential-skills");
-        certificate.skills.forEach((skill) => tags.append(make("span", "page-tag", skill)));
-        card.append(tags);
-      }
-      if (certificate.url) {
-        const link = make("a", "page-link credential-link", `${certificate.linkLabel || "View Certificate"} ↗`);
-        link.href = certificate.url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.setAttribute("aria-label", `${certificate.linkLabel || "View Certificate"}: ${certificate.name} (opens in a new tab)`);
-        card.append(link);
-      } else {
-        card.append(make("p", "credential-unlinked", "No verification link provided."));
-      }
-      grid.append(card);
+      card.append(make("h3","credential-title",c.name));
+      const meta=make("dl","credential-metadata");
+      if(c.issued)meta.append(make("dt","","Issued"),make("dd","",c.issued));
+      if(c.credentialId)meta.append(make("dt","","Credential ID"),make("dd","credential-id-value",c.credentialId));
+      if(meta.childElementCount)card.append(meta);
+      if(c.issuerNote)card.append(make("p","credential-note","Issuer: "+c.issuerNote));
+      if(c.skills&&c.skills.length){const tags=make("div","page-tag-row credential-skills");c.skills.forEach(skill=>tags.append(make("span","page-tag",skill)));card.append(tags);}
+      if(c.url){const name=c.linkLabel||"View Certificate";const a=make("a","page-link credential-link",name+" ↗");a.href=c.url;a.target="_blank";a.rel="noopener noreferrer";a.setAttribute("aria-label",name+": "+c.name+" (opens in a new tab)");card.append(a);}
+      else card.append(make("p","credential-unlinked","No verification link provided."));
+      const search=[c.name,group.issuer,c.issued,c.credentialId,c.issuerNote,...(c.skills||[])].filter(Boolean).join(" ").toLowerCase();cards.push({card,search});grid.append(card);
     });
-
-    section.append(grid);
-    directory.append(section);
+    section.append(grid);directory.append(section);
+  });
+  input.addEventListener("input",()=>{
+    const q=input.value.trim().toLowerCase();let visible=0;
+    cards.forEach(({card,search})=>{const match=!q||search.includes(q);card.hidden=!match;if(match)visible++;});
+    certificateGroups.forEach(group=>{const section=document.getElementById("issuer-"+slug(group.issuer));if(section)section.hidden=!Array.from(section.querySelectorAll(".credential-card")).some(card=>!card.hidden);});
+    count.textContent=q?visible+" of "+total+" entries":total+" entries";empty.hidden=visible>0;
   });
 })();
