@@ -3905,7 +3905,7 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     overflow-wrap: anywhere;
     word-break: break-word;
     line-height: 1.65;
-    animation: terminalOutputAppear 0.24s ease both;
+    animation: terminalOutputAppear 0.28s ease both;
 }
 
 .terminal-output-line.terminal-normal {
@@ -3933,7 +3933,7 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     color: #9ae9a9;
     font-weight: 700;
     overflow-wrap: anywhere;
-    animation: terminalFlagAppear 0.42s ease both;
+    animation: terminalFlagAppear 0.58s ease both;
 }
 
 .terminal-caret {
@@ -3949,8 +3949,8 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 
 .terminal-progress-wrap {
     padding: 11px 17px 13px;
-    border-top: 1px solid rgba(255, 255, 255, 0.055);
-    background: rgba(255, 255, 255, 0.012);
+    border-top: 1px solid var(--border);
+    background: linear-gradient(90deg, rgba(155, 92, 255, 0.045), rgba(91, 116, 255, 0.018) 70%, transparent);
 }
 
 .terminal-progress-track {
@@ -3966,8 +3966,8 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     width: auto;
     height: 3px;
     border-radius: 2px;
-    background: rgba(255, 255, 255, 0.10);
-    transition: background 0.28s ease, box-shadow 0.28s ease;
+    background: rgba(174, 120, 255, 0.14);
+    transition: background 0.46s ease, box-shadow 0.46s ease;
 }
 
 .terminal-progress-item.active {
@@ -4001,7 +4001,7 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     font-size: 0.55rem;
     line-height: 1.45;
     white-space: nowrap;
-    transition: color 0.42s ease;
+    transition: color 0.52s ease;
 }
 
 .terminal-stage-step-number {
@@ -4030,15 +4030,15 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 
 .terminal-body.terminal-phase-slide-out {
     pointer-events: none;
-    animation: terminalPhaseSlideOut 0.38s ease-in both;
+    animation: terminalPhaseSlideOut 0.44s ease-in both;
 }
 
 .terminal-body.terminal-phase-slide-in {
-    animation: terminalPhaseSlideIn 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: terminalPhaseSlideIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .terminal-stage.terminal-stage-updating {
-    animation: terminalStageUpdate 0.52s ease-out both;
+    animation: terminalStageUpdate 0.62s ease-out both;
 }
 
 @keyframes terminalOutputAppear {
