@@ -3756,9 +3756,9 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 /* Refined Kali-style terminal: understated chrome, readable prompt, staged transcript. */
 .hero-terminal {
     overflow: hidden;
-    border-color: rgba(130, 108, 178, 0.26);
-    background: rgba(8, 9, 16, 0.96);
-    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.24), 0 0 30px rgba(113, 82, 181, 0.055);
+    border-color: var(--border);
+    background: linear-gradient(145deg, rgba(155, 92, 255, 0.035), transparent 55%), var(--bg-soft);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.24), 0 0 30px rgba(155, 92, 255, 0.065), 0 0 44px rgba(91, 116, 255, 0.035);
 }
 
 .terminal-top {
@@ -3768,12 +3768,12 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     justify-content: space-between;
     gap: 12px;
     padding: 10px 17px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
-    background: rgba(255, 255, 255, 0.018);
+    border-bottom: 1px solid var(--border);
+    background: rgba(155, 92, 255, 0.035);
 }
 
 .terminal-session-path {
-    color: #8a849b;
+    color: #9385ae;
     font-family: "JetBrains Mono", monospace;
     font-size: 0.62rem;
     letter-spacing: 0.025em;
@@ -3785,12 +3785,12 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     align-items: center;
     gap: 8px;
     padding: 0 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
-    background: rgba(120, 88, 180, 0.035);
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(90deg, rgba(155, 92, 255, 0.055), rgba(91, 116, 255, 0.025));
 }
 
 .terminal-stage-number {
-    color: #a5e5b2;
+    color: var(--purple-bright);
     font-family: "JetBrains Mono", monospace;
     font-size: 0.74rem;
     font-weight: 600;
@@ -3806,7 +3806,7 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 .terminal-stage-name {
     min-width: 0;
     margin-left: 4px;
-    color: #d2c5e7;
+    color: #d8c9f0;
     font-family: "JetBrains Mono", monospace;
     font-size: 0.65rem;
     font-weight: 600;
@@ -3825,10 +3825,11 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: rgba(142, 111, 183, 0.35) transparent;
+    scrollbar-color: rgba(155, 92, 255, 0.38) transparent;
     background:
-        linear-gradient(90deg, rgba(101, 75, 150, 0.035), transparent 45%),
-        #090a10;
+        linear-gradient(105deg, rgba(155, 92, 255, 0.045), transparent 48%),
+        linear-gradient(275deg, rgba(91, 116, 255, 0.025), transparent 42%),
+        #09070e;
     color: #c9c9d2;
     font-family: "JetBrains Mono", monospace;
     font-size: 0.69rem;
@@ -3857,16 +3858,20 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 }
 
 .terminal-prompt-decoration {
-    color: #737987;
+    color: #827998;
 }
 
 .terminal-prompt-user,
 .terminal-prompt-host {
-    color: #7fce94;
+    color: #b77cff;
+}
+
+.terminal-prompt-host {
+    color: #98a8ff;
 }
 
 .terminal-prompt-path {
-    color: #b5a4da;
+    color: #b8a5eb;
 }
 
 .terminal-input-line {
@@ -3880,7 +3885,7 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 .terminal-prompt {
     flex: 0 0 auto;
     padding-right: 0.4em;
-    color: #8dd99f;
+    color: var(--purple-bright);
     white-space: pre;
 }
 
@@ -3939,15 +3944,15 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     height: 1.05em;
     margin-left: 1px;
     vertical-align: -0.13em;
-    background: #a7e9b5;
-    box-shadow: 0 0 8px rgba(108, 221, 139, 0.28);
+    background: #b77cff;
+    box-shadow: 0 0 9px rgba(155, 92, 255, 0.38);
     animation: terminal-caret-blink 1s steps(2, start) infinite;
 }
 
 .terminal-progress-wrap {
     padding: 11px 17px 13px;
-    border-top: 1px solid rgba(255, 255, 255, 0.055);
-    background: rgba(255, 255, 255, 0.012);
+    border-top: 1px solid var(--border);
+    background: rgba(155, 92, 255, 0.025);
 }
 
 .terminal-progress-track {
@@ -3963,14 +3968,14 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
     width: auto;
     height: 3px;
     border-radius: 2px;
-    background: rgba(255, 255, 255, 0.10);
+    background: rgba(174, 120, 255, 0.12);
     transition: background 0.28s ease, box-shadow 0.28s ease;
 }
 
 .terminal-progress-item.active {
     width: auto;
-    background: #9d80ce;
-    box-shadow: 0 0 8px rgba(157, 128, 206, 0.32);
+    background: var(--purple-bright);
+    box-shadow: 0 0 8px rgba(155, 92, 255, 0.32);
 }
 
 .terminal-progress-item.completed {
@@ -4013,16 +4018,16 @@ html[data-visual-effects="on"] .terminal-flag-reveal { animation: terminal-flag-
 }
 
 .terminal-stage-step.active {
-    color: #d4c1f4;
+    color: var(--purple-bright);
 }
 
 .terminal-stage-step.active .terminal-stage-step-number {
-    color: #b4a0e5;
+    color: #b77cff;
 }
 
 .terminal-stage-step.completed,
 .terminal-stage-step.completed .terminal-stage-step-number {
-    color: #80d995;
+    color: #8ee69a;
 }
 
 .terminal-body.terminal-phase-slide-out {
