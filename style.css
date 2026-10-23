@@ -4838,3 +4838,11 @@ html[data-theme="light"] .page-section-title h2 {
         font-size: clamp(2.5rem, 12vw, 4rem);
     }
 }
+
+
+/* Light mode: remove the extra outlined strip around the top navigation. */
+html[data-theme="light"] .navbar {
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+}
