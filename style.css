@@ -4389,3 +4389,21 @@ html[data-theme="light"] .system-meta {
     .home-page .focus-card.large,
     .home-page .focus-card.api-security-card { min-height: 0; }
 }
+
+
+/* Matrix visibility fix: keep the fixed canvas above the page backdrop, below content. */
+.site-matrix {
+    z-index: 0;
+    opacity: 0.18;
+}
+body > main,
+body > footer {
+    position: relative;
+    z-index: 1;
+}
+body > .ambient {
+    z-index: -1;
+}
+.navbar { z-index: 100; }
+.skip-link { z-index: 200; }
+html[data-theme="light"] .site-matrix { opacity: 0.075; }
