@@ -4364,3 +4364,28 @@ html[data-theme="light"] .system-meta {
     .navbar { padding-left: 15px; padding-right: 15px; column-gap: 8px; }
     .theme-toggle { padding: 7px 8px; font-size: 0.64rem; }
 }
+
+
+/* Homepage-only spacing and a smaller, de-duplicated work hub. */
+.home-page .hero { padding-bottom: clamp(42px, 4vw, 58px); }
+.home-page .section { padding: 58px 25px; }
+.home-page .section-header { margin-bottom: 32px; }
+.home-page .workstream-heading { margin: 24px 0 12px; }
+.home-page .work-hub > .focus-grid + .workstream-heading,
+.home-page .work-hub > .writeup-list + .workstream-heading { margin-top: 28px; }
+.home-page .focus-card { min-height: 215px; }
+.home-page .focus-card.large { grid-column: span 2; min-height: 285px; }
+.home-page .focus-card.api-security-card { grid-column: span 1; min-height: 250px; }
+.home-page .focus-course-details { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px; }
+.home-page .focus-course-details summary { color: var(--purple-bright); cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+.home-page .focus-course-details ul { margin-top: 10px; }
+@media (max-width: 950px) {
+    .home-page .section { padding: 46px 18px; }
+    .home-page .focus-card.large,
+    .home-page .focus-card.api-security-card { grid-column: auto; }
+}
+@media (max-width: 700px) {
+    .home-page .section { padding: 40px 16px; }
+    .home-page .focus-card.large,
+    .home-page .focus-card.api-security-card { min-height: 0; }
+}
