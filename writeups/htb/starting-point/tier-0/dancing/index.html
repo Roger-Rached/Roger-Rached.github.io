@@ -4,6 +4,7 @@
 <head>
 
     <meta charset="UTF-8">
+    <script>try{const savedTheme=localStorage.getItem("portfolio-theme");document.documentElement.dataset.theme=savedTheme==="light"?"light":"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
@@ -22,12 +23,13 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="../../../../../style.css">
+    <link rel="stylesheet" href="../../../../../style.css?v=site-theme-matrix-20261023">
 
 </head>
 
 
 <body>
+    <canvas class="site-matrix" aria-hidden="true"></canvas>
 
 
     <div class="ambient ambient-one"></div>
@@ -63,6 +65,7 @@
             <a href="/experience/">Experience</a>
             <a href="/education/">Education</a>
         </nav>
+        <button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false" title="Switch to light mode"><span class="theme-toggle-icon" aria-hidden="true">☼</span><span class="theme-toggle-label">Light</span></button>
 
 
         <a
@@ -1088,7 +1091,7 @@ get flag.txt</code></pre>
     </footer>
 
 
-    <script src="../../../../../script.js"></script>
+    <script src="../../../../../script.js?v=site-theme-matrix-20261023"></script>
 
 </body>
 
