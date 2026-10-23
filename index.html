@@ -24,7 +24,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=slower-terminal-pacing-20261022-11">
+    <link rel="stylesheet" href="style.css?v=homepage-layout-cleanup-20261023">
 
 </head>
 
@@ -65,6 +65,7 @@
         </button>
 
         <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+            <a href="/about/">About</a>
             <a href="/writeups/">Writeups</a>
             <a href="/projects/">Projects</a>
             <a href="/resources/">Resources</a>
@@ -74,7 +75,6 @@
             <a href="/certifications/">Certifications</a>
             <a href="/experience/">Experience</a>
             <a href="/education/">Education</a>
-            <a href="/about/">About</a>
         </nav>
 
 
@@ -242,21 +242,48 @@
 
 
 
-        <!-- =========================
-             FOCUS
+        <!-- ABOUT / INTRODUCTION -->
         ========================== -->
 
-        <section class="section">
+        <section class="section about-section">
+            <div class="about-grid">
+                <div>
+                    <span class="section-label">ABOUT</span>
+                    <h2>Hi, I'm <span>Roger Rached</span>.</h2>
+                </div>
 
-            <div class="section-header">
+                <div class="about-copy">
+                    <p>I'm a cybersecurity practitioner focused on penetration testing, application security, offensive security and AI security. My background combines Computer Science, networking, infrastructure support and security operations.</p>
+
+                    <p>This portfolio documents practical learning, technical experiments and security research. Explore my full background, CTF activity and technical interests in the detailed profile.</p>
+
+                    <div class="about-links">
+                        <a href="/about/details/" class="about-details-link">More About Me ↗</a>
+                        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                        <a href="https://www.linkedin.com/in/roger-rached/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+                        <a href="mailto:roger_Rached@outlook.com">Email ↗</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =========================
+             CURRENT WORK / LABS / PROJECTS
+        ========================== -->
+
+        <section class="section work-hub" id="current-work">
+            <div class="section-header split">
                 <div>
                     <span class="section-number">01</span>
-                    <span class="section-label">FOCUS</span>
+                    <span class="section-label">FOCUS / WRITEUPS &amp; LABS / PROJECTS</span>
+                    <h2>Things I'm building and doing.</h2>
+                    <p>Current learning, practical security exercises, documented lab work and projects—all in one place.</p>
                 </div>
-                <h2>My current focus</h2>
-                <p>My current MSc coursework, hands-on security practice, automation projects, and independent exploration of AI-assisted security.</p>
+                <a href="/projects/" class="text-link">Explore projects →</a>
             </div>
 
+            <div class="workstream-heading"><span class="section-label">MY CURRENT FOCUS</span></div>
             <div class="focus-grid">
                 <article class="focus-card large">
                     <div class="card-top">
@@ -300,7 +327,7 @@
                     </div>
                 </article>
 
-                <article class="focus-card large">
+                <article class="focus-card api-security-card">
                     <div class="card-top">
                         <span class="card-icon">04</span>
                         <span class="card-category">API SECURITY / BUG BOUNTY</span>
@@ -384,98 +411,10 @@
                 </article>
             </div>
 
-            <div class="page-section focus-coursework">
-                <div class="page-section-title">
-                    <span class="number">MSc</span>
-                    <h2>MSc Coursework — Middlesex University Dubai</h2>
-                </div>
-                <p>Current academic study in Cyber Security and Emerging Threats, complementing practical lab work and independent study.</p>
-                <div class="page-grid">
-                    <article class="page-card">
-                        <span class="section-label">PROGRAMMING / SYSTEMS</span>
-                        <h3>Programming, Systems &amp; Networks for Modern Computing</h3>
-                        <p>Programming concepts alongside core computing systems and networking principles.</p>
-                    </article>
-                    <article class="page-card">
-                        <span class="section-label">NETWORK DEFENCE</span>
-                        <h3>Network Security Principles and Mechanisms</h3>
-                        <p>Security principles and mechanisms used to protect networks and communications.</p>
-                    </article>
-                    <article class="page-card">
-                        <span class="section-label">OFFENSIVE SECURITY</span>
-                        <h3>Pen Testing</h3>
-                        <p>Penetration-testing methodology, technical assessment, and evidence-led reporting.</p>
-                    </article>
-                    <article class="page-card">
-                        <span class="section-label">SECURE DEVELOPMENT</span>
-                        <h3>Cybersecurity Governance and Secure Development</h3>
-                        <p>Security governance, risk awareness, and integrating security into development.</p>
-                    </article>
-                    <article class="page-card">
-                        <span class="section-label">SECURE SYSTEMS</span>
-                        <h3>Operating Systems for Secure Environments</h3>
-                        <p>Operating-system concepts and security considerations for system hardening.</p>
-                    </article>
-                    <article class="page-card">
-                        <span class="section-label">EMERGING TECHNOLOGY</span>
-                        <h3>Cybersecurity for Emerging Technologies</h3>
-                        <p>Security considerations for newer and evolving technologies.</p>
-                    </article>
-                    <article class="page-card">
-                        <span class="section-label">RESEARCH</span>
-                        <h3>Research Methods &amp; Postgraduate Project</h3>
-                        <p>Research methods and the postgraduate project, with emphasis on a structured and evidence-based approach.</p>
-                    </article>
-                </div>
+            <div class="workstream-heading workstream-heading-split">
+                <span class="section-label">WRITEUPS &amp; LABS</span>
+                <a href="/writeups/" class="text-link">View all writeups →</a>
             </div>
-
-        </section>
-
-
-
-        <!-- =========================
-             WRITEUPS
-        ========================== -->
-
-        <section class="section">
-
-
-            <div class="section-header split">
-
-
-                <div>
-
-                    <span class="section-number">
-                        02
-                    </span>
-
-                    <span class="section-label">
-                        WRITEUPS &amp; LABS
-                    </span>
-
-
-                    <h2>
-                        Things I have been doing
-                    </h2>
-
-
-                    <p>
-                        Hands-on labs, challenges and security experiments.
-                    </p>
-
-
-                </div>
-
-
-                <a href="/writeups/" class="text-link">
-                    View all →
-                </a>
-
-
-            </div>
-
-
-
             <div class="writeup-list">
 
 
@@ -613,26 +552,10 @@
 
             </div>
 
-        </section>
-
-
-
-        <!-- =========================
-             PROJECTS
-        ========================== -->
-
-        <section class="section">
-
-            <div class="section-header split">
-                <div>
-                    <span class="section-number">03</span>
-                    <span class="section-label">PROJECTS</span>
-                    <h2>Things I'm building and doing.</h2>
-                    <p>Published tooling, active development and security research—clearly labelled by status.</p>
-                </div>
-                <a href="/projects/" class="text-link">View all →</a>
+            <div class="workstream-heading workstream-heading-split">
+                <span class="section-label">PROJECTS</span>
+                <a href="/projects/" class="text-link">View all projects →</a>
             </div>
-
             <div class="project-grid">
                 <a href="/projects/#network-security-project" class="project-card featured" style="text-decoration:none;">
                     <div class="project-content">
@@ -704,7 +627,6 @@
                     <span class="project-number">05</span>
                 </a>
             </div>
-
         </section>
 
 
@@ -717,7 +639,7 @@
 
             <div class="section-header split">
                 <div>
-                    <span class="section-number">04</span>
+                    <span class="section-number">02</span>
                     <span class="section-label">RESOURCES</span>
                     <h2>Tools, techniques &amp; learning.</h2>
                     <p>This is my personal cybersecurity knowledge library: notes, techniques, tools, and practical references I have collected throughout my learning journey. I maintain it for future reference and hope other learners find the personal notes and external resources useful too.</p>
@@ -756,10 +678,17 @@
 
         <section class="section">
 
+            <div class="section-header">
+                <div>
+                    <span class="section-number">03</span>
+                    <span class="section-label">RESEARCH</span>
+                </div>
+                <h2>Research in Progress — AI in Cybersecurity</h2>
+            </div>
+
             <div class="research-box">
                 <div class="research-content">
-                    <span class="section-label">05 — RESEARCH</span>
-                    <h2>Research in Progress — AI in Cybersecurity</h2>
+                    
                     <p>My research journey is ongoing. I am developing a structured workflow to explore cybersecurity specializations, identify meaningful research gaps, and investigate how AI can contribute to cybersecurity through literature analysis, research questions, study design, and evidence-based evaluation.</p>
                     <ol class="research-phase-list">
                         <li><strong>Phase 01 — Research onboarding and methodology.</strong> Learn academic workflows, explore cybersecurity specializations, refine an AI-in-cybersecurity research area, and establish a structured approach to research problems.</li>
@@ -791,9 +720,7 @@
 
                 <div>
 
-                    <span class="section-number">
-                        06
-                    </span>
+                    <span class="section-number">04</span>
 
                     <span class="section-label">
                         CERTIFICATIONS
@@ -932,7 +859,7 @@
 
             <div class="section-header split">
                 <div>
-                    <span class="section-number">07</span>
+                    <span class="section-number">05</span>
                     <span class="section-label">EXPERIENCE</span>
                     <h2>Professional experience.</h2>
                     <p>Professional networking and security-operations experience, alongside focused security development.</p>
@@ -1035,7 +962,7 @@
 
             <div class="section-header split">
                 <div>
-                    <span class="section-number">08</span>
+                    <span class="section-number">06</span>
                     <span class="section-label">EDUCATION</span>
                     <h2>Academic Education &amp; workshops</h2>
                     <p>Academic qualifications and practical learning, with the current postgraduate programme clearly distinguished from completed study.</p>
@@ -1135,32 +1062,7 @@
 
 
 
-        <!-- =========================
-             ABOUT
-        ========================== -->
-
-        <section class="section about-section">
-            <div class="about-grid">
-                <div>
-                    <span class="section-number">09</span>
-                    <span class="section-label">ABOUT</span>
-                    <h2>Hi, I'm <span>Roger Rached</span>.</h2>
-                </div>
-
-                <div class="about-copy">
-                    <p>I'm a cybersecurity practitioner focused on penetration testing, application security, offensive security and AI security. My background combines Computer Science, networking, infrastructure support and security operations.</p>
-
-                    <p>This portfolio documents practical learning, technical experiments and security research. Explore my full background, CTF activity and technical interests in the detailed profile.</p>
-
-                    <div class="about-links">
-                        <a href="/about/details/" class="about-details-link">More About Me ↗</a>
-                        <a href="https://github.com/Ozz961" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-                        <a href="https://www.linkedin.com/in/roger-rached/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
-                        <a href="mailto:roger_Rached@outlook.com">Email ↗</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+        
 
 
 
