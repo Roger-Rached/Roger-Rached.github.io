@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Matrix rain runs in the homepage hero and as a subtle shared background on inner pages.
     const hero = document.querySelector(".hero");
+    const matrixMotionSuppressed = () => !visualEffectsEnabled;
     document.querySelectorAll("canvas.hero-matrix, canvas.site-matrix").forEach(canvas => {
         if (typeof canvas.getContext !== "function" || canvas.dataset.matrixInitialized === "true") return;
         let context = null;
@@ -209,17 +210,17 @@ document.addEventListener("DOMContentLoaded", () => {
             drawMatrix(false);
         };
         const scheduleMatrix = () => {
-            if (rafId !== null || timerId !== null || motionSuppressed() || document.visibilityState === "hidden") return;
+            if (rafId !== null || timerId !== null || matrixMotionSuppressed() || document.visibilityState === "hidden") return;
             timerId = window.setTimeout(() => {
                 timerId = null;
-                if (!motionSuppressed() && document.visibilityState !== "hidden") {
+                if (!matrixMotionSuppressed() && document.visibilityState !== "hidden") {
                     rafId = window.requestAnimationFrame(animateMatrix);
                 }
             }, compactQuery.matches ? 65 : 38);
         };
         const animateMatrix = timestamp => {
             rafId = null;
-            if (motionSuppressed() || document.visibilityState === "hidden") return;
+            if (matrixMotionSuppressed() || document.visibilityState === "hidden") return;
             const minInterval = compactQuery.matches ? 1000 / 14 : 1000 / 24;
             if (!lastDrawAt || timestamp - lastDrawAt >= minInterval) {
                 drawMatrix(true);
@@ -229,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         const refreshMatrix = () => {
             stopMatrix();
-            if (motionSuppressed()) drawMatrix(false);
+            if (matrixMotionSuppressed()) drawMatrix(false);
             else if (document.visibilityState !== "hidden") scheduleMatrix();
         };
         const refreshForMotionOrSize = () => { resizeMatrix(true); refreshMatrix(); };
