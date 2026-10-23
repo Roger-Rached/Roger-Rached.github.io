@@ -875,13 +875,7 @@ button:focus-visible {
 
 .focus-grid {
     display: grid;
-
-    grid-template-columns: 1.3fr 1fr 1fr;
-
-    grid-template-areas:
-        "large appsec ai"
-        "large labs learning";
-
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 15px;
 }
 
@@ -913,6 +907,8 @@ button:focus-visible {
     content: "";
 
     position: absolute;
+    z-index: 0;
+    pointer-events: none;
 
     width: 120px;
     height: 120px;
@@ -935,28 +931,46 @@ button:focus-visible {
     background: var(--surface-hover);
 }
 
+.focus-card > * {
+    position: relative;
+    z-index: 1;
+}
+
 .focus-card.large {
-    grid-area: large;
-
-    min-height: 505px;
+    grid-column: span 2;
+    min-height: 360px;
 }
 
-.focus-card:nth-child(2) {
-    grid-area: appsec;
+.focus-card.api-security-card {
+    grid-column: span 2;
+    min-height: 340px;
 }
 
-.focus-card:nth-child(3) {
-    grid-area: ai;
-}
-
-.focus-card.labs {
-    grid-area: labs;
-    min-height: 245px;
-}
-
+.focus-card.labs,
 .focus-card.learning {
-    grid-area: learning;
     min-height: 245px;
+}
+
+.workstream-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin: 36px 0 17px;
+}
+
+.workstream-heading:first-of-type {
+    margin-top: 0;
+}
+
+.workstream-heading .section-label {
+    display: block;
+}
+
+.work-hub .focus-grid,
+.work-hub .writeup-list,
+.work-hub .project-grid {
+    margin-bottom: 6px;
 }
 
 .card-top {
@@ -1716,16 +1730,13 @@ footer {
     }
 
     .focus-grid {
-        grid-template-columns: 1fr 1fr;
-
-        grid-template-areas:
-            "large large"
-            "appsec ai"
-            "labs learning";
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .focus-card.large {
-        min-height: 350px;
+    .focus-card.large,
+    .focus-card.api-security-card {
+        grid-column: span 2;
+        min-height: 320px;
     }
 
     .about-grid {
@@ -1791,19 +1802,14 @@ footer {
 
     .focus-grid {
         grid-template-columns: 1fr;
-
-        grid-template-areas:
-            "large"
-            "appsec"
-            "ai"
-            "labs"
-            "learning";
     }
 
     .focus-card,
     .focus-card.large,
+    .focus-card.api-security-card,
     .focus-card.labs,
     .focus-card.learning {
+        grid-column: auto;
         min-height: 250px;
     }
 
