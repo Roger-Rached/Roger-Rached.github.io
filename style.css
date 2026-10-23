@@ -4768,3 +4768,73 @@ html[data-theme="light"] .home-page .about-section .about-grid > div {
         outline-offset: 2px;
     }
 }
+
+
+/* Shared directory geometry: theme changes appearance, never component sizing. */
+html[data-theme="light"] .page-container {
+    width: min(var(--max-width), calc(100% - 50px));
+    margin-inline: auto;
+}
+
+html[data-theme="light"] .page-header {
+    margin: 0;
+    padding: 15px 0 50px;
+    border-bottom: 0;
+}
+
+html[data-theme="light"] .page-header::after {
+    bottom: 0;
+}
+
+html[data-theme="light"] .page-title {
+    max-width: 850px;
+    margin-bottom: 18px;
+    font-size: clamp(2.7rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+}
+
+html[data-theme="light"] .page-description {
+    max-width: 700px;
+    font-size: 0.98rem;
+    line-height: 1.8;
+}
+
+html[data-theme="light"] .page-content {
+    padding-bottom: 110px;
+}
+
+html[data-theme="light"] .page-section {
+    margin-bottom: 80px;
+}
+
+html[data-theme="light"] .page-section-title {
+    position: relative;
+    gap: 10px;
+    margin-bottom: 25px;
+    padding: 0;
+    border: 0;
+}
+
+html[data-theme="light"] .page-section-title::after {
+    bottom: -12px;
+}
+
+html[data-theme="light"] .page-section-title h2 {
+    font-size: 1.25rem;
+    line-height: normal;
+}
+
+@media (max-width: 700px) {
+    html[data-theme="light"] .page-container {
+        width: min(calc(100% - 36px), var(--max-width));
+    }
+
+    html[data-theme="light"] .page-header {
+        padding: 35px 0 40px;
+    }
+
+    html[data-theme="light"] .page-title {
+        font-size: clamp(2.5rem, 12vw, 4rem);
+    }
+}
