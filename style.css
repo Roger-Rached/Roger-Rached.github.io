@@ -4346,7 +4346,6 @@ html[data-theme="light"] .skip-link {
     color: var(--text);
     border-color: var(--border-hover);
 }
-html[data-theme="light"] .about-grid > div,
 html[data-theme="light"] .capstone-callout {
     color: var(--text);
     border-color: var(--border);
@@ -4712,5 +4711,60 @@ html[data-theme="light"] .page-tag {
 
     html[data-theme="light"] .page-section-title {
         align-items: flex-start;
+    }
+}
+
+
+/* Final light-theme alignment fix: color-only nav styling on desktop; keep geometry identical. */
+html[data-theme="light"] .nav-links a {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    color: #554967;
+    background: transparent;
+    box-shadow: none;
+    text-decoration: none;
+    text-decoration-color: transparent;
+    transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+
+html[data-theme="light"] .nav-links a:hover,
+html[data-theme="light"] .nav-links a:focus-visible {
+    color: #5f3698;
+    background: transparent;
+    border-color: transparent;
+    text-decoration: underline;
+    text-decoration-color: rgba(112, 64, 181, 0.62);
+    text-underline-offset: 5px;
+    outline-color: rgba(112, 64, 181, 0.55);
+    box-shadow: none;
+}
+
+html[data-theme="light"] .home-page .about-section .about-grid > div {
+    color: var(--text);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+/* Preserve the base responsive tap targets and dropdown layout. */
+@media (max-width: 950px) {
+    html[data-theme="light"] .nav-links a {
+        padding: 7px 9px;
+    }
+
+    html[data-theme="light"] .navbar.has-mobile-nav .nav-links a {
+        padding: 11px 13px;
+        border-radius: 6px;
+    }
+
+    html[data-theme="light"] .navbar.has-mobile-nav .nav-links a:hover,
+    html[data-theme="light"] .navbar.has-mobile-nav .nav-links a:focus-visible {
+        color: var(--text);
+        background: rgba(112, 64, 181, 0.075);
+        text-decoration: none;
+        outline-offset: 2px;
     }
 }
