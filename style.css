@@ -959,8 +959,13 @@ button:focus-visible {
     margin: 36px 0 17px;
 }
 
-.workstream-heading:first-of-type {
+.work-hub > .section-header + .workstream-heading {
     margin-top: 0;
+}
+
+.work-hub > .focus-grid + .workstream-heading,
+.work-hub > .writeup-list + .workstream-heading {
+    margin-top: 42px;
 }
 
 .workstream-heading .section-label {
