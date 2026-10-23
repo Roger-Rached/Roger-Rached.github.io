@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const themeColor = document.querySelector('meta[name="theme-color"]');
         if (themeColor) themeColor.setAttribute("content", activeTheme === "light" ? "#f7f5fb" : "#07060b");
+        window.dispatchEvent(new CustomEvent("portfolio-theme-change", { detail: { theme: activeTheme } }));
     };
     applyTheme(document.documentElement.dataset.theme);
     themeButtons.forEach(button => {
@@ -175,10 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     const charY = y - trail * fontSize;
                     if (charY < -fontSize || charY > height + fontSize) continue;
                     if (advance && Math.random() < 0.02) glyphs[column][trail] = randomGlyph();
-                    const alpha = (0.27 - trail * 0.028) * (compact ? 0.72 : 1);
+                    const lightTheme = document.documentElement.dataset.theme === "light";
+                    const alpha = (lightTheme ? (0.46 - trail * 0.045) : (0.27 - trail * 0.028)) * (compact ? 0.72 : 1);
                     context.fillStyle = column % 6 === 0
-                        ? "rgba(173, 130, 255, " + alpha + ")"
-                        : "rgba(91, 255, 145, " + alpha + ")";
+                        ? (lightTheme ? "rgba(99, 57, 157, " + alpha + ")" : "rgba(173, 130, 255, " + alpha + ")")
+                        : (lightTheme ? "rgba(23, 119, 57, " + alpha + ")" : "rgba(91, 255, 145, " + alpha + ")");
                     context.fillText(glyphs[column][trail], column * columnWidth, charY);
                 }
                 if (advance) {
@@ -234,6 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (document.visibilityState !== "hidden") scheduleMatrix();
         };
         const refreshForMotionOrSize = () => { resizeMatrix(true); refreshMatrix(); };
+        window.addEventListener("portfolio-theme-change", () => drawMatrix(false));
 
         resizeMatrix(true);
         refreshMatrix();

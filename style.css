@@ -4407,3 +4407,114 @@ body > .ambient {
 .navbar { z-index: 100; }
 .skip-link { z-index: 200; }
 html[data-theme="light"] .site-matrix { opacity: 0.075; }
+
+
+/* Light-mode polish: consistent contrast and cleaner surfaces across site components. */
+html[data-theme="light"] .page-breadcrumb { color: #655a73; }
+html[data-theme="light"] .page-breadcrumb a { color: #655a73; }
+html[data-theme="light"] .page-breadcrumb .current { color: #603b98; }
+html[data-theme="light"] .page-title span { color: #6841a2; }
+html[data-theme="light"] .page-tag {
+    color: #50445f;
+    border-color: rgba(94, 54, 150, 0.18);
+    background: #f2edf8;
+}
+html[data-theme="light"] .resource-card {
+    border-color: rgba(94, 54, 150, 0.16);
+    background:
+        radial-gradient(circle at 100% 0, rgba(112, 64, 181, 0.065), transparent 36%),
+        linear-gradient(145deg, #ffffff, #fcfaff);
+    box-shadow: 0 8px 25px rgba(45, 25, 72, 0.045);
+}
+html[data-theme="light"] .resource-card:hover,
+html[data-theme="light"] .resource-card:focus-within {
+    border-color: rgba(112, 64, 181, 0.34);
+    background:
+        radial-gradient(circle at 100% 0, rgba(112, 64, 181, 0.09), transparent 38%),
+        #ffffff;
+}
+html[data-theme="light"] .resource-problem {
+    color: #51465f;
+    border-left-color: rgba(112, 64, 181, 0.48);
+    background: #f5f0fb;
+}
+html[data-theme="light"] .resource-problem strong {
+    color: #57367d;
+}
+html[data-theme="light"] .resource-tags span {
+    color: #51465f;
+    border-color: rgba(94, 54, 150, 0.16);
+    background: #f5f1fa;
+}
+html[data-theme="light"] .resource-card-extra {
+    border-color: rgba(94, 54, 150, 0.15);
+}
+html[data-theme="light"] .resource-card-extra summary {
+    color: #6740a4;
+}
+html[data-theme="light"] .resource-card-extra p {
+    color: #51465f;
+}
+html[data-theme="light"] .resource-icon {
+    border-color: rgba(112, 64, 181, 0.30);
+    background: #f1eafa;
+    color: #6740a4;
+}
+html[data-theme="light"] .resource-guide-toc {
+    border-color: rgba(94, 54, 150, 0.17);
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(45, 25, 72, 0.045);
+}
+html[data-theme="light"] .resource-guide-toc h2 { color: #6740a4; }
+html[data-theme="light"] .resource-guide-toc li { color: #62586f; }
+html[data-theme="light"] .resource-guide-toc a { color: #51465f; }
+html[data-theme="light"] .resource-guide-toc a:hover,
+html[data-theme="light"] .resource-guide-toc a:focus-visible { color: #6740a4; }
+html[data-theme="light"] .resource-guide-article h2,
+html[data-theme="light"] .resource-guide-article h3 { color: #2c223a; }
+html[data-theme="light"] .resource-guide-article p,
+html[data-theme="light"] .resource-guide-article li,
+html[data-theme="light"] .resource-guide-article table { color: #51465f; }
+html[data-theme="light"] .resource-guide-article a { color: #6740a4; }
+html[data-theme="light"] .resource-guide-article a:hover { color: #4e2c80; }
+html[data-theme="light"] .resource-guide-article code,
+html[data-theme="light"] .resource-guide-article kbd {
+    color: #56347f;
+    border-color: rgba(94, 54, 150, 0.18);
+    background: #f0e9f9;
+}
+html[data-theme="light"] .resource-guide-article pre {
+    color: #eee8f7;
+    border-color: #332645;
+    background: #17121f;
+}
+html[data-theme="light"] .resource-guide-article pre code {
+    color: inherit;
+    border: 0;
+    background: transparent;
+}
+html[data-theme="light"] .resource-guide-callout {
+    color: #51465f;
+    border-color: rgba(112, 64, 181, 0.20);
+    background: #f5f0fb;
+}
+html[data-theme="light"] .resource-guide-callout strong { color: #39264f; }
+html[data-theme="light"] .resource-guide-table-wrap { border-color: rgba(94, 54, 150, 0.18); }
+html[data-theme="light"] .resource-guide-article th,
+html[data-theme="light"] .resource-guide-article td {
+    color: #51465f;
+    border-bottom-color: rgba(94, 54, 150, 0.13);
+}
+html[data-theme="light"] .resource-guide-article th { color: #39264f; background: #f0e9f9; }
+html[data-theme="light"] .resource-guide-footer-nav a {
+    color: #51465f;
+    border-color: rgba(94, 54, 150, 0.18);
+    background: #ffffff;
+}
+html[data-theme="light"] .resource-guide-footer-nav a:hover {
+    color: #6740a4;
+    background: #f5f0fb;
+    border-color: rgba(112, 64, 181, 0.34);
+}
+html[data-theme="light"] .site-matrix { opacity: 0.22; }
+html[data-theme="light"] .hero-matrix { opacity: 0.54; }
